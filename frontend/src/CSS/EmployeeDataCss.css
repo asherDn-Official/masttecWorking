@@ -1,0 +1,395 @@
+body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #f5f5f5;
+}
+.msj3434jj785786 {
+  font-family: Poppins;
+  font-size: 36px;
+  font-weight: 500;
+  line-height: 54px;
+  color: #000;
+}
+.nfi4j5j45 {
+  font-family: Poppins;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 36px;
+  color: #000;
+}
+.j46436646363 {
+  width: 95px;
+  height: 95px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.vsjsjjj434 {
+  width: 30px;
+  height: 30px;
+}
+
+.mpiu888888888 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.yrt454564565 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 24px;
+}
+.iuiuiweuiewueiwe {
+  margin-left: 10px;
+  margin-right: 10px;
+  background: #fff;
+  border-radius: 10px;
+  margin-bottom: 0px;
+  margin-top: 20px;
+  padding: 20px 26px;
+}
+
+.taskh7584554 {
+  font-family: Poppins;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 36px;
+  color: #000;
+}
+.dropdowndetsi2323 {
+  font-family: "Poppins", sans-serif;
+  border: none;
+  height: 39px;
+  width: 126px;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  padding-right: 30px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="292.4" height="292.4" viewBox="0 0 292.4 292.4"><path fill="%23fff" d="M287 69.6l-14.3-14.3c-5.5-5.5-14.3-5.5-19.8 0L146.2 162.1 39.5 55.3c-5.5-5.5-14.3-5.5-19.8 0L5.3 69.6c-5.5 5.5-5.5 14.3 0 19.8L136.4 220c5.5 5.5 14.3 5.5 19.8 0L287 89.4c5.5-5.5 5.5-14.3 0-19.8z"/></svg>')
+    no-repeat right 7px center;
+  background-size: 10px;
+  padding-top: 8px;
+  background-color: #17215e;
+  color: #fff;
+}
+
+.dropdowndetsi2323:focus {
+  border-color: rgba(23, 33, 94, 1) !important;
+  outline: none;
+}
+.dropdowndetsi2323:not(:focus) {
+  border-color: rgba(23, 33, 94, 1) !important;
+}
+
+.jjjj3j34j4j34j4j {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 13px;
+}
+
+.ouieieirr {
+  display: flex;
+  justify-content: center;
+  column-gap: 38px;
+}
+
+.jdo3eoo34oo4 {
+}
+
+.yeyy43344 {
+  width: 32%;
+  background: #fff;
+  padding: 20px 25px 20px 25px;
+  border-radius: 10px;
+}
+
+.lsjkddkskdd {
+  width: 52%;
+  height: 500px;
+  background-color: #fff;
+  padding: 20px 25px 20px 25px;
+  border-radius: 10px;
+}
+.iurooi435k45k5 {
+  margin-top: 30px;
+}
+.jdhnfdjfnfnzz {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start;
+}
+
+.nkskkksks {
+  font-family: Poppins;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 22.5px;
+  text-align: left;
+  width: 349px;
+  height: auto;
+  margin-left: 8px;
+}
+.llllslslsl {
+  margin-top: 20px;
+  background: rgba(23, 33, 94, 0.05);
+  padding: 15px 10px 15px 10px;
+  border-radius: 10px;
+}
+.kksuruur {
+  font-family: Poppins;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 19px;
+  text-align: left;
+  color: #949494;
+  margin-left: 5px;
+}
+
+.nncncnnccc {
+  font-family: Poppins;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 36px;
+  color: #000;
+}
+
+.shiftoptiondeiv {
+  background-color: #17215e;
+  color: #fff;
+  width: 105px;
+  padding: 4px 9px 4px 9px;
+  border-radius: 5px;
+  font-family: Poppins;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 24px;
+  text-align: left;
+  padding-right: 30px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="292.4" height="292.4" viewBox="0 0 292.4 292.4"><path fill="%23fff" d="M287 69.6l-14.3-14.3c-5.5-5.5-14.3-5.5-19.8 0L146.2 162.1 39.5 55.3c-5.5-5.5-14.3-5.5-19.8 0L5.3 69.6c-5.5 5.5-5.5 14.3 0 19.8L136.4 220c5.5 5.5 14.3 5.5 19.8 0L287 89.4c5.5-5.5 5.5-14.3 0-19.8z"/></svg>')
+    no-repeat right 7px center;
+  background-size: 10px;
+  padding-top: 8px;
+  background-color: #17215e;
+  color: #fff;
+}
+
+.itrutitititi {
+  background-color: rgba(232, 233, 239, 1);
+  border: none;
+  width: 158px;
+  height: 25px;
+  padding: 10px;
+  border-radius: 5px;
+  color: rgba(23, 33, 94, 1);
+  font-weight: 500;
+  font-family: Poppins;
+}
+
+.ikno4k34343 {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.ieruy34u3u3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nbbbbbdbddd {
+  width: 57%;
+  background: #fff;
+  padding: 20px 25px 20px 25px;
+  border-radius: 10px;
+}
+
+.lowju434 {
+  font-family: Poppins;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 36px;
+  text-align: left;
+  padding-left: 15px;
+}
+
+.ppposososos {
+  display: flex;
+  justify-content: center;
+  column-gap: 30px;
+}
+
+.diviejdjj43 {
+  width: 15px;
+  background-color: rgba(23, 33, 94, 0.23);
+  height: 55px;
+}
+.mooooossssooo {
+  font-family: Poppins;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 24px;
+  color: rgba(0, 0, 0, 1);
+}
+.qioqiweie {
+  font-family: Poppins;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 30px;
+  color: rgba(0, 0, 0, 1);
+  margin-top: 5px;
+}
+.kkklskkksks {
+  display: flex;
+  column-gap: 13px;
+}
+.lkdkkdkdkdkdjddj12 {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+.jjdjdjdjdjdjnfnfnfn {
+  width: 400px;
+  background-color: #fff;
+  border-radius: 10px;
+}
+.vdhdgdgdvdvdv {
+  margin-top: 30px;
+}
+
+.kkkkkkk2232332 {
+  font-family: Poppins;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 21px;
+  color: rgba(0, 0, 0, 1);
+}
+.CreatePayRun {
+  font-family: Poppins;
+  width: 150px;
+  height: 35px;
+  background-color: #17215e;
+  border: none;
+  color: #fff;
+  border-radius: 5px;
+}
+.mbvnvcsihwiejhjr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 20px;
+  font-weight: 600;
+}
+.iooioioerorro {
+  margin-top: 30px;
+}
+
+.jjdjdjdjdjdjnfnfnfn {
+  background: #fff;
+  padding: 20px 25px 20px 25px;
+  border-radius: 10px;
+  width: 28%;
+}
+
+.lllp0ps02034244 {
+  display: flex;
+  align-items: center;
+  column-gap: 6px;
+}
+
+.weweeshiftoptiondeiv {
+  font-family: Poppins;
+  border: none;
+  width: auto;
+  height: 47px;
+  padding: 10px;
+  border-radius: 5px;
+  color: rgba(23, 33, 94, 1);
+  font-weight: 500;
+  border: 2px solid rgba(232, 233, 239, 1);
+  padding-right: 30px;
+  border-radius: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="292.4" height="292.4" viewBox="0 0 292.4 292.4"><path fill="%23000" d="M287 69.6l-14.3-14.3c-5.5-5.5-14.3-5.5-19.8 0L146.2 162.1 39.5 55.3c-5.5-5.5-14.3-5.5-19.8 0L5.3 69.6c-5.5 5.5-5.5 14.3 0 19.8L136.4 220c5.5 5.5 14.3 5.5 19.8 0L287 89.4c5.5-5.5 5.5-14.3 0-19.8z"/></svg>')
+    no-repeat right 7px center;
+  background-size: 10px;
+  background-color: rgba(232, 233, 239, 1);
+}
+
+.weweeshiftoptiondeiv:focus {
+  border-color: rgba(232, 233, 239, 1) !important;
+  outline: none;
+}
+.weweeshiftoptiondeiv:not(:focus) {
+  border-color: rgba(232, 233, 239, 1) !important;
+}
+
+.opoopopppp {
+  margin-left: 10px;
+  margin-right: 10px;
+  background: #fff;
+  border-radius: 10px;
+  margin-bottom: 0px;
+  margin-top: 30px;
+  padding: 20px 26px;
+}
+.iiiyuyuyuyu {
+  font-family: Poppins;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 36px;
+  color: #000;
+  padding-left: 15px;
+}
+.iieyueyyrryryr {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.gdfhejrhuereuer {
+  background-color: rgba(232, 233, 239, 1);
+  border: none;
+  width: auto;
+  height: 41px;
+  padding: 10px;
+  border-radius: 5px;
+  color: rgba(23, 33, 94, 1);
+  font-weight: 500;
+  /* border: 2px solid #ccc; */
+  padding-right: 30px;
+  border-radius: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="292.4" height="292.4" viewBox="0 0 292.4 292.4"><path fill="%23000" d="M287 69.6l-14.3-14.3c-5.5-5.5-14.3-5.5-19.8 0L146.2 162.1 39.5 55.3c-5.5-5.5-14.3-5.5-19.8 0L5.3 69.6c-5.5 5.5-5.5 14.3 0 19.8L136.4 220c5.5 5.5 14.3 5.5 19.8 0L287 89.4c5.5-5.5 5.5-14.3 0-19.8z"/></svg>')
+    no-repeat right 7px center;
+  background-color: rgba(232, 233, 239, 1);
+  background-size: 10px;
+  padding-top: 8px;
+  font-family: Poppins;
+}
+
+.gdfhejrhuereuer:focus {
+  border-color: rgba(23, 33, 94, 1) !important;
+  outline: none;
+}
+.gdfhejrhuereuer:not(:focus) {
+  border-color: rgba(23, 33, 94, 1) !important;
+}
+.lololl34434343443443 {
+  height: 400px;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}

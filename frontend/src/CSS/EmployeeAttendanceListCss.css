@@ -1,0 +1,441 @@
+body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #e3e3e3;
+}
+
+.lppooosososso11 {
+  height: 100vh;
+  overflow: scroll;
+  scrollbar-width: none;
+}
+.nhhhiwoop3p2o3po23p {
+  position: relative;
+  width: 284px;
+}
+.poooosllslslsll {
+  display: flex;
+  align-items: center;
+  column-gap: 30px;
+}
+
+.trtrzzzdndhdfdffdf {
+  font-family: Poppins;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 36px;
+  text-align: left;
+  color: #17215e;
+}
+.hgshareeebuteyreuuruer {
+  width: 125px;
+  height: 45px;
+  border-radius: 10px;
+  background-color: #17215e;
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 8px;
+  margin: 18px;
+}
+
+.zvzgggw2323232 {
+  font-family: Poppins;
+  font-size: 16px;
+  line-height: 30px;
+}
+
+.wwxxeeererererererr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.aewewewelp2i3o23oi23oi32323 {
+  width: 284px;
+  height: 45px;
+  border-radius: 10px;
+  border: none;
+  background-color: rgba(237, 239, 246, 0.98);
+  padding-left: 20px;
+  font-family: "Poppins", sans-serif;
+  font-size: 18px;
+}
+
+.qqzsearcghsidj4334 {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+}
+
+.toprowclass {
+  width: 1262px;
+  height: 59px;
+  background-color: #e2e1e9;
+  border-radius: 5px;
+  color: #080f33;
+  margin-top: 100px;
+  margin-bottom: 0;
+}
+.optiondiv {
+  background-color: #17215e;
+  color: #e2e1e9;
+  border: none;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  color: #fff;
+  padding-top: 0px;
+}
+.alldisplay {
+  display: flex;
+  justify-content: center;
+}
+.headcontdisplay {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 15px;
+}
+.secondtoprow:hover {
+  background-color: #edeff6;
+}
+.allheads {
+  color: #080f33;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  width: 120px;
+  font-weight: 400;
+  text-align: center;
+}
+.secondtoprow {
+  width: 1170px;
+  height: auto;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  color: #080f33;
+  margin-top: 1.5px;
+  padding-bottom: 12px;
+}
+.allheads1 {
+  color: #080f33;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+}
+.allheads1sno {
+  color: #080f33;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+}
+.headcontdisplay1 {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 15px;
+}
+.toprowclass12 {
+  width: 100%;
+  height: 59px;
+  background-color: #e2e1e9;
+  border-radius: 5px;
+  color: #080f33;
+  margin-top: 40px;
+  margin-bottom: 0px;
+}
+.allheads1p {
+  color: #080f33;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  width: 40px;
+  text-align: center;
+}
+.allheads1k {
+  color: #080f33;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  width: 111px;
+  text-align: center;
+}
+.allheadscolor {
+  color: #d72020;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  width: 120px;
+  text-align: center;
+}
+.allheadsno {
+  color: #080f33;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  width: 45px;
+  text-align: center;
+}
+.allheadsponum {
+  color: #080f33;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  width: 150px;
+  text-align: center;
+}
+.allheadsjobname {
+  color: #080f33;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  width: 150px;
+  text-align: center;
+}
+.allheadsclient {
+  color: #080f33;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  width: 120px;
+  text-align: center;
+}
+.allheadsqty {
+  color: #080f33;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  width: 120px;
+  text-align: center;
+}
+.allheadsdate {
+  color: #080f33;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  width: 160px;
+  text-align: center;
+}
+.allheadsoper {
+  color: #080f33;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  width: 140px;
+  text-align: center;
+}
+.allheadscost {
+  color: #080f33;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  width: 150px;
+}
+.secondtoprowhe {
+  width: 100%;
+  height: auto;
+  background: #17215e;
+  border-radius: 5px;
+  color: #ffffff;
+  margin-top: 1.5px;
+  padding-bottom: 12px;
+}
+.allheadsnoh {
+  color: #ffffff;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  width: 45px;
+  text-align: center;
+}
+.allheadsponumh {
+  color: #ffffff;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  width: 150px;
+  text-align: center;
+}
+.allheadsjobnameh {
+  color: #ffffff;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  width: 150px;
+  text-align: center;
+  display: flex;
+  justify-content: space-evenly;
+}
+.allheadsclienth {
+  color: #ffffff;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  width: 120px;
+  text-align: center;
+}
+.allheadsqtyh {
+  color: #ffffff;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  width: 120px;
+  text-align: center;
+}
+.allheadscolorh {
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  width: 120px;
+  text-align: center;
+  color: #ffffff;
+  display: flex;
+  justify-content: space-evenly;
+}
+.allheadsdateh {
+  color: #ffffff;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  width: 160px;
+  text-align: center;
+}
+.allheadsoperh {
+  color: #ffffff;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  width: 140px;
+  text-align: center;
+}
+.allheadsh {
+  color: #ffffff;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  width: 120px;
+  text-align: center;
+}
+.allheadscolorg {
+  color: #00992b;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  width: 120px;
+  text-align: center;
+}
+.allheadempty {
+  width: 30px;
+}
+.allempty {
+  width: 30px;
+}
+.addimage {
+  display: flex;
+  justify-content: space-evenly;
+}
+.imagediv {
+  width: 24px;
+  height: 24px;
+}
+.widthhall {
+  width: 100%;
+}
+.allwidth {
+  width: 1252px;
+  background-color: #ffff;
+}
+.marginbox {
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  margin-top: 20px;
+}
+.displayflexon {
+  display: flex;
+  justify-content: center;
+  padding: 50px 0px 40px 0px;
+}
+.feedback-input {
+  width: 100%;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+/* Hide unwanted elements when printing */
+@media print {
+  * {
+    color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #e3e3e3;
+    width: 100%;
+    overflow: visible;
+  }
+
+  .lppooosososso11 {
+    height: auto; /* Ensure content is fully visible */
+    overflow: visible; /* Allow overflow for print */
+    width: 100%; /* Set full width */
+  }
+
+  .toprowclass,
+  .secondtoprow,
+  .secondtoprowhe {
+    background-color: #e2e1e9 !important;
+    color: #080f33 !important;
+  }
+
+  .allwidth,
+  .widthhall,
+  .allheads,
+  .allheadscost,
+  .allheadsponum,
+  .allheadsclient {
+    width: 100% !important; /* Ensure full width is used */
+    box-sizing: border-box;
+  }
+
+  /* Ensure proper width for headers and table cells */
+  .allheads1,
+  .allheads1p,
+  .allheadsjobname,
+  .allheadsclient,
+  .allheadsdate,
+  .allheadsoper,
+  .allheadscolorg {
+    width: auto !important; /* Let them use available width */
+    max-width: none !important;
+  }
+
+  /* Remove flex and ensure full width layout */
+  .displayflexon {
+    display: block !important;
+    width: 100%;
+    justify-content: flex-start;
+    padding: 50px 0px 40px 0px;
+  }
+
+  /* Make sure no content is hidden */
+  .imagediv {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Ensure the whole page fits width-wise */
+  .marginbox {
+    width: 100%;
+    height: auto; /* Allow content to adjust to width */
+    margin-top: 20px;
+  }
+}

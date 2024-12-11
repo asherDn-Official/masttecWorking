@@ -1,0 +1,132 @@
+.Login-container {
+  display: flex;
+  height: 100%;
+}
+.Login-left-side {
+  flex: 1;
+  max-width: 35%;
+  /* height: 100%; */
+  background-image: url("../../public/images/image-left.png");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+.Login-left-side .Login-welcome-image {
+  width: 80%;
+  max-width: 400px;
+  margin-bottom: 20px;
+}
+.Login-left-side .logo {
+  width: 150px;
+}
+.Login-right-side {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background-color: #ffffff;
+}
+.forme-centeore {
+  display: flex;
+  justify-content: center;
+}
+.Login-top-logo {
+  align-self: flex-start;
+  margin-bottom: 20px;
+}
+.Login-top-logo img {
+  height: 47px;
+  width: 198px;
+}
+.form-word {
+  max-width: 421px;
+}
+h1 {
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 30px;
+  text-align: center;
+  color: #17215e;
+}
+.Login-form-group {
+  margin-bottom: 20px;
+  width: 500px;
+}
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #666;
+}
+input,
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+.Login-password-input {
+  position: relative;
+}
+.Login-password-toggle {
+  position: absolute;
+  right: 10px;
+  color: #666;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.Login-remember-me {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.Login-remember-me input {
+  margin-right: 10px;
+  width: auto;
+}
+.Login-forgot-password {
+  text-align: right;
+  width: 500px;
+  margin-bottom: 20px;
+}
+.Login-forgot-password a {
+  color: #5069ff;
+  text-decoration: none;
+}
+.Login-login-button {
+  background-color: #5069ff;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 500px;
+}
+.Login-create-account {
+  text-align: center;
+  margin-top: 20px;
+  color: #666;
+}
+.Login-create-account a {
+  color: #5069ff;
+  text-decoration: none;
+}
+
+.form-word input,
+option,
+select {
+  font-family: "Poppins", sans-serif;
+}
+
+.Login-remember-me label {
+  margin-bottom: 0px;
+}

@@ -1,0 +1,243 @@
+@import "~normalize.css";
+@import "~@blueprintjs/core/lib/css/blueprint.css";
+
+body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.ksiskfdk54 {
+  width: 250px;
+  height: 390px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.nameofthejkd {
+  font-family: Poppins;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #17215e;
+  margin-top: 5px;
+}
+
+.inputpayroll {
+  width: 123px;
+  height: 36px;
+  top: 695px;
+  left: 409px;
+  gap: 0px;
+  border-radius: 5px;
+  background-color: #fff;
+  font-size: 14px;
+  border: none;
+  margin-top: 10px;
+  padding-left: 10px;
+}
+.inputpayroll::selection {
+  border: none;
+}
+
+.inputfLEXSHSH {
+  display: flex;
+  flex-wrap: wrap;
+  width: 941px;
+  column-gap: 59px;
+  row-gap: 20px;
+}
+
+.lABLETTITLEII {
+  font-family: Poppins;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #17215e;
+}
+.flexofjo4546656 {
+  display: flex;
+  column-gap: 36px;
+  align-items: center;
+  margin-top: 40px;
+  background-color: #f3f4f7;
+  border-radius: 10px;
+}
+
+.ksierperki4545454 {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+}
+
+.employeeddtextfguh3453 {
+  font-family: Poppins;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 36px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #17215e;
+}
+.searchemployeepayrolldiv21 {
+  width: 200px;
+  background-color: #edeff6fa;
+  border: none;
+  height: 40px;
+  border-radius: 10px;
+  padding-left: 10px;
+  font-family: "Poppins", sans-serif;
+  color: #000;
+  font-size: 15px;
+}
+
+.searchemployeepayrolldiv21::placeholder {
+  font-size: 15px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+}
+.searchiconsvgpayroll {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+}
+.seqarch3453455 {
+  position: relative;
+}
+.sharetoexportbutton {
+  width: 113px;
+  background-color: #17215e;
+  border-radius: 10px;
+  height: 40px;
+  color: #fff;
+  font-size: 16px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  text-align: left;
+  padding-left: 18px;
+  border: none;
+}
+
+.shareiicontorxpoort {
+  position: absolute;
+  top: 11px;
+  right: 20px;
+}
+
+.lsoi34545545 {
+  position: relative;
+  width: 115px;
+}
+.poogp656556 {
+  display: flex;
+  justify-content: center;
+  column-gap: 30px;
+  align-items: center;
+}
+.kkdkl4l34k4343443 {
+  display: flex;
+  justify-content: space-between;
+  width: 1200px;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.overviewPayroll {
+  font-family: Poppins;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 36px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #17215e;
+}
+
+.totalEmployewgy434 {
+  font-family: Poppins;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #807e88;
+}
+
+.noofemplueelist34 {
+  font-family: Poppins;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 27px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #17215e;
+}
+
+.sliderfk5445 {
+  background-color: rgba(23, 33, 94, 0.05);
+  display: flex;
+  align-items: normal;
+  padding: 10px 20px 10px 20px;
+  justify-content: center;
+  column-gap: 10px;
+  border-radius: 7px;
+  width: 200px;
+}
+.sldijkero454545 {
+  display: flex;
+  overflow-x: scroll;
+  width: 1250px;
+  gap: 36px;
+  padding-bottom: 18px;
+  margin-top: 25px;
+  margin-bottom: 30px;
+  padding-left: 10px;
+}
+.keofroei4o5454 {
+  width: 160px;
+}
+
+.ldijk45rrt {
+  margin-top: 20px;
+}
+.psioo5o4o54io5k5 {
+  font-family: Poppins;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 36px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #17215e;
+}
+.pojejrejrerer {
+  font-family: Poppins;
+  width: 147px;
+  height: 41px;
+  background: #17215e;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.lpieoroeroerrere {
+  display: flex;
+  justify-content: space-between;
+  width: 1200px;
+  margin-top: 35px;
+}

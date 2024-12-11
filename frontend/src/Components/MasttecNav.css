@@ -1,0 +1,91 @@
+ /* Reset some default styles */
+ * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Poppins, sans-serif;
+  }
+
+  /* Container Styles */
+  .masttec-container {
+    width: 100%;
+  
+  }
+
+  /* Navigation Bar Styles */
+  .masttec-nav {
+    background-color: #3c3b6e;
+    color: #ffffff;
+    padding: 20px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .masttec-logo {
+    width: 250px;
+  }
+
+  .masttec-menu {
+    display: flex;
+    list-style-type: none;
+  }
+
+  .masttec-menu-item {
+    margin-left: 70px;
+    position: relative;
+  }
+
+  .masttec-menu-link {
+    color: inherit;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 500;
+    padding-bottom: 8px;
+    transition: border-bottom 0.3s;
+  }
+
+  .masttec-menu-link:hover {
+    border-bottom: 2px solid #ffffff;
+  }
+
+  .masttec-submenu {
+    display: none;
+    position: absolute;
+    background-color: #3c3b6e;
+    width: 200px;
+    padding: 10px;
+    z-index: 1;
+  }
+
+  .masttec-menu-item:hover > .masttec-submenu {
+    display: block;
+  }
+
+  .masttec-submenu-item {
+    margin-left: 0;
+    margin-bottom: 8px;
+  }
+
+  .masttec-submenu-link:hover {
+    color: #d9d9d9;
+  }
+
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .masttec-nav {
+      padding: 12px;
+    }
+
+    .masttec-menu-link {
+      font-size: 14px;
+    }
+
+    .masttec-menu-item {
+      margin-left: 12px;
+    }
+
+    .masttec-submenu {
+      width: 180px;
+    }
+  }
