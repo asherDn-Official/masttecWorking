@@ -16,6 +16,7 @@ const attendanceRoutes = require("./Routes/AttendanceRouter");
 const payRunCalcRoutes = require("./Routes/PayRunCalcRoute");
 const TempEmployeeRoutes = require("./Routes/TempEmployeeRouter");
 const payrollRoutes = require("./Routes/PayRollRoutes");
+const holidayRoutes = require("./Routes/HolidayRouter");
 
 const app = express();
 app.use(cookieParser());
@@ -107,6 +108,7 @@ app.use("/v1/api/attendance", attendanceRoutes);
 app.use("/v1/api/payruncalc", payRunCalcRoutes);
 app.use("/v1/api/tempEmployee", TempEmployeeRoutes);
 app.use("/v1/api/payroll", payrollRoutes);
+app.use("/v1/api/holiday", holidayRoutes);
 
 // Cron job to initialize daily attendance at midnight
 cron.schedule("0 0 * * *", () => {

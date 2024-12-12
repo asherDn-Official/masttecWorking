@@ -62,13 +62,13 @@ exports.updateHolidays = async (req, res) => {
 exports.getHolidays = async (req, res) => {
   try {
     const { year } = req.params;
-
+    console.log(year);
     if (!year) {
       return res.status(400).json({ message: "Year is required" });
     }
 
     const holidayData = await Holiday.findOne({ year });
-
+    console.log(holidayData);
     if (!holidayData) {
       return res
         .status(404)

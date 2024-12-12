@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "../CSS/PayrollCSS.css";
 import url from "./global";
 import axios from "axios";
@@ -8,12 +8,12 @@ export default function PayrollPage() {
   const [attendanceData, setAttendanceData] = useState([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // Default to current month (1-based index)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // Initialize with current year
-  const [holidayList, setHolidayList] = useState([]);
+  const [holidayList, setHolidayList] = useState();
   const [searchQuery, setSearchQuery] = useState("");
-  const handleMonth = async (e) => {
-    setSelectedMonth(e.target.value);
+  const handleMonth = (e) => {
+    setSelectedMonth(e.target.value); // Update state with the selected value
   };
   const searchfilter = async (e) => {
     e.preventDefault();
@@ -31,36 +31,37 @@ export default function PayrollPage() {
       setEmployee(employee);
     }
   };
-  const handleYearChange = async (e) => {
-    setSelectedYear(e.target.value);
-  };
-  const handleMonthChange = async (event) => {
-    const selectedMonth = parseInt(event.target.value); // Get the selected month (1-12)
-    const currentYear = new Date().getFullYear(); // Get the current year
+  // const handleYearChange = async (e) => {
+  //   setSelectedYear(e.target.value);
+  // };
+  const handleMonthChange = (event) => {
+    const selectedMonthValue = parseInt(event.target.value); // Parse the selected value
+    //const currentYear = new Date().getFullYear(); // Get the current year
 
+    // Filter attendance data by the selected month and year
     const filteredData = filterRecordsByMonth(
       attendanceData,
-      currentYear,
-      selectedMonth
+      selectedYear,
+      selectedMonthValue
     );
 
-    // Fetch employee data and then set filtered attendance
-    fetchEmployee(filteredData); // Directly use filteredData without awaiting
+    // Fetch and update employee data with filtered records
+    fetchEmployee(filteredData); // Assuming fetchEmployee updates state or performs relevant tasks
   };
 
-  const filterRecordsByMonth = React.useCallback((data, year, month) => {
+  const filterRecordsByMonth = useCallback((data, year, month) => {
     return data
       .map(({ employeeId, records }) => ({
         employeeId,
-        records: records.filter((record) => {
-          const recordDate = new Date(record.date);
+        records: records.filter(({ date }) => {
+          const recordDate = new Date(date);
           return (
             recordDate.getFullYear() === year &&
             recordDate.getMonth() + 1 === month
           );
         }),
       }))
-      .filter(({ records }) => records.length > 0); // Only include employees with records
+      .filter(({ records }) => records.length > 0);
   }, []);
 
   const fetchAttendance = async () => {
@@ -74,11 +75,15 @@ export default function PayrollPage() {
       setIsLoading(false);
     }
   };
+  console.log("month:", selectedMonth);
+  console.log("year:", selectedYear);
   const fetchHolidays = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${url}/v1/api/attendance`);
-      setAttendanceData(response.data);
+      console.log(selectedYear);
+      const response = await axios.get(`${url}/v1/api/holiday/${selectedYear}`);
+      setHolidayList(response.data.holidays);
+      console.log("holiday : ", holidayList);
     } catch (error) {
       handleError("Error fetching attendance data.");
     } finally {
@@ -128,13 +133,13 @@ export default function PayrollPage() {
             const excessMinutes = Math.max(0, diffInMinutes - 8 * 60); // Check for overtime
 
             // Assign overtime to the correct category based on the status
-            if (record.status === "Present") {
-              totalOT1Minutes += excessMinutes; // OT1 for Present
-            } else if (
+            if (
               record.status === "Sunday" || // Check if it's Sunday
               record.date.includes(holidayList) // Or a holiday
             ) {
-              totalOT2Minutes += excessMinutes; // OT2 for Sunday/Holiday
+              totalOT2Minutes += diffInMinutes; // OT2 for Sunday/Holiday
+            } else if (record.status === "Present") {
+              totalOT1Minutes += excessMinutes; // OT1 for Present
             }
           }
         });
@@ -234,7 +239,7 @@ export default function PayrollPage() {
       await fetchHolidays();
     };
     fetchData();
-  }, []);
+  }, [selectedYear]);
   const handleError = (message) => {
     setError(message);
     setTimeout(() => setError(""), 5000);
@@ -415,10 +420,10 @@ export default function PayrollPage() {
           <div>
             <div>
               <select
+                value={selectedMonth} // Bind the select value to state
                 onChange={(e) => {
-                  e.preventDefault();
-                  handleMonth(e);
-                  handleMonthChange(e);
+                  handleMonth(e); // Update state
+                  handleMonthChange(e); // Process the selected month
                 }}
                 className="pojejrejrerer"
               >
@@ -437,7 +442,10 @@ export default function PayrollPage() {
               </select>
             </div>
             <div>
-              <select value={selectedYear} onChange={handleYearChange} required>
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+              >
                 <option value="">Select Year</option>
                 {Array.from({ length: 5 }, (_, i) => {
                   const year = new Date().getFullYear() - i;
