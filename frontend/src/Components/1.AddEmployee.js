@@ -13,7 +13,7 @@ export default function AddEmployee() {
   const handleImageUpload = async (e, additionalText) => {
     const file = e.target.files[0];
     if (!file) return;
-    if (!employee.employeeId) return;
+    if (!employee.employeeId) return alert("Enter Employee Id");
     const formData = new FormData();
     formData.append("employeeId", employee.employeeId);
     formData.append("additionalText", additionalText);
@@ -108,7 +108,7 @@ export default function AddEmployee() {
         console.log(response.data);
         setEmployee(response.data); // Update the state with the updated employee data
         alert("Employee data submitted successfully");
-        Navigate("/employees-list");
+        Navigate("/"); // use ths"/employees-list"
       } catch (error) {
         console.error("Failed to update employee:", error);
         setError("Failed to update employee data. Please try again.");
@@ -126,6 +126,7 @@ export default function AddEmployee() {
         // Logic to save the employee as a draft
         console.log("Employee saved as draft:", employee);
         alert("Employee saved as draft.");
+        Navigate("/");
       }
     }
   };

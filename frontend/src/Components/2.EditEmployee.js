@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import url from "./global";
 import ErrorPopup from "./errorPopup";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "../CSS/AddEmployeeCss.css";
 
 export default function EditEmployee() {
   const { id: empID } = useParams();
+  const Navigate = useNavigate();
   const [employee, setEmployee] = useState({});
   const [error, setError] = useState("");
   const [errorMessage, setErrorMessage] = useState(false);
@@ -129,6 +130,7 @@ export default function EditEmployee() {
       });
       console.log(response.data);
       setEmployee(response.data); // Update the state with the updated employee data
+      Navigate("/");
     } catch (error) {
       console.error("Failed to update employee:", error);
     }
