@@ -502,6 +502,7 @@ export default function AddEmployee() {
                                     <input
                                       id="file-upload-address"
                                       type="file"
+                                      onClick={(e) => (e.target.value = null)}
                                       onChange={(e) =>
                                         handleImageUpload(e, "addressProof")
                                       }
@@ -546,11 +547,12 @@ export default function AddEmployee() {
                                       <img
                                         src="/images/DocumenstIMAGE.png"
                                         alt="Upload Bank Passbook"
-                                      />  
+                                      />
                                     </label>
                                     <input
                                       id="file-upload-passbook"
                                       type="file"
+                                      onClick={(e) => (e.target.value = null)}
                                       onChange={(e) =>
                                         handleImageUpload(e, "passbookProof")
                                       }
@@ -602,6 +604,7 @@ export default function AddEmployee() {
                                     <input
                                       id="file-upload-education"
                                       type="file"
+                                      onClick={(e) => (e.target.value = null)}
                                       onChange={(e) =>
                                         handleImageUpload(
                                           e,
@@ -652,6 +655,7 @@ export default function AddEmployee() {
                                     <input
                                       id="file-upload-pan"
                                       type="file"
+                                      onClick={(e) => (e.target.value = null)}
                                       onChange={(e) =>
                                         handleImageUpload(e, "PANCardProof")
                                       }
