@@ -160,6 +160,7 @@ export default function AddEmployee() {
                         id="file-upload1"
                         type="file"
                         value={employee.employeePicture}
+                        onClick={(e) => (e.target.value = null)}
                         onChange={(e) =>
                           handleImageUpload(e, "employeePicture")
                         }
@@ -545,7 +546,7 @@ export default function AddEmployee() {
                                       <img
                                         src="/images/DocumenstIMAGE.png"
                                         alt="Upload Bank Passbook"
-                                      />
+                                      />  
                                     </label>
                                     <input
                                       id="file-upload-passbook"

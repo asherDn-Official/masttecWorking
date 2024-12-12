@@ -47,6 +47,8 @@
 
   .masttec-menu-link:hover {
     border-bottom: 2px solid #ffffff;
+    text-decoration: none;
+    color: inherit;
   }
 
   .masttec-submenu {

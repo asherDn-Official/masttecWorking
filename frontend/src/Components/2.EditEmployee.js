@@ -146,7 +146,7 @@ export default function EditEmployee() {
                     <img
                       className="addpinpuaeehehdiv"
                       src={`http://localhost:4000${employee.employeePicture}`}
-                      alt="Employee's Profile Photo"
+                      alt="Employee's Profile "
                     />
                   ) : (
                     <div>

@@ -20,7 +20,7 @@ const MasttecNav = () => {
           </li> */}
           <li className="masttec-menu-item">
             <a className="masttec-menu-link" href="/employeesAttendance">
-              Daily Attendance
+              Daily Attendance 
             </a>
           </li>
           {/*<li className="masttec-menu-item">
