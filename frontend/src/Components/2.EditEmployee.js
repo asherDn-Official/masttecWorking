@@ -481,6 +481,7 @@ export default function EditEmployee() {
                                 <img
                                   src={`http://localhost:4000${employee.addressProof}`}
                                   alt="Address Proof"
+                                  className="document-image"
                                 />
                               ) : (
                                 <>
@@ -530,6 +531,7 @@ export default function EditEmployee() {
                                 <img
                                   src={`http://localhost:4000${employee.passbookProof}`}
                                   alt="Bank Passbook"
+                                  className="document-image"
                                 />
                               ) : (
                                 <>
@@ -581,6 +583,7 @@ export default function EditEmployee() {
                                 <img
                                   src={`http://localhost:4000${employee.educationCertificate}`}
                                   alt="Education Certificate"
+                                  className="document-image"
                                 />
                               ) : (
                                 <>
@@ -631,6 +634,7 @@ export default function EditEmployee() {
                                 <img
                                   src={`http://localhost:4000${employee.PANCardProof}`}
                                   alt="PAN Card"
+                                  className="document-image"
                                 />
                               ) : (
                                 <>
