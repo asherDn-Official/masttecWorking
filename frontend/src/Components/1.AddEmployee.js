@@ -13,7 +13,7 @@ export default function AddEmployee() {
   const handleImageUpload = async (e, additionalText) => {
     const file = e.target.files[0];
     if (!file) return;
-    if (!employee.employeeId) return;
+    if (!employee.employeeId) return alert("Enter Employee Id");
     const formData = new FormData();
     formData.append("employeeId", employee.employeeId);
     formData.append("additionalText", additionalText);
