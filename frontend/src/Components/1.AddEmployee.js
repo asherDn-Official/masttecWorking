@@ -160,7 +160,7 @@ export default function AddEmployee() {
                         id="file-upload1"
                         type="file"
                         value={employee.employeePicture}
-                        onClick={(e) => (e.target.value = null)}
+                        onClick={(e) => (e.target.value = null)} // Clear the value on click to trigger change event
                         onChange={(e) =>
                           handleImageUpload(e, "employeePicture")
                         }
@@ -283,8 +283,10 @@ export default function AddEmployee() {
                         <div>
                           <div className="zzMainogthencolciwejre">
                             <div className="eimplosusu3344h4">
-                              Employee ID{" - "}
-                              {errorMessage && <span> its already taken</span>}
+                              Employee ID
+                              {errorMessage && (
+                                <span>{" - "} its already taken</span>
+                              )}
                             </div>
                             <div>
                               <input
@@ -293,12 +295,16 @@ export default function AddEmployee() {
                                 value={employee.employeeId || ""}
                                 required
                                 onChange={(e) => {
+                                  const trimmedValue = e.target.value.replace(
+                                    /\s+/g,
+                                    ""
+                                  ); // Remove all spaces
                                   setEmployee((prev) => ({
                                     ...prev,
-                                    employeeId: e.target.value,
+                                    employeeId: trimmedValue,
                                   }));
 
-                                  checkEmployeeId(e.target.value);
+                                  checkEmployeeId(trimmedValue); // Pass the trimmed value for validation
                                 }}
                               />
                             </div>
@@ -424,11 +430,11 @@ export default function AddEmployee() {
                             <input
                               className="inputddidjdj"
                               type="text"
-                              value={employee.bankAccountNumber || ""}
+                              value={employee.bankBranch || ""}
                               onChange={(e) =>
                                 setEmployee((prev) => ({
                                   ...prev,
-                                  bankAccountNumber: e.target.value,
+                                  bankBranch: e.target.value,
                                 }))
                               }
                             />
@@ -443,11 +449,11 @@ export default function AddEmployee() {
                               <input
                                 className="inputddidjdj"
                                 type="text"
-                                value={employee.bankAccountNumber || ""}
+                                value={employee.bankName || ""}
                                 onChange={(e) =>
                                   setEmployee((prev) => ({
                                     ...prev,
-                                    bankAccountNumber: e.target.value,
+                                    bankName: e.target.value,
                                   }))
                                 }
                               />
@@ -586,7 +592,7 @@ export default function AddEmployee() {
                             <div className="msaissbdfvdvdvdv">
                               {employee && employee.educationCertificate ? (
                                 <img
-                                  src={`http://localhost:4000${employee.educationCertificate}`}
+                                  src={`${url}${employee.educationCertificate}`}
                                   alt="Education Certificate"
                                 />
                               ) : (
