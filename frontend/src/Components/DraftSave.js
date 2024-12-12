@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import url from "./global";
 import ErrorPopup from "./errorPopup";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "../CSS/AddEmployeeCss.css";
 
 export default function DraftEmployee() {
   const [employee, setEmployee] = useState({});
+  const Navigate = useNavigate();
   const { id: empID } = useParams();
   const [error, setError] = useState("");
   const [errorMessage, setErrorMessage] = useState(false);
@@ -123,6 +124,7 @@ export default function DraftEmployee() {
         console.log(response.data);
         setEmployee(response.data); // Update the state with the updated employee data
         alert("Employee data submitted successfully");
+        Navigate("/");
       } catch (error) {
         console.error("Failed to update employee:", error);
         setError("Failed to update employee data. Please try again.");
@@ -140,6 +142,7 @@ export default function DraftEmployee() {
         // Logic to save the employee as a draft
         console.log("Employee saved as draft:", employee);
         alert("Employee saved as draft.");
+        Navigate("/");
       }
     }
   };
