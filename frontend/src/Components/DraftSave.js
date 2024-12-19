@@ -155,7 +155,7 @@ export default function DraftEmployee() {
           <form onSubmit={handleSubmit}>
             <div className="doemrerjerer">
               <div>
-                <div className="addpinpuaeehehdiv">
+                <div className="addpinpuaeehehdiv">   
                   {employee && employee.employeePicture ? (
                     <img
                       className="addpinpuaeehehdiv"
@@ -172,7 +172,7 @@ export default function DraftEmployee() {
                           src="/images/InputPhotoAdd.png"
                           alt="Add Profile Photo Icon"
                         />
-                      </label>
+                      </label>  
                       <input
                         id="file-upload1"
                         type="file"
@@ -203,7 +203,7 @@ export default function DraftEmployee() {
                 </div>
               </div>
               <div className="scrolldididdidi">
-                <div className="Azcxcffcgfgf">Personal Details</div>
+                <div className="Azcxcffcgfgf">Personal  Details</div>
                 <div className="sgsgsgsggs">
                   <div className="fsiwjejjewe">
                     <div className="mainduidhdb3b434">
@@ -263,6 +263,7 @@ export default function DraftEmployee() {
 
                         <div className="Mainogthencolciwejre">
                           <div className="eimplosusu3344h4">Department</div>
+
                           <div>
                             <input
                               className="inputddidjdj"
@@ -277,6 +278,7 @@ export default function DraftEmployee() {
                             />
                           </div>
                         </div>
+
 
                         <div className="Mainogthencolciwejre">
                           <div className="eimplosusu3344h4">Mobile Number</div>
@@ -305,7 +307,7 @@ export default function DraftEmployee() {
                             <div>
                               <input
                                 className="inputddidjdj"
-                                type="text"
+                                type="number"
                                 value={employee.employeeId || ""}
                                 required
                                 onChange={(e) => {
@@ -502,6 +504,7 @@ export default function DraftEmployee() {
                                 <img
                                   src={`http://localhost:4000${employee.addressProof}`}
                                   alt="Address Proof"
+                                  class="document-image"
                                 />
                               ) : (
                                 <>
@@ -551,6 +554,7 @@ export default function DraftEmployee() {
                                 <img
                                   src={`http://localhost:4000${employee.passbookProof}`}
                                   alt="Bank Passbook"
+                                  class="document-image"
                                 />
                               ) : (
                                 <>
@@ -602,6 +606,7 @@ export default function DraftEmployee() {
                                 <img
                                   src={`http://localhost:4000${employee.educationCertificate}`}
                                   alt="Education Certificate"
+                                  class="document-image"
                                 />
                               ) : (
                                 <>
@@ -652,6 +657,7 @@ export default function DraftEmployee() {
                                 <img
                                   src={`http://localhost:4000${employee.PANCardProof}`}
                                   alt="PAN Card"
+                                  class="document-image"
                                 />
                               ) : (
                                 <>

@@ -292,7 +292,7 @@ export default function AddEmployee() {
                             <div>
                               <input
                                 className="inputddidjdj"
-                                type="text"
+                                type="number"
                                 value={employee.employeeId || ""}
                                 required
                                 onChange={(e) => {
