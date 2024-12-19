@@ -10,6 +10,7 @@ import { Routes, BrowserRouter, Route, useLocation } from "react-router-dom";
 import Login from "./Components/6.Login";
 import PayrollPage from "./Components/7.Payroll";
 import MasttecNav from "./Components/Navbar";
+import HolidayPage from "./Components/HolidayPage";
 
 function App() {
   const location = useLocation(); // Get the current location
@@ -36,6 +37,8 @@ function App() {
           element={<EmployeeDataSecondSection />}
         />
         <Route path="/payRun" element={<PayrollPage />} />
+        <Route path="/holiday" element={<HolidayPage />} />
+
       </Routes>
     </div>
   );
