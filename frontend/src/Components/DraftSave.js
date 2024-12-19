@@ -155,7 +155,7 @@ export default function DraftEmployee() {
           <form onSubmit={handleSubmit}>
             <div className="doemrerjerer">
               <div>
-                <div className="addpinpuaeehehdiv">   
+                <div className="addpinpuaeehehdiv">
                   {employee && employee.employeePicture ? (
                     <img
                       className="addpinpuaeehehdiv"
@@ -172,7 +172,7 @@ export default function DraftEmployee() {
                           src="/images/InputPhotoAdd.png"
                           alt="Add Profile Photo Icon"
                         />
-                      </label>  
+                      </label>
                       <input
                         id="file-upload1"
                         type="file"
@@ -203,7 +203,7 @@ export default function DraftEmployee() {
                 </div>
               </div>
               <div className="scrolldididdidi">
-                <div className="Azcxcffcgfgf">Personal  Details</div>
+                <div className="Azcxcffcgfgf">Personal Details</div>
                 <div className="sgsgsgsggs">
                   <div className="fsiwjejjewe">
                     <div className="mainduidhdb3b434">
@@ -279,7 +279,6 @@ export default function DraftEmployee() {
                           </div>
                         </div>
 
-
                         <div className="Mainogthencolciwejre">
                           <div className="eimplosusu3344h4">Mobile Number</div>
                           <div>
@@ -301,8 +300,10 @@ export default function DraftEmployee() {
                         <div>
                           <div className="zzMainogthencolciwejre">
                             <div className="eimplosusu3344h4">
-                              Employee ID{" - "}
-                              {errorMessage && <span> its already taken</span>}
+                              Employee ID
+                              {errorMessage && (
+                                <span>{" - "} its already taken</span>
+                              )}
                             </div>
                             <div>
                               <input
@@ -442,11 +443,11 @@ export default function DraftEmployee() {
                             <input
                               className="inputddidjdj"
                               type="text"
-                              value={employee.bankAccountNumber || ""}
+                              value={employee.bankBranch || ""}
                               onChange={(e) =>
                                 setEmployee((prev) => ({
                                   ...prev,
-                                  bankAccountNumber: e.target.value,
+                                  bankBranch: e.target.value,
                                 }))
                               }
                             />
@@ -461,11 +462,11 @@ export default function DraftEmployee() {
                               <input
                                 className="inputddidjdj"
                                 type="text"
-                                value={employee.bankAccountNumber || ""}
+                                value={employee.bankName || ""}
                                 onChange={(e) =>
                                   setEmployee((prev) => ({
                                     ...prev,
-                                    bankAccountNumber: e.target.value,
+                                    bankName: e.target.value,
                                   }))
                                 }
                               />

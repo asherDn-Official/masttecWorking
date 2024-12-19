@@ -284,18 +284,29 @@ export default function EditEmployee() {
                       <div>
                         <div>
                           <div className="zzMainogthencolciwejre">
-                            <div className="eimplosusu3344h4">Employee ID</div>
+                            <div className="eimplosusu3344h4">
+                              Employee ID
+                              {errorMessage && (
+                                <span>{" - "} its already taken</span>
+                              )}
+                            </div>
                             <div>
                               <input
                                 className="inputddidjdj"
                                 type="number"
                                 value={employee.employeeId || ""}
+                                required
                                 onChange={(e) => {
+                                  const trimmedValue = e.target.value.replace(
+                                    /\s+/g,
+                                    ""
+                                  ); // Remove all spaces
                                   setEmployee((prev) => ({
                                     ...prev,
-                                    employeeId: e.target.value,
+                                    employeeId: trimmedValue,
                                   }));
-                                  checkEmployeeId(e.target.value);
+
+                                  checkEmployeeId(trimmedValue); // Pass the trimmed value for validation
                                 }}
                               />
                             </div>
@@ -421,11 +432,11 @@ export default function EditEmployee() {
                             <input
                               className="inputddidjdj"
                               type="text"
-                              value={employee.bankAccountNumber || ""}
+                              value={employee.bankBranch || ""}
                               onChange={(e) =>
                                 setEmployee((prev) => ({
                                   ...prev,
-                                  bankAccountNumber: e.target.value,
+                                  bankBranch: e.target.value,
                                 }))
                               }
                             />
@@ -440,11 +451,11 @@ export default function EditEmployee() {
                               <input
                                 className="inputddidjdj"
                                 type="text"
-                                value={employee.bankAccountNumber || ""}
+                                value={employee.bankName || ""}
                                 onChange={(e) =>
                                   setEmployee((prev) => ({
                                     ...prev,
-                                    bankAccountNumber: e.target.value,
+                                    bankName: e.target.value,
                                   }))
                                 }
                               />
