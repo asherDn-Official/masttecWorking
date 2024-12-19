@@ -30,6 +30,7 @@ export default function AddEmployee() {
           ...prev,
           [additionalText]: response.data.url,
         }));
+        console.log("url : ", response.data.url);
         alert("File uploaded successfully");
       } else {
         console.error("No URL returned from backend.");
