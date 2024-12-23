@@ -91,9 +91,13 @@ exports.getHolidays = async (req, res) => {
         .json({ message: `No holiday data found for the year ${year}` });
     }
 
+    const formattedHolidays = holidayData.holidayList.map(
+      (date) => new Date(date).toISOString().split("T")[0] // Format the dates to remove time component
+    );
+
     res.status(200).json({
       message: `Holiday data for the year ${year} retrieved successfully.`,
-      holidays: holidayData.holidayList,
+      holidays: formattedHolidays,
     });
   } catch (error) {
     console.error("Error retrieving holiday data:", error);
