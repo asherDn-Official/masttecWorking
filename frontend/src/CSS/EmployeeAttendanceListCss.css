@@ -6,8 +6,40 @@ body {
   background-color: #e3e3e3;
 }
 
+.table-header{
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.conform-button{
+  background-color: #17215e;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 1px 25px;
+  cursor: pointer;
+  height: 60px;
+}
+
+.conform-button:hover{
+  background-color: #2f3b88;
+}
+
+.delete-button{
+  color: red;
+  /* background-color: #fff; */
+  outline: none;
+  border-style: none;
+  border-radius: 50%;
+  padding: 0.5px;
+}
+
+
 .lppooosososso11 {
-  height: 100vh;
+  /* height: 100vh; */
   overflow: scroll;
   scrollbar-width: none;
 }
@@ -110,13 +142,14 @@ body {
   text-align: center;
 }
 .secondtoprow {
-  width: 1170px;
+  /* width: 1170px; */
   height: auto;
   background-color: #f5f5f5;
   border-radius: 5px;
   color: #080f33;
   margin-top: 1.5px;
   padding-bottom: 12px;
+  background-color: #fff;
 }
 .allheads1 {
   color: #080f33;
@@ -233,6 +266,14 @@ body {
   font-weight: 400;
   width: 150px;
 }
+
+.toprowclassName12{
+   min-width: 800px;
+   margin: 15px auto;
+   background-color: #fff;
+   padding: 20px;
+}
+
 .secondtoprowhe {
   width: 100%;
   height: auto;
@@ -438,4 +479,38 @@ body {
     height: auto; /* Allow content to adjust to width */
     margin-top: 20px;
   }
+}
+
+
+/* Holiday page  */
+
+.calender-container{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 50px;
+  flex-direction: column;
+}
+
+.recent-updates{
+  background-color: red;
+  height: 600px;
+}
+
+.calender{
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.latest-delete-btn{
+  color: #edbebe;
+  cursor: pointer;
+  margin-top: 4PX;
+  /* background-color: red; */
+}
+.latest-delete-btn:hover{
+  color: #e05050;
 }
