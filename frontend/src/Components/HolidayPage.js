@@ -27,9 +27,12 @@ export default function ResponsiveDatePickers() {
 
   // get meathod
   async function getrecentUpdates() {
+
+    const year =new Date().getFullYear();
+    
     try {
       const response = await axios.get(
-        `http://localhost:4000/v1/api/holiday/2024`
+        `http://localhost:4000/v1/api/holiday/${year}`
       );
       setRecentUpdates(response.data.holidays);
     } catch (error) {
