@@ -18,6 +18,7 @@ import {
   TableRow,
   Tooltip,
 } from "@mui/material";
+import { toast } from "react-toastify";
 
 export default function ResponsiveDatePickers() {
   const [selectDay, setSelectDay] = useState([]);
@@ -74,16 +75,25 @@ export default function ResponsiveDatePickers() {
         dayjs(date, "DD-MM-YYYY").format("YYYY-MM-DD")
       );
 
-      const response = await axios.post(
-        `http://localhost:4000/v1/api/holiday`,
-        {
-          holidayList: formattedDates,
-        }
-      );
-      // handle conform data console
-      // console.log("date posted succesfully", response.data);
+      try {
+        const response = await axios.post(
+          `http://localhost:4000/v1/api/holiday`,
+          {
+            holidayList: formattedDates,
+          }
+        );
 
-      setSelectDay([]);
+        setSelectDay([]);
+        console.log("conformed");
+
+        toast.success("Added SuccessFully !", {
+          position: "top-right",
+        });
+      } catch (error) {
+        toast.error("Previous date can't be confirmed!", {
+          position: "top-right",
+        });
+      }
 
       // GET THE ALL THE DATA Approved Holiday List
       getrecentUpdates();
@@ -108,8 +118,14 @@ export default function ResponsiveDatePickers() {
       );
 
       console.log(response.data);
+
+      toast.warning("Deleted SuccessFully !", {
+        position: "top-right",
+      });
     } catch (error) {
-      console.log(error);
+      toast.error("Previous date you can't be deleted!", {
+        position: "top-right",
+      });
     }
 
     // GET THE ALL THE DATA
