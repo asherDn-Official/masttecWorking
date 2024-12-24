@@ -5,7 +5,7 @@ const Attendance = require("../Models/AttendanceModel");
 exports.updateHolidays = async (req, res) => {
   const { holidayList } = req.body;
   try {
-    console.log("Received request:", req.body);
+    //console.log("Received request:", req.body);
 
     const today = new Date(); // Get today's date
     const validDates = holidayList.filter((date) => new Date(date) >= today); // Filter out past dates
@@ -25,7 +25,7 @@ exports.updateHolidays = async (req, res) => {
         { $addToSet: { holidayList: date } }, // Ensure no duplicate dates
         { upsert: true, new: true }
       );
-      console.log("Holiday updated for year:", year, "Date:", date);
+      //console.log("Holiday updated for year:", year, "Date:", date);
 
       // Fetch all employees
       const employees = await Employee.find();
@@ -41,9 +41,9 @@ exports.updateHolidays = async (req, res) => {
             { employeeId: employee._id, "records.date": date },
             { $set: { "records.$.status": "Holiday" } }
           );
-          console.log(
-            `Updated attendance for employee ${employee.employeeId} on ${date}`
-          );
+          // console.log(
+          //   `Updated attendance for employee ${employee.employeeId} on ${date}`
+          // );
         } else {
           // Create new attendance record
           await Attendance.updateOne(
@@ -58,9 +58,9 @@ exports.updateHolidays = async (req, res) => {
             },
             { upsert: true }
           );
-          console.log(
-            `Created attendance for employee ${employee._id} on ${date}`
-          );
+          // console.log(
+          //   `Created attendance for employee ${employee._id} on ${date}`
+          // );
         }
       }
     }
@@ -78,13 +78,13 @@ exports.updateHolidays = async (req, res) => {
 exports.getHolidays = async (req, res) => {
   try {
     const { year } = req.params;
-    console.log(year);
+    //console.log(year);
     if (!year) {
       return res.status(400).json({ message: "Year is required" });
     }
 
     const holidayData = await Holiday.findOne({ year });
-    console.log(holidayData);
+    //console.log(holidayData);
     if (!holidayData) {
       return res
         .status(404)
@@ -111,7 +111,7 @@ exports.deleteHoliday = async (req, res) => {
   const { date } = req.body; // only one date in the request body
 
   try {
-    console.log("Received request to delete holiday:", req.body);
+    //console.log("Received request to delete holiday:", req.body);
 
     const today = new Date();
     const holidayDate = new Date(date);
@@ -138,7 +138,7 @@ exports.deleteHoliday = async (req, res) => {
         .json({ message: "Holiday not found for the given year." });
     }
 
-    console.log("Holiday removed for year:", year, "Date:", date);
+    //console.log("Holiday removed for year:", year, "Date:", date);
 
     // Fetch all employees
     const employees = await Employee.find();
@@ -156,9 +156,9 @@ exports.deleteHoliday = async (req, res) => {
           { employeeId: employee._id, "records.date": date },
           { $set: { "records.$.status": "Absent" } }
         );
-        console.log(
-          `Updated attendance to Absent for employee ${employee.employeeId} on ${date}`
-        );
+        // console.log(
+        //   `Updated attendance to Absent for employee ${employee.employeeId} on ${date}`
+        // );
       }
     }
 
