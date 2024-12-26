@@ -38,7 +38,7 @@ exports.updateHolidays = async (req, res) => {
         if (attendance) {
           // Update existing record
           await Attendance.updateOne(
-            { employeeId: employee._id, "records.date": date },
+            { employeeId: employee.employeeId, "records.date": date },
             { $set: { "records.$.status": "Holiday" } }
           );
           // console.log(
@@ -47,7 +47,7 @@ exports.updateHolidays = async (req, res) => {
         } else {
           // Create new attendance record
           await Attendance.updateOne(
-            { employeeId: employee._id },
+            { employeeId: employee.employeeId },
             {
               $push: {
                 records: {
@@ -59,7 +59,7 @@ exports.updateHolidays = async (req, res) => {
             { upsert: true }
           );
           // console.log(
-          //   `Created attendance for employee ${employee._id} on ${date}`
+          //   `Created attendance for employee ${employee.employeeId} on ${date}`
           // );
         }
       }
@@ -153,7 +153,7 @@ exports.deleteHoliday = async (req, res) => {
       if (attendance) {
         // Update the record status to "Absent"
         await Attendance.updateOne(
-          { employeeId: employee._id, "records.date": date },
+          { employeeId: employee.employeeId, "records.date": date },
           { $set: { "records.$.status": "Absent" } }
         );
         // console.log(

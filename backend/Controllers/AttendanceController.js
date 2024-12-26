@@ -214,19 +214,18 @@ exports.attendanceSummary = async (req, res) => {
   try {
     // Parse the provided date into a Date object
     const queryDate = new Date(date); // The 'date' sent should be in a format that can be parsed into a Date object.
-    //console.log("Received Date:", date);
+    console.log("Received Date:", date);
 
     // Normalize the queryDate to remove time (i.e., set it to midnight) in local timezone
     queryDate.setHours(0, 0, 0, 0); // Set the time to midnight for comparison
     //console.log("Normalized Query Date:", queryDate);
 
     // If a shift is provided, combine the date with the shift time to form a complete Date object
+    const [shiftHour, shiftMinute] = shift.split(":");
     if (shift) {
-      const [shiftHour, shiftMinute] = shift.split(":");
-
       // Adjust the queryDate with the provided shift time
       queryDate.setHours(shiftHour, shiftMinute, 0, 0); // Set the time of the queryDate with shift hours and minutes
-      console.log("Shift adjusted Query Date:", queryDate);
+      //console.log("Shift adjusted Query Date:", queryDate);
     }
 
     // Fetch all attendance data from the database (for all employees)
@@ -253,47 +252,54 @@ exports.attendanceSummary = async (req, res) => {
         // Normalize record date to midnight for comparison (ignore time)
         const recordDate = new Date(record.date);
         //recordDate.setHours(0, 0, 0, 0); // Set record date to midnight
-        // console.log("recordDate : ", recordDate.getHours());
-        // console.log("queryDate : ", queryDate.getHours());
+        // console.log("recordDate : ", record.punchIn.getUTCHours());
+        // console.log("shiftHour", shiftHour);
+        //console.log("queryDate : ", queryDate.getDate());
         // Only consider records where the date matches the queryDate (ignoring time)
 
-        if (recordDate.getDate() === queryDate.getDate()) {
-          if (recordDate.getHours() === queryDate.getHours()) {
-            total++;
-            switch (record.status) {
-              case "Present":
-                present++;
-                break;
-              case "Absent":
-                absent++;
-                break;
-              case "Late":
-                late++;
-                break;
-              case "Sunday":
-                sunday++;
-                break;
-              case "Paid Leave":
-                paidLeave++;
-                break;
-              case "Unpaid Leave":
-                unPaidLeave++;
-                break;
-              case "Holiday":
-                holiday++;
-                break;
-              case "C-Off":
-                cOff++;
-                break;
-              case "Week-Off":
-                weekOff++;
-                break;
-              default:
-                if (record.status.includes("Leave")) {
-                  leave++;
-                }
-                break;
-            }
+        if (
+          recordDate.getDate() === queryDate.getDate()
+          //&&
+          //record.date.getUTCHours() === shiftHour
+        ) {
+          total++;
+          // console.log("recordDate : ", recordDate.getDate());
+          // console.log("queryDate : ", queryDate.getDate());
+          console.log("record : ", record);
+          // console.log(record.status); // For debugging purposes
+          switch (record.status) {
+            case "Present":
+              present++;
+              break;
+            case "Absent":
+              absent++;
+              break;
+            case "Late":
+              late++;
+              break;
+            case "Sunday":
+              sunday++;
+              break;
+            case "Paid Leave":
+              paidLeave++;
+              break;
+            case "Unpaid Leave":
+              unPaidLeave++;
+              break;
+            case "Holiday":
+              holiday++;
+              break;
+            case "C-Off":
+              cOff++;
+              break;
+            case "Week-Off":
+              weekOff++;
+              break;
+            default:
+              if (record.status.includes("Leave")) {
+                leave++;
+              }
+              break;
           }
         }
       });

@@ -47,7 +47,7 @@ const storage = multer.diskStorage({
   },
   filename: async (req, file, cb) => {
     const { employeeId, additionalText } = req.body;
-    console.log("Inside multer filename function:", employeeId, additionalText);
+    //console.log("Inside multer filename function:", employeeId, additionalText);
 
     const fileBaseName = `${employeeId}-${additionalText}`;
     const fileExtension = path.extname(file.originalname);
@@ -83,8 +83,8 @@ const upload = multer({ storage }).fields([
 
 // Route to handle file upload
 app.post("/v1/api/upload", upload, (req, res) => {
-  console.log("Request body:", req.body); // Now you should see the form data here
-  console.log("Request files:", req.files); // Files are in req.files
+  // console.log("Request body:", req.body); // Now you should see the form data here
+  // console.log("Request files:", req.files); // Files are in req.files
 
   if (!req.files.file) {
     return res.status(400).send("No file uploaded.");

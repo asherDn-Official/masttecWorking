@@ -403,8 +403,8 @@ export default function EmployeeAttendanceList() {
                               </span>
                             )}
                           </div>
-                          <div className="allheadsdate">
-                            {editingFeedbackIndex === index ? (
+                          {editingFeedbackIndex === index ? (
+                            <div className="allheadsdate">
                               <input
                                 type="text"
                                 className="feedback-input"
@@ -415,15 +415,17 @@ export default function EmployeeAttendanceList() {
                                 onBlur={() => setEditingFeedbackIndex(null)} // Close input on blur
                                 autoFocus
                               />
-                            ) : (
+                            </div>
+                          ) : (
+                            <div className="allheadsdate">
                               <span
                                 onClick={() => setEditingFeedbackIndex(index)}
                                 style={{ cursor: "pointer" }}
                               >
                                 {employee.attendance?.note || "-"}
                               </span>
-                            )}
-                          </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))}

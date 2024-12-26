@@ -4,6 +4,7 @@ import url from "./global";
 import ErrorPopup from "./errorPopup";
 import { useNavigate, useParams } from "react-router-dom";
 import "../CSS/AddEmployeeCss.css";
+import EmployeeData from "./4.EmployeeData";
 
 export default function DraftEmployee() {
   const [employee, setEmployee] = useState({});
@@ -11,7 +12,7 @@ export default function DraftEmployee() {
   const { id: empID } = useParams();
   const [error, setError] = useState("");
   const [errorMessage, setErrorMessage] = useState(false);
-  console.log(empID);
+  //console.log(empID);
   const fetchEmployees = async () => {
     try {
       const response = await axios.get(`${url}/v1/api/tempEmployee/${empID}`);
@@ -121,7 +122,7 @@ export default function DraftEmployee() {
       try {
         // Send updated employee data to the backend
         const response = await axios.post(`${url}/v1/api/employees`, employee);
-        console.log(response.data);
+        //console.log(response.data);
         setEmployee(response.data); // Update the state with the updated employee data
         alert("Employee data submitted successfully");
         Navigate("/");
@@ -134,20 +135,21 @@ export default function DraftEmployee() {
         "Some fields are not filled. Do you want to save as draft?"
       );
       if (confirmSave) {
-        const response = await axios.post(
-          `${url}/v1/api/tempEmployee`,
-          employee
-        );
-        console.log(response.data);
+        const response = await axios.post(`${url}/v1/api/tempEmployee`, {
+          employeeId: empID,
+          EmployeeData: employee, // Changed to match the function
+        });
+
+        //console.log(response.data);
         // Logic to save the employee as a draft
-        console.log("Employee saved as draft:", employee);
+        //console.log("Employee saved as draft:", employee);
         alert("Employee saved as draft.");
         Navigate("/");
       }
     }
   };
 
-  console.log(employee);
+  //console.log(employee);
   return (
     <div className="maigdfffff">
       <div>

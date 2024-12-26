@@ -12,7 +12,7 @@ export default function EmployeeData() {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const [shiftTime, setShiftTime] = useState("19:00");
+  const [shiftTime, setShiftTime] = useState("7:00");
   const [summary, setSummary] = useState(null);
 
   const shiftOptions = ["7:00", "9:00", "15:00", "19:00"];
@@ -48,7 +48,7 @@ export default function EmployeeData() {
       const data = response.data;
 
       setSummary(data); // You can now use the data as needed
-      console.log(summary);
+      console.log("Summary", summary);
     } catch (error) {
       console.error("Error fetching attendance summary:", error);
       alert("There was an error fetching the attendance data.");
@@ -80,8 +80,8 @@ export default function EmployeeData() {
     return `${days} days ago`;
   };
 
-  console.log(tempEmpData);
-  console.log(attendanceData);
+  //console.log(tempEmpData);
+  //console.log(attendanceData);
   return (
     <div>
       <div>
@@ -95,7 +95,7 @@ export default function EmployeeData() {
               />
 
               <div>
-                <div className="msj3434jj785786">Hello, Sugumaran</div>
+                <div className="msj3434jj785786">Hello, Accounts Manager</div>
                 <div className="nfi4j5j45">Accounts Department</div>
               </div>
             </div>
@@ -170,7 +170,7 @@ export default function EmployeeData() {
                       <div className="jdhnfdjfnfnzz">
                         <img src="./images/TaskCheckIn.png" alt="" />
                         <div className="nkskkksks">
-                          Employee Onboard Process in Draft.
+                          {employee.employeeName} Onboarding Process in Draft.
                           <span className="kksuruur">
                             {employee.updatedAt && timeAgo(employee.updatedAt)}
                           </span>

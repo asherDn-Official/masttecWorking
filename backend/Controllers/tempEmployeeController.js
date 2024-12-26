@@ -2,17 +2,16 @@ const TempEmployee = require("../Models/tempEmployeeModel");
 
 // Controller to check and update or create a new record
 exports.upsertTempEmployee = async (req, res) => {
-  const { employeeId, ...employeeData } = req.body;
+  const { employeeId, EmployeeData } = req.body; // Match the key from the API call
 
   try {
     // Check if the employee already exists using employeeId
     const existingEmployee = await TempEmployee.findOne({ employeeId });
 
     if (existingEmployee) {
-      // Update existing record
       const updatedEmployee = await TempEmployee.findOneAndUpdate(
         { employeeId },
-        { $set: employeeData },
+        { $set: EmployeeData }, // Use EmployeeData here
         { new: true }
       );
       return res.status(200).json({
@@ -20,8 +19,7 @@ exports.upsertTempEmployee = async (req, res) => {
         data: updatedEmployee,
       });
     } else {
-      // Create a new record
-      const newEmployee = new TempEmployee({ employeeId, ...employeeData });
+      const newEmployee = new TempEmployee({ employeeId, ...EmployeeData }); // Use EmployeeData here
       await newEmployee.save();
       return res.status(201).json({
         message: "New employee record created successfully",

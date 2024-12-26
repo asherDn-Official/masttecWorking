@@ -40,8 +40,8 @@ export default function EmployeeList() {
       setTempEmpData(empData);
     } catch (error) {
       console.error("Error fetching employee data:", error);
-      setError("Error fetching employee data.");
-      setTimeout(() => setError(""), 5000);
+      //setError("Error fetching employee data.");
+      //setTimeout(() => setError(""), 5000);
     }
   };
   useEffect(() => {
@@ -87,46 +87,52 @@ export default function EmployeeList() {
               </button>
             </div> */}
             <div className="employeesectionflexdidd">
-              {employees.map((emp) => (
-                <div
-                  key={emp.empID}
-                  className="maincardoftheenpluee"
-                  onClick={() => navigateToEdit(emp.empID)}
-                >
-                  <div>
-                    <img
-                      className="empliyetegehpiccbd"
-                      src={`http://localhost:4000${emp.empImg}`}
-                      alt={emp.empName || "Employee"}
-                    />
+              {employees &&
+                employees.map((emp) => (
+                  <div
+                    key={emp.empID}
+                    className="maincardoftheenpluee"
+                    onClick={() => navigateToEdit(emp.empID)}
+                  >
+                    <div>
+                      <img
+                        className="empliyetegehpiccbd"
+                        src={`http://localhost:4000${emp.empImg}`}
+                        alt={emp.empName || "Employee"}
+                      />
+                    </div>
+                    <div className="employeename122">{emp.empName}</div>
+                    <div className="employedddworktype11">
+                      {emp.empDesignation}
+                    </div>
+                    <div className="employedidNumberr">
+                      Emp ID - {emp.empID}
+                    </div>
                   </div>
-                  <div className="employeename122">{emp.empName}</div>
-                  <div className="employedddworktype11">
-                    {emp.empDesignation}
+                ))}
+              {tempEmpData &&
+                tempEmpData.map((emp) => (
+                  <div
+                    key={emp.empID}
+                    className="maincardoftheenplueess"
+                    onClick={() => navigateToDraft(emp.empID)}
+                  >
+                    <div>
+                      <img
+                        className="empliyetegehpiccbd"
+                        src={`http://localhost:4000${emp.empImg}`}
+                        alt={emp.empName || "Employee"}
+                      />
+                    </div>
+                    <div className="employeename122">{emp.empName}</div>
+                    <div className="employedddworktype11">
+                      {emp.empDesignation}
+                    </div>
+                    <div className="employedidNumberr">
+                      Emp ID - {emp.empID}
+                    </div>
                   </div>
-                  <div className="employedidNumberr">Emp ID - {emp.empID}</div>
-                </div>
-              ))}
-              {tempEmpData.map((emp) => (
-                <div
-                  key={emp.empID}
-                  className="maincardoftheenplueess"
-                  onClick={() => navigateToDraft(emp.empID)}
-                >
-                  <div>
-                    <img
-                      className="empliyetegehpiccbd"
-                      src={`http://localhost:4000${emp.empImg}`}
-                      alt={emp.empName || "Employee"}
-                    />
-                  </div>
-                  <div className="employeename122">{emp.empName}</div>
-                  <div className="employedddworktype11">
-                    {emp.empDesignation}
-                  </div>
-                  <div className="employedidNumberr">Emp ID - {emp.empID}</div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </div>
