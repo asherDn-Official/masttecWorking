@@ -324,9 +324,8 @@ export default function EmployeeAttendanceList() {
                                     hour12: true,
                                   })
                                 : new Date(
-                                    new Date(
-                                      employee.attendance.punchIn
-                                    ).getTime()
+                                    new Date(employee.attendance.punchIn)
+                                    //.getTime()
                                     // +
                                     //   5.5 * 60 * 60 * 1000
                                   ).toLocaleTimeString("en-IN", {
