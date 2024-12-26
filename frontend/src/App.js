@@ -12,13 +12,13 @@ import PayrollPage from "./Components/7.Payroll";
 import MasttecNav from "./Components/Navbar";
 import HolidayPage from "./Components/HolidayPage";
 
-function App() {
-  const location = useLocation(); // Get the current location
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+
+function App() {
   return (
     <div className="App">
-      {/* Show the navbar only if the current path is not "/" */}
-      {/* {location.pathname !== "/" && <MasttecNav />} */}
       <MasttecNav />
       <Routes>
         <Route path="/add-employee-details" element={<AddEmployee />} />
@@ -38,8 +38,11 @@ function App() {
         />
         <Route path="/payRun" element={<PayrollPage />} />
         <Route path="/holiday" element={<HolidayPage />} />
-
       </Routes>
+
+
+      <ToastContainer />
+
     </div>
   );
 }
