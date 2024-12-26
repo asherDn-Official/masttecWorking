@@ -317,7 +317,7 @@ export default function EmployeeAttendanceList() {
                             {employee.attendance?.punchIn
                               ? showActualPunchIn
                                 ? new Date(
-                                    employee.attendance.punchIn
+                                    employee.attendance.recordedPunchIn
                                   ).toLocaleTimeString("en-IN", {
                                     hour: "2-digit",
                                     minute: "2-digit",
@@ -326,8 +326,9 @@ export default function EmployeeAttendanceList() {
                                 : new Date(
                                     new Date(
                                       employee.attendance.punchIn
-                                    ).getTime() +
-                                      5.5 * 60 * 60 * 1000
+                                    ).getTime()
+                                    // +
+                                    //   5.5 * 60 * 60 * 1000
                                   ).toLocaleTimeString("en-IN", {
                                     hour: "2-digit",
                                     minute: "2-digit",
