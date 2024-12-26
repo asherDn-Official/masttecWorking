@@ -366,10 +366,7 @@ export default function EmployeeAttendanceList() {
                               >
                                 {employee.attendance?.punchOut
                                   ? new Date(
-                                      new Date(
-                                        employee.attendance.punchOut
-                                      ).getTime() +
-                                        5.5 * 60 * 60 * 1000
+                                      new Date(employee.attendance.punchOut)
                                     ).toLocaleTimeString("en-IN", {
                                       hour: "2-digit",
                                       minute: "2-digit",
