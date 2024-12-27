@@ -5,6 +5,10 @@ import url from "./global";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import PieAnimation from "./Pichart";
+
+// profile picture
+import profile from '../assets/images/profile.png'
+
 export default function EmployeeData() {
   const [tempEmpData, setTempEmpData] = useState([]);
   const navigate = useNavigate();
@@ -49,7 +53,7 @@ export default function EmployeeData() {
       const data = response.data;
       setSummary(data); // You can now use the data as needed
 
-      console.log('summary',data);
+      console.log("summary", data);
     } catch (error) {
       console.error("Error fetching attendance summary:", error);
       alert("There was an error fetching the attendance data.");
@@ -91,7 +95,7 @@ export default function EmployeeData() {
             <div className="yrt454564565">
               <img
                 className="j46436646363"
-                src="./images/AccountSectionMainImAGE.png"
+                src={profile}
                 alt="accountsectionimage"
               />
 
@@ -195,9 +199,7 @@ export default function EmployeeData() {
                     </div>
                   ))}
               </div>
-
             </div>
-
 
             <div className="lsjkddkskdd">
               <div className="ieruy34u3u3">
@@ -214,7 +216,7 @@ export default function EmployeeData() {
                     />
                   </div>
                   <div>
-{/*                     
+                    {/*                     
                     <select
                       className="shiftoptiondeiv"
                       value={shiftTime}
@@ -229,7 +231,6 @@ export default function EmployeeData() {
                         </option>
                       ))}
                     </select> */}
-
                   </div>
                 </div>
               </div>
@@ -249,7 +250,7 @@ export default function EmployeeData() {
                     <p>Week Off: {summary.weekOff}</p>
                   </div> */}
                   <div>
-                    <PieAnimation  data={summary} />
+                    <PieAnimation data={summary} />
                   </div>
                 </div>
               )}
