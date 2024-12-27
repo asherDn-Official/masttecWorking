@@ -4,6 +4,7 @@ import { formatDistanceToNow } from "date-fns";
 import url from "./global";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import PieAnimation from "./Pichart";
 export default function EmployeeData() {
   const [tempEmpData, setTempEmpData] = useState([]);
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ export default function EmployeeData() {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const [shiftTime, setShiftTime] = useState("7:00");
+  const [shiftTime, setShiftTime] = useState("19:00");
   const [summary, setSummary] = useState(null);
 
   const shiftOptions = ["7:00", "9:00", "15:00", "19:00"];
@@ -46,9 +47,9 @@ export default function EmployeeData() {
 
       // Now we access the data directly from the response object, no need to call .json()
       const data = response.data;
-
       setSummary(data); // You can now use the data as needed
-      console.log("Summary", summary);
+
+      console.log('summary',data);
     } catch (error) {
       console.error("Error fetching attendance summary:", error);
       alert("There was an error fetching the attendance data.");
@@ -80,8 +81,8 @@ export default function EmployeeData() {
     return `${days} days ago`;
   };
 
-  //console.log(tempEmpData);
-  //console.log(attendanceData);
+  console.log(tempEmpData);
+  console.log(attendanceData);
   return (
     <div>
       <div>
@@ -95,12 +96,13 @@ export default function EmployeeData() {
               />
 
               <div>
-                <div className="msj3434jj785786">Hello, Accounts Manager</div>
+                <div className="msj3434jj785786">Hello, Sugumaran</div>
                 <div className="nfi4j5j45">Accounts Department</div>
               </div>
             </div>
             <div>
-              <svg
+              {/* bell icones */}
+              {/* <svg
                 width="36"
                 height="36"
                 viewBox="0 0 36 36"
@@ -139,7 +141,7 @@ export default function EmployeeData() {
                     <rect width="36" height="36" fill="white" />
                   </clipPath>
                 </defs>
-              </svg>
+              </svg> */}
             </div>
           </div>
         </div>
@@ -150,12 +152,12 @@ export default function EmployeeData() {
               <div className="jjjj3j34j4j34j4j">
                 <div className="taskh7584554">Task</div>
                 <div>
-                  <select name="" id="" className="dropdowndetsi2323">
+                  {/* <select name="" id="" className="dropdowndetsi2323">
                     <option value="">All</option>
                     <option value="">Onboard</option>
                     <option value="">Offboard</option>
                     <option value="">On board</option>
-                  </select>
+                  </select> */}
                 </div>
               </div>
 
@@ -170,7 +172,7 @@ export default function EmployeeData() {
                       <div className="jdhnfdjfnfnzz">
                         <img src="./images/TaskCheckIn.png" alt="" />
                         <div className="nkskkksks">
-                          {employee.employeeName} Onboarding Process in Draft.
+                          Employee Onboard Process in Draft.
                           <span className="kksuruur">
                             {employee.updatedAt && timeAgo(employee.updatedAt)}
                           </span>
@@ -193,7 +195,10 @@ export default function EmployeeData() {
                     </div>
                   ))}
               </div>
+
             </div>
+
+
             <div className="lsjkddkskdd">
               <div className="ieruy34u3u3">
                 <div className="nncncnnccc">Attendance</div>
@@ -209,6 +214,7 @@ export default function EmployeeData() {
                     />
                   </div>
                   <div>
+{/*                     
                     <select
                       className="shiftoptiondeiv"
                       value={shiftTime}
@@ -222,23 +228,29 @@ export default function EmployeeData() {
                           {shift}
                         </option>
                       ))}
-                    </select>
+                    </select> */}
+
                   </div>
                 </div>
               </div>
               {summary && (
-                <div>
-                  <p>Total: {summary.total}</p>
-                  <p>Present: {summary.present}</p>
-                  <p>Leave: {summary.leave}</p>
-                  <p>Absent: {summary.absent}</p>
-                  <p>Late: {summary.late}</p>
-                  <p>Sunday: {summary.sunday}</p>
-                  <p>Paid Leave: {summary.paidLeave}</p>
-                  <p>Unpaid Leave: {summary.unPaidLeave}</p>
-                  <p>Holiday: {summary.holiday}</p>
-                  <p>C-Off: {summary.cOff}</p>
-                  <p>Week Off: {summary.weekOff}</p>
+                <div className=" summary-container ">
+                  {/* <div className="">
+                    <p>Total: {summary.total}</p>
+                    <p>Present: {summary.present}</p>
+                    <p>Leave: {summary.leave}</p>
+                    <p>Absent: {summary.absent}</p>
+                    <p>Late: {summary.late}</p>
+                    <p>Sunday: {summary.sunday}</p>
+                    <p>Paid Leave: {summary.paidLeave}</p>
+                    <p>Unpaid Leave: {summary.unPaidLeave}</p>
+                    <p>Holiday: {summary.holiday}</p>
+                    <p>C-Off: {summary.cOff}</p>
+                    <p>Week Off: {summary.weekOff}</p>
+                  </div> */}
+                  <div>
+                    <PieAnimation  data={summary} />
+                  </div>
                 </div>
               )}
             </div>
@@ -302,18 +314,19 @@ export default function EmployeeData() {
                 </div>
               </div>
             </div>
+
             <div className="jjdjdjdjdjdjnfnfnfn">
-              <div>
+              {/* <div>
                 <select className="weweeshiftoptiondeiv" name="" id="">
                   <option value="">Last Pay Run</option>
                   <option value="">Last Pay Run dd</option>
                 </select>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
 
-        <div>
+        {/* <div>
           <div>
             <div className="opoopopppp">
               <div className="iieyueyyrryryr">
@@ -334,7 +347,7 @@ export default function EmployeeData() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
