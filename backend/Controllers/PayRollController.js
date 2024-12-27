@@ -186,9 +186,8 @@ exports.createPayroll = async (req, res) => {
 
       .info-item {
         display: grid;
-        grid-template-columns: 150px 1fr;
-        gap: 5px;
-        color: #1b2356;
+        grid-template-columns: 150px 1fr; 
+        color: #1b2356; 
       }
 
       h3 {
@@ -276,43 +275,43 @@ exports.createPayroll = async (req, res) => {
           <div class="row g-3">
             <!-- Left Column -->
             <div class="col-md-6 col-12">
-              <div class="info-item lft">
+              <div class="lft"  style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;">
                 <span>Name</span>
                 <p>: Kuppan</p>
               </div>
-              <div class="info-item lft">
+              <div class=" lft" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
                 <span>Designation</span>
                 <p>: Fitter</p>
               </div>
-              <div class="info-item lft">
+              <div class=" lft" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
                 <span>Department</span>
                 <p>: Production</p>
               </div>
-              <div class="info-item lft">
+              <div class=" lft"  style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
                 <span>Date of Joining</span>
                 <p>: 17.06.2019</p>
               </div>
-              <div class="info-item lft">
+              <div class=" lft" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
                 <span>Increment on Salary</span>
                 <p>: N/A</p>
               </div>
-              <div class="info-item lft">
+              <div class=" lft" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
                 <span>Payable Days</span>
                 <p>: 28</p>
               </div>
-              <div class="info-item lft">
+              <div class=" lft" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
                 <span>Per Day Salary</span>
                 <p>: 484</p>
               </div>
-              <div class="info-item lft">
+              <div class=" lft"  style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;">
                 <span>1 Hour Salary</span>
                 <p>: 60</p>
               </div>
-              <div class="info-item lft">
+              <div class=" lft"  style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;">
                 <span>Leave/Absent</span>
                 <p>: 2</p>
               </div>
-              <div class="info-item lft">
+              <div class=" lft"  style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;">
                 <span>Mobile Number</span>
                 <p>: 9551207526</p>
               </div>
@@ -320,39 +319,39 @@ exports.createPayroll = async (req, res) => {
 
             <!-- Right Column -->
             <div class="col-md-6 col-12">
-              <div class="info-item">
+              <div class="" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
                 <span>Aadhaar No.</span>
                 <p>: 3193 0742 0162</p>
               </div>
-              <div class="info-item">
+              <div class="" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
                 <span>Bank A/c No.</span>
                 <p>: 296801000002313</p>
               </div>
-              <div class="info-item">
+              <div class="" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;">
                 <span>Bank & Branch</span>
                 <p>: IOB / KATTUPAKKAM</p>
               </div>
-              <div class="info-item">
+              <div class="" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
                 <span>IFSC Code</span>
                 <p>: IOBA0002968</p>
               </div>
-              <div class="info-item">
+              <div class="" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
                 <span>EPF Member ID</span>
                 <p>: TNAMB0069262000001064</p>
               </div>
-              <div class="info-item">
+              <div class="" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
                 <span>UAN No.</span>
                 <p>: 101113294505</p>
               </div>
-              <div class="info-item">
+              <div class=""  style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;">
                 <span>ESIC No.</span>
                 <p>: 5132396769</p>
               </div>
-              <div class="info-item">
+              <div class="" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
                 <span>PAN No.</span>
                 <p>: IJEPK9723H</p>
               </div>
-              <div class="info-item">
+              <div class="" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;">
                 <span>Employee ID</span>
                 <p>: 46</p>
               </div>
@@ -448,8 +447,7 @@ exports.createPayroll = async (req, res) => {
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
-</html>
-`
+    </html>`;
 
     // Generate PDF from HTML content
     await new Promise((resolve, reject) => {
