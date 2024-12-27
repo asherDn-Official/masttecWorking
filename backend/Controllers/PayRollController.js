@@ -176,7 +176,7 @@ exports.createPayroll = async (req, res) => {
         --SalaryH3: #17215e;
       }
       .lft {
-        border-right: 2px solid solid #1b2356;
+        border-right: 2px solid #1b2356;
       }
       .card-custom {
         border-radius: 8px;
@@ -255,19 +255,18 @@ exports.createPayroll = async (req, res) => {
   <body>
     <div class="container py-5">
       <!-- Logo Section -->
-      <header >
+      <header>
         <div class="text-center d-flex justify-content-between">
-          <div class="  text-start ">
+          <div class="text-start">
             <img src="./Assets/Logo.png" alt="Logo" class="img-fluid mb-3" style="max-width: 300px" />
-            <h6 class="text-blue" >NO: 18-A JEEVA NAGAR EXTN,DRR AVENUE,
-             <br>KATTUPAKKAM,CHENNAI-58</h6>
+            <h6 class="text-blue">NO: 18-A JEEVA NAGAR EXTN,DRR AVENUE,
+              <br>KATTUPAKKAM,CHENNAI-58</h6>
           </div>
-          <h4 class="text-uppercase  text-blue">PAY SLIP - October 2024</h4>
+          <h4 class="text-uppercase text-blue">PAY SLIP - October 2024</h4>
         </div>
       </header>
 
       <h4 class="my-3 text-center">Employee Details</h4>
-
 
       <!-- Employee Details -->
       <div class="container my-3">
@@ -275,43 +274,43 @@ exports.createPayroll = async (req, res) => {
           <div class="row g-3">
             <!-- Left Column -->
             <div class="col-md-6 col-12">
-              <div class="lft"  style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;">
+              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>Name</span>
                 <p>: Kuppan</p>
               </div>
-              <div class=" lft" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
+              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>Designation</span>
                 <p>: Fitter</p>
               </div>
-              <div class=" lft" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
+              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>Department</span>
                 <p>: Production</p>
               </div>
-              <div class=" lft"  style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
+              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>Date of Joining</span>
                 <p>: 17.06.2019</p>
               </div>
-              <div class=" lft" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
+              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>Increment on Salary</span>
                 <p>: N/A</p>
               </div>
-              <div class=" lft" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
+              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>Payable Days</span>
                 <p>: 28</p>
               </div>
-              <div class=" lft" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
+              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>Per Day Salary</span>
                 <p>: 484</p>
               </div>
-              <div class=" lft"  style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;">
+              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>1 Hour Salary</span>
                 <p>: 60</p>
               </div>
-              <div class=" lft"  style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;">
+              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>Leave/Absent</span>
                 <p>: 2</p>
               </div>
-              <div class=" lft"  style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;">
+              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>Mobile Number</span>
                 <p>: 9551207526</p>
               </div>
@@ -319,39 +318,39 @@ exports.createPayroll = async (req, res) => {
 
             <!-- Right Column -->
             <div class="col-md-6 col-12">
-              <div class="" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
+              <div style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>Aadhaar No.</span>
                 <p>: 3193 0742 0162</p>
               </div>
-              <div class="" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
+              <div style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>Bank A/c No.</span>
                 <p>: 296801000002313</p>
               </div>
-              <div class="" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;">
+              <div style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>Bank & Branch</span>
                 <p>: IOB / KATTUPAKKAM</p>
               </div>
-              <div class="" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
+              <div style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>IFSC Code</span>
                 <p>: IOBA0002968</p>
               </div>
-              <div class="" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
+              <div style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>EPF Member ID</span>
                 <p>: TNAMB0069262000001064</p>
               </div>
-              <div class="" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
+              <div style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>UAN No.</span>
                 <p>: 101113294505</p>
               </div>
-              <div class=""  style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;">
+              <div style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>ESIC No.</span>
                 <p>: 5132396769</p>
               </div>
-              <div class="" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;" >
+              <div style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>PAN No.</span>
                 <p>: IJEPK9723H</p>
               </div>
-              <div class="" style="display: grid;grid-template-columns:150px 1fr;color:#1b2356;">
+              <div style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
                 <span>Employee ID</span>
                 <p>: 46</p>
               </div>
@@ -440,14 +439,11 @@ exports.createPayroll = async (req, res) => {
           </tbody>
         </table>
       </div>
-      <!-- <h4 class="text-end h6 fw-bold pay-number">
-        PAY :
-        <span>Seventeen Thousand five hundred and fifty seven Rupees</span>
-      </h4> -->
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
-    </html>`;
+</html>
+`;
 
     // Generate PDF from HTML content
     await new Promise((resolve, reject) => {
