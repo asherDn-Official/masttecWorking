@@ -230,7 +230,7 @@ exports.createPayroll = async (req, res) => {
         }
         .info-item {
           /* grid-template-columns: 120px 1fr; */
-          background-color: red;
+          /* background-color: red; */
         }
       }
 
@@ -259,7 +259,7 @@ exports.createPayroll = async (req, res) => {
       <header >
         <div class="text-center d-flex justify-content-between">
           <div class="  text-start ">
-            <img src="./Logo.png" alt="Logo" class="img-fluid mb-3" style="max-width: 300px" />
+            <img src="./Assets/Logo.png" alt="Logo" class="img-fluid mb-3" style="max-width: 300px" />
             <h6 class="text-blue" >NO: 18-A JEEVA NAGAR EXTN,DRR AVENUE,
              <br>KATTUPAKKAM,CHENNAI-58</h6>
           </div>
@@ -449,7 +449,7 @@ exports.createPayroll = async (req, res) => {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
-`;
+`
 
     // Generate PDF from HTML content
     await new Promise((resolve, reject) => {
