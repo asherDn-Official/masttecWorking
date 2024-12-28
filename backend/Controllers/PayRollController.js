@@ -162,285 +162,255 @@ exports.createPayroll = async (req, res) => {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Responsive Pay Slip</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <title>Pay Slip - October 2024</title>
     <style>
-      :root {
-        --headingColor: #5769b2;
-        --textColor: #1b2356;
-        --white: #ffffff;
-        --EmployeebackGoundColor: #eeeff5;
-        --SalaryH3: #17215e;
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
       }
-      .lft {
-        border-right: 2px solid #1b2356;
+      .container {
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ccc;
       }
-      .card-custom {
-        border-radius: 8px;
-        padding: 15px 30px;
-        background-color: #eeeff5;
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
       }
-
-      .info-item {
-        display: grid;
-        grid-template-columns: 150px 1fr; 
-        color: #1b2356; 
-      }
-
-      h3 {
-        font-size: 40px;
-        font-weight: 600;
-        color: #5769b2;
-      }
-
-      h4 {
+      .header h1 {
+        margin: 0;
         font-size: 24px;
-        color: #1b2356;
+        color: #333;
       }
-
-      .SalaryH3 {
-        color: #17215e;
-        font-size: 36px;
-        font-weight: 600;
+      .header h2 {
+        margin: 5px 0 0;
+        font-size: 18px;
+        color: #666;
       }
-
-      .table-responsive {
-        overflow-x: auto;
+      .section {
+        margin-bottom: 20px;
       }
-
-      img {
+      .section h3 {
+        margin-bottom: 10px;
+        font-size: 18px;
+        color: #333;
+      }
+      table {
         width: 100%;
-        max-width: 300px;
-        height: auto;
+        border-collapse: collapse;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid #ddd;
+      }
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #eeeff5 ;
+      }
+      .total {
+        font-weight: bold;
+        background-color: #f9f9f9;
+      }
+      .footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+        color: #555;
+      }
+      .title {
+        text-align: center;
       }
 
-      @media (max-width: 768px) {
-        h3 {
-          font-size: 1.8rem;
-        }
-        h4 {
-          font-size: 1.4rem;
-        }
-        .card-custom {
-          padding: 15px;
-        }
-        .info-item {
-          /* grid-template-columns: 120px 1fr; */
-          /* background-color: red; */
-        }
+      .table-title {
+        background-color: #17215e;
+        color: #fff;
       }
-
-      .salary-head {
-        background-color: #17215e !important;
-        color: #ffffff !important;
-      }
-
-      .salary-offeset {
+      .bg-light{
         background-color: #eeeff5 !important;
-        font-weight: bold !important;
-        color: #17215e !important;
       }
 
-      .pay-number {
-        color: #17215e !important;
+
+      .logo{
+         display: flex;
+         flex-direction: column;
+         text-align: left;
       }
-      .text-blue {
-         color: #5769b2 !important;
-      }
+
     </style>
   </head>
   <body>
-    <div class="container py-5">
-      <!-- Logo Section -->
-      <header>
-        <div class="text-center d-flex justify-content-between">
-          <div class="text-start">
-            <img src="./Assets/Logo.png" alt="Logo" class="img-fluid mb-3" style="max-width: 300px" />
-            <h6 class="text-blue">NO: 18-A JEEVA NAGAR EXTN,DRR AVENUE,
-              <br>KATTUPAKKAM,CHENNAI-58</h6>
-          </div>
-          <h4 class="text-uppercase text-blue">PAY SLIP - October 2024</h4>
+    <div class="container">
+      <div class="header">
+        <div class="logo">
+          <h1>MASTEC MOULDS</h1>
+          <p>
+            No,18-A JEEVA NAGAR EXTN,DRR AVENUE,
+            <br> KATTUPAKKAM,CHENNAI-56
+          </p>
         </div>
-      </header>
-
-      <h4 class="my-3 text-center">Employee Details</h4>
-
-      <!-- Employee Details -->
-      <div class="container my-3">
-        <div class="card card-custom shadow">
-          <div class="row g-3">
-            <!-- Left Column -->
-            <div class="col-md-6 col-12">
-              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>Name</span>
-                <p>: Kuppan</p>
-              </div>
-              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>Designation</span>
-                <p>: Fitter</p>
-              </div>
-              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>Department</span>
-                <p>: Production</p>
-              </div>
-              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>Date of Joining</span>
-                <p>: 17.06.2019</p>
-              </div>
-              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>Increment on Salary</span>
-                <p>: N/A</p>
-              </div>
-              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>Payable Days</span>
-                <p>: 28</p>
-              </div>
-              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>Per Day Salary</span>
-                <p>: 484</p>
-              </div>
-              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>1 Hour Salary</span>
-                <p>: 60</p>
-              </div>
-              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>Leave/Absent</span>
-                <p>: 2</p>
-              </div>
-              <div class="lft" style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>Mobile Number</span>
-                <p>: 9551207526</p>
-              </div>
-            </div>
-
-            <!-- Right Column -->
-            <div class="col-md-6 col-12">
-              <div style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>Aadhaar No.</span>
-                <p>: 3193 0742 0162</p>
-              </div>
-              <div style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>Bank A/c No.</span>
-                <p>: 296801000002313</p>
-              </div>
-              <div style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>Bank & Branch</span>
-                <p>: IOB / KATTUPAKKAM</p>
-              </div>
-              <div style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>IFSC Code</span>
-                <p>: IOBA0002968</p>
-              </div>
-              <div style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>EPF Member ID</span>
-                <p>: TNAMB0069262000001064</p>
-              </div>
-              <div style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>UAN No.</span>
-                <p>: 101113294505</p>
-              </div>
-              <div style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>ESIC No.</span>
-                <p>: 5132396769</p>
-              </div>
-              <div style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>PAN No.</span>
-                <p>: IJEPK9723H</p>
-              </div>
-              <div style="display: grid; grid-template-columns:150px 1fr; color:#1b2356;">
-                <span>Employee ID</span>
-                <p>: 46</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <h2>Pay Slip - October 2024</h2>
+        <!-- <p>Pay Date: 24-11-2024</p> -->
       </div>
 
-      <!-- Salary Details Section -->
-      <div class="text-center mb-4">
-        <h3 class="SalaryH3">SALARY DETAILS</h3>
+      <div class="section">
+        <h3 class="title">Employee Details</h3>
+        <table>
+          <tr>
+            <th>Name</th>
+            <td>Kuppan</td>
+            <th>Aadhaar No.</th>
+            <td>3193 0742 0162</td>
+          </tr>
+          <tr>
+            <th>Designation</th>
+            <td>Fitter</td>
+            <th>Bank A/c No.</th>
+            <td>296801000002313</td>
+          </tr>
+          <tr>
+            <th>Department</th>
+            <td>Production</td>
+            <th>Bank & Branch</th>
+            <td>IOB / Kattupakkam</td>
+          </tr>
+          <tr>
+            <th>Date of Joining</th>
+            <td>17.06.2019</td>
+            <th>IFSC Code</th>
+            <td>IOBA0002968</td>
+          </tr>
+          <tr>
+            <th>Increment on Salary</th>
+            <td>N/A</td>
+            <th>EPF Member ID</th>
+            <td>TNAMB00692620000010064</td>
+          </tr>
+          <tr>
+            <th>Payable Days</th>
+            <td>28</td>
+            <th>UAN No.</th>
+            <td>10113294505</td>
+          </tr>
+
+          <tr>
+            <th>Per Day Salary</th>
+            <td>484</td>
+            <th>ESIC No</th>
+            <td>5132396769</td>
+          </tr>
+
+          <tr>
+            <th>1 Hour salary</th>
+            <td>60</td>
+            <th>PAN NO</th>
+            <td>IJEPK9723H</td>
+          </tr>
+
+          <tr>
+            <th>Leave/Absent</th>
+            <td>2</td>
+            <th>Emploement ID</th>
+            <td>46</td>
+          </tr>
+
+          <tr>
+            <th>Mobile number</th>
+            <td>9500123456</td>
+            <th></th>
+            <td></td>
+          </tr>
+        </table>
       </div>
 
-      <!-- Salary Table -->
-      <div class="table-responsive">
-        <table class="table text-center table-bordered rounded-5">
+      <div class="section">
+        <h3 class="title">Salary Details</h3>
+        <table>
           <thead>
             <tr>
-              <th class="salary-head">Employee’s</th>
-              <th class="salary-head">Earned</th>
-              <th class="salary-head">Deductions</th>
-              <th class="salary-head">Amount</th>
+              <th class="table-title">Employee's</th>
+              <th class="table-title">Earned</th>
+              <th class="table-title">Deductions</th>
+              <th class="table-title">Amount</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td class="salary-offeset">Basic</td>
+              <td  class=" bg-light ">Basic</td>
               <td>7500</td>
-              <td class="salary-offeset">Loss of Pay</td>
+              <td  class=" bg-light ">Loss of Pay</td>
               <td>968</td>
             </tr>
             <tr>
-              <td class="salary-offeset">Incentive</td>
+              <td  class=" bg-light " >Incentive</td>
               <td>0</td>
-              <td class="salary-offeset">EPF</td>
+              <td  class=" bg-light ">EPF</td>
               <td>900</td>
             </tr>
             <tr>
-              <td class="salary-offeset">Allowances</td>
+              <td  class=" bg-light ">Allowances</td>
               <td>1500</td>
-              <td class="salary-offeset">ESIC</td>
+              <td  class=" bg-light ">ESIC</td>
               <td>132</td>
             </tr>
             <tr>
-              <td class="salary-offeset">HRA</td>
+              <td  class=" bg-light ">HRA</td>
               <td>4000</td>
-              <td class="salary-offeset">Advance</td>
+              <td  class=" bg-light ">Advance</td>
               <td>3000</td>
             </tr>
             <tr>
-              <td class="salary-offeset">Others</td>
+              <td  class=" bg-light ">Others</td>
               <td>0</td>
-              <td class="salary-offeset">TDS Debit</td>
+              <td  class=" bg-light ">TDS Debits</td>
               <td>-</td>
             </tr>
             <tr>
-              <td class="salary-offeset">Bonus</td>
+              <td  class=" bg-light ">Bonus</td>
               <td>-</td>
-              <td class="salary-offeset">Other Debits</td>
+              <td  class=" bg-light ">Other Debits</td>
+              <td>-</td>
+            </tr>
+
+
+            <tr>
+              <td  class=" bg-light ">O.T @ 1.25</td>
+              <td>1210 (16)</td>
+              <td  class=" bg-light ">Production  Loss</td>
               <td>-</td>
             </tr>
             <tr>
-              <td class="salary-offeset">O.T @ 1.25</td>
-              <td>1210(16)</td>
-              <td class="salary-offeset">Production Loss</td>
-              <td></td>
+              <td  class=" bg-light ">O.T @ 1.75</td>
+              <td>847 (8)</td>
+              <td  class=" bg-light ">-</td>
+              <td>-</td>
             </tr>
-            <tr>
-              <td class="salary-offeset">O.T @ 1.75</td>
-              <td>847(8)</td>
-              <td class="salary-offeset"></td>
-              <td></td>
+            <tr class="total">
+              <td  class=" bg-light ">Salary Gross</td>
+              <td>20500</td>
+              <td>Total Deductions -B</td>
+              <td>4999</td>
             </tr>
-            <tr>
-              <td class="salary-offeset"><b>Salary Gross</b></td>
-              <td><b>20500</b></td>
-              <td class="salary-offeset"><b>Total Deductions - B</b></td>
-              <td><b>4999</b></td>
-            </tr>
-            <tr>
-              <td class="salary-offeset"></td>
-              <td></td>
-              <td class="salary-offeset"><b>Salary Net - A-B</b></td>
-              <td><b> Rs.17557.00</b></td>
+            <tr class="total">
+              <td colspan="3">Salary Net - A-B</td>
+              <td>17557</td>
             </tr>
           </tbody>
         </table>
       </div>
+
+      <div class="footer">
+        <p>PAY: Seventeen Thousand Five Hundred and Fifty-Seven Rupees</p>
+      </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
 `;
