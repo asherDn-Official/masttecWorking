@@ -245,14 +245,20 @@ exports.createPayroll = async (req, res) => {
          text-align: left;
       }
 
+      .logo p{
+         font-size: 12px;
+         color: #17215e;
+      }
+
     </style>
   </head>
   <body>
     <div class="container">
       <div class="header">
         <div class="logo">
-          <h1>MASTEC MOULDS</h1>
-          <p>
+          <!-- <h1>MASTEC MOULDS</h1> -->
+          <img src="https://www.masttecmoulds.com/image/logo%20mast.png" alt="Logo" width="250" height="80">
+          <p >
             No,18-A JEEVA NAGAR EXTN,DRR AVENUE,
             <br> KATTUPAKKAM,CHENNAI-56
           </p>
@@ -407,9 +413,7 @@ exports.createPayroll = async (req, res) => {
         </table>
       </div>
 
-      <div class="footer">
-        <p>PAY: Seventeen Thousand Five Hundred and Fifty-Seven Rupees</p>
-      </div>
+      
     </div>
   </body>
 </html>
