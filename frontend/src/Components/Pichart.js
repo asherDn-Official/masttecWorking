@@ -18,7 +18,7 @@ export default function CustomPieChart({ data }) {
   } = data;
 
   const attendanceData = [
-    { label: "Total", value: total },
+    // { label: "Total", value: total },
     { label: "Present", value: present },
     { label: "Absent", value: absent },
     { label: "Late", value: late },

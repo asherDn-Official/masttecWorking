@@ -103,13 +103,13 @@ input[type="file"] {
 }
 .inputddidjdj {
   font-family: "Poppins", sans-serif;
-  width: 317px;
-  height: 47px;
+  width: 284px;
+  height: 45px;
   border-radius: 5px;
   border: none;
   background-color: #edeef5;
   margin-top: 12px;
-  padding-left: 10px;
+  padding-left: 20px;
   padding-right: 10px;
   font-size: 16px;
 }

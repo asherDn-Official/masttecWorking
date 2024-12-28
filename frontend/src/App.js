@@ -1,20 +1,18 @@
-import "./App.css";
-import AddEmployee from "./Components/1.AddEmployee";
-import EditEmployee from "./Components/2.EditEmployee";
-import EmployeeList from "./Components/0.EmployeeList";
-import EmployeeAttendanceList from "./Components/3.EmployeeAttendanceList";
-import EmployeeData from "./Components/4.EmployeeData";
-import DraftEmployee from "./Components/DraftSave";
-import EmployeeDataSecondSection from "./Components/5.EmployeeData1";
-import { Routes, BrowserRouter, Route, useLocation } from "react-router-dom";
-import Login from "./Components/6.Login";
-import PayrollPage from "./Components/7.Payroll";
+// import Login from "./Components/6.Login";
+// import "./App.css";
+import AddEmployee from "./pages/1.AddEmployee";
+import EditEmployee from "./pages/2.EditEmployee";
+import EmployeeList from "./pages/0.EmployeeList";
+import EmployeeAttendanceList from "./pages/3.EmployeeAttendanceList";
+import EmployeeData from "./pages/4.EmployeeData";
+import DraftEmployee from "./pages/DraftSave";
+import EmployeeDataSecondSection from "./pages/5.EmployeeData1";
+import { Routes, Route } from "react-router-dom";
+import PayrollPage from "./pages/7.Payroll";
 import MasttecNav from "./Components/Navbar";
-import HolidayPage from "./Components/HolidayPage";
-
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import HolidayPage from "./pages/HolidayPage";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -23,9 +21,7 @@ function App() {
       <Routes>
         <Route path="/add-employee-details" element={<AddEmployee />} />
         <Route path="/draft/:id" element={<DraftEmployee />} />
-        {/* <Route path="/" element={<Login />} /> */}
         <Route path="/edit-employee-details/:id" element={<EditEmployee />} />
-        {/* <Route path="/employees-list" element={<EmployeeList />} /> */}
         <Route path="/" element={<EmployeeList />} />
         <Route
           path="/employeesAttendance"
@@ -38,11 +34,11 @@ function App() {
         />
         <Route path="/payRun" element={<PayrollPage />} />
         <Route path="/holiday" element={<HolidayPage />} />
+        {/* <Route path="/" element={<Login />} /> */}
+        {/* <Route path="/employees-list" element={<EmployeeList />} /> */}
       </Routes>
 
-
       <ToastContainer />
-
     </div>
   );
 }
