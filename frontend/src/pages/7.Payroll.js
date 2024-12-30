@@ -214,9 +214,9 @@ export default function PayrollPage() {
           employeeAdvance: emp.employeeAdvance || 0,
           employeePLoss: unpaidLeave || 0,
           employeePLossAmount: productionLossAmount || 0,
-          employeeOT1Days: ot1Decimal || 0, // OT1 in decimal
+          employeeOT1Hours: ot1Decimal || 0, // OT1 in decimal
           employeeOT1Amount: ot1Amount || 0,
-          employeeOT2Days: ot2Decimal || 0, // OT2 in decimal
+          employeeOT2Hours: ot2Decimal || 0, // OT2 in decimal
           employeeOT2Amount: ot2Amount || 0,
           salary: emp.salary || 0,
           employeeHoldOT: emp.employeeHoldOT || 0,
@@ -262,9 +262,9 @@ export default function PayrollPage() {
     const houseRent = Math.round(salaryPerHr * presentDays * 8) / 4 || 0;
 
     const ot1Amount =
-      Math.round(employee.employeeOT1Days * salaryPerHr * 1.25) || 0;
+      Math.round(employee.employeeOT1Hours * salaryPerHr * 1.25) || 0;
     const ot2Amount =
-      Math.round(employee.employeeOT2Days * salaryPerHr * 1.75) || 0;
+      Math.round(employee.employeeOT2Hours * salaryPerHr * 1.75) || 0;
 
     const totalSalary =
       basicSalary +
@@ -408,9 +408,9 @@ export default function PayrollPage() {
     { label: "Advance", field: "employeeAdvance" },
     { label: "P.Loss Days", field: "employeePLoss" },
     { label: "P.Loss Amount", field: "employeePLossAmount" },
-    { label: "OT 1", field: "employeeOT1Days" },
+    { label: "OT 1", field: "employeeOT1Hours" },
     { label: "OT 1 Amount", field: "employeeOT1Amount" },
-    { label: "OT 2", field: "employeeOT2Days" },
+    { label: "OT 2", field: "employeeOT2Hours" },
     { label: "OT 2 Amount", field: "employeeOT2Amount" },
     { label: "Hold OT", field: "employeeHoldOT" },
     { label: "Pay on 5th", field: "payOn5th" },

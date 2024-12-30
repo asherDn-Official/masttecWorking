@@ -273,65 +273,65 @@ exports.createPayroll = async (req, res) => {
         <table>
           <tr>
             <th>Name</th>
-            <td>Kuppan</td>
+            <td>${employeeData?.employeeName}</td>
             <th>Aadhaar No.</th>
-            <td>3193 0742 0162</td>
+            <td>${employeeData?.employeeAadhaarNo}</td>
           </tr>
           <tr>
             <th>Designation</th>
-            <td>Fitter</td>
+            <td>${employeeData?.employeeDesignation}</td>
             <th>Bank A/c No.</th>
-            <td>296801000002313</td>
+            <td>${employeeData?.employeeBankAccount}</td>  //not found
           </tr>
           <tr>
             <th>Department</th>
-            <td>Production</td>
+            <td>${employeeData?.employeeDepartment}</td>
             <th>Bank & Branch</th>
-            <td>IOB / Kattupakkam</td>
+            <td>${employeeData?.employeeBankBranch}</td>  //not found
           </tr>
           <tr>
             <th>Date of Joining</th>
-            <td>17.06.2019</td>
+            <td>${employeeData?.employeeDateOfJoining}</td>  //not found
             <th>IFSC Code</th>
-            <td>IOBA0002968</td>
+            <td>${employeeData?.employeeIFSC}</td>  //not found
           </tr>
           <tr>
             <th>Increment on Salary</th>
-            <td>N/A</td>
-            <th>EPF Member ID</th>
-            <td>TNAMB00692620000010064</td>
+            <td> N/A </td>        //not needed
+            <th>EPF Member ID</th>  
+            <td> ${employeeData?.employeeEPFId}</td>
           </tr>
           <tr>
-            <th>Payable Days</th>
-            <td>28</td>
+            <th>Payable Days</th>  
+            <td>${employeeData?.employeePresentDays}</td>
             <th>UAN No.</th>
-            <td>10113294505</td>
+            <td>${employeeData?.employeeUANNo}</td>
           </tr>
 
           <tr>
             <th>Per Day Salary</th>
-            <td>484</td>
+            <td>${employeeData?.employeePerHrSalary * 8}</td>   
             <th>ESIC No</th>
-            <td>5132396769</td>
+            <td> ${employeeData?.employeeESIC}</td>
           </tr>
 
           <tr>
             <th>1 Hour salary</th>
-            <td>60</td>
-            <th>PAN NO</th>
-            <td>IJEPK9723H</td>
+            <td>${employeeData?.employeePerHrSalary}</td>   
+            <th>PAN NO</th>  
+            <td>${employeeData?.employeePANNumber}</td>
           </tr>
 
           <tr>
             <th>Leave/Absent</th>
-            <td>2</td>
+            <td>${30 - employeeData?.employeePresentDays}</td>
             <th>Emploement ID</th>
-            <td>46</td>
+            <td>${employeeData?.employeeId}</td>
           </tr>
 
           <tr>
             <th>Mobile number</th>
-            <td>9500123456</td>
+            <td>${employeeData?.employeeMobileNumber}</td>
             <th></th>
             <td></td>
           </tr>
@@ -352,32 +352,32 @@ exports.createPayroll = async (req, res) => {
           <tbody>
             <tr>
               <td class="bg-light">Basic</td>
-              <td>7500</td>
+              <td>${employeeData?.employeeBasicSalary}</td>
               <td class="bg-light">Loss of Pay</td>
               <td>968</td>
             </tr>
             <tr>
               <td class="bg-light">Incentive</td>
-              <td>0</td>
+              <td>${employeeData?.employeeIncentives}</td>
               <td class="bg-light">EPF</td>
-              <td>900</td>
+              <td>${employeeData?.employeeEPFId}</td>
             </tr>
             <tr>
-              <td class="bg-light">Allowances</td>
-              <td>1500</td>
+              <td class="bg-light">Allowances</td>s
+              <td>${employeeData?.employeeAllowances}</td>
               <td class="bg-light">ESIC</td>
-              <td>132</td>
+              <td>${employeeData?.employeeESICId}</td>
             </tr>
             <tr>
               <td class="bg-light">HRA</td>
-              <td>4000</td>
+              <td>${employeeData?.employeeHouseRent}</td>
               <td class="bg-light">Advance</td>
-              <td>3000</td>
+              <td>${employeeData?.employeeAdvance}</td>
             </tr>
             <tr>
-              <td class="bg-light">Others</td>
-              <td>0</td>
-              <td class="bg-light">TDS Debits</td>
+              <td class="bg-light">Others</td>  - not neeeded
+              <td>0</td> 
+              <td class="bg-light">TDS Debits</td>  - not needed
               <td>-</td>
             </tr>
             <tr>
