@@ -34,6 +34,8 @@ exports.createPayroll = async (req, res) => {
   const { employeeData, email, month, year } = req.body;
   console.log("employee : ", email);
 
+  console.log("employeeData : ", employeeData);
+
   if (!employeeData || !employeeData.employeeId) {
     return res.status(400).json({ message: "Employee ID is required" });
   }
@@ -175,12 +177,6 @@ exports.createPayroll = async (req, res) => {
         padding: 20px;
         border: 1px solid #ccc;
       }
-      .header {
-        text-align: center;
-        margin-bottom: 20px;
-        display: flex;
-        justify-content: space-between;
-      }
       .header h1 {
         margin: 0;
         font-size: 24px;
@@ -214,7 +210,7 @@ exports.createPayroll = async (req, res) => {
         text-align: left;
       }
       th {
-        background-color: #eeeff5 ;
+        background-color: #eeeff5;
       }
       .total {
         font-weight: bold;
@@ -234,38 +230,43 @@ exports.createPayroll = async (req, res) => {
         background-color: #17215e;
         color: #fff;
       }
-      .bg-light{
+      .bg-light {
         background-color: #eeeff5 !important;
       }
 
-
-      .logo{
-         display: flex;
-         flex-direction: column;
-         text-align: left;
+      .logo {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
       }
 
-      .logo p{
-         font-size: 12px;
-         color: #17215e;
+      .logo p {
+        font-size: 12px;
+        color: #17215e;
       }
-
     </style>
   </head>
   <body>
     <div class="container">
-      <div class="header">
-        <div class="logo">
+      <div class="header" >
+        <div class="logo" style="float: left;">
           <!-- <h1>MASTEC MOULDS</h1> -->
-          <img src="https://www.masttecmoulds.com/image/logo%20mast.png" alt="Logo" width="250" height="80">
-          <p >
+          <img
+            src="https://www.masttecmoulds.com/image/logo%20mast.png"
+            alt="Logo"
+            width="250"
+            height="80"
+          />
+          <p>
             No,18-A JEEVA NAGAR EXTN,DRR AVENUE,
-            <br> KATTUPAKKAM,CHENNAI-56
+            <br />
+            KATTUPAKKAM,CHENNAI-56
           </p>
         </div>
-        <h2>Pay Slip - October 2024</h2>
+        <h2 style="float: right;">Pay Slip - October 2024</h2>
         <!-- <p>Pay Date: 24-11-2024</p> -->
       </div>
+      <div style="clear: both;"></div>
 
       <div class="section">
         <h3 class="title">Employee Details</h3>
@@ -350,57 +351,56 @@ exports.createPayroll = async (req, res) => {
           </thead>
           <tbody>
             <tr>
-              <td  class=" bg-light ">Basic</td>
+              <td class="bg-light">Basic</td>
               <td>7500</td>
-              <td  class=" bg-light ">Loss of Pay</td>
+              <td class="bg-light">Loss of Pay</td>
               <td>968</td>
             </tr>
             <tr>
-              <td  class=" bg-light " >Incentive</td>
+              <td class="bg-light">Incentive</td>
               <td>0</td>
-              <td  class=" bg-light ">EPF</td>
+              <td class="bg-light">EPF</td>
               <td>900</td>
             </tr>
             <tr>
-              <td  class=" bg-light ">Allowances</td>
+              <td class="bg-light">Allowances</td>
               <td>1500</td>
-              <td  class=" bg-light ">ESIC</td>
+              <td class="bg-light">ESIC</td>
               <td>132</td>
             </tr>
             <tr>
-              <td  class=" bg-light ">HRA</td>
+              <td class="bg-light">HRA</td>
               <td>4000</td>
-              <td  class=" bg-light ">Advance</td>
+              <td class="bg-light">Advance</td>
               <td>3000</td>
             </tr>
             <tr>
-              <td  class=" bg-light ">Others</td>
+              <td class="bg-light">Others</td>
               <td>0</td>
-              <td  class=" bg-light ">TDS Debits</td>
+              <td class="bg-light">TDS Debits</td>
               <td>-</td>
             </tr>
             <tr>
-              <td  class=" bg-light ">Bonus</td>
+              <td class="bg-light">Bonus</td>
               <td>-</td>
-              <td  class=" bg-light ">Other Debits</td>
+              <td class="bg-light">Other Debits</td>
               <td>-</td>
             </tr>
 
-
             <tr>
-              <td  class=" bg-light ">O.T @ 1.25</td>
+              <td class="bg-light">O.T @ 1.25</td>
               <td>1210 (16)</td>
-              <td  class=" bg-light ">Production  Loss</td>
+              <td class="bg-light">Production Loss</td>
               <td>-</td>
             </tr>
             <tr>
-              <td  class=" bg-light ">O.T @ 1.75</td>
+              <td class="bg-light">O.T @ 1.75</td>
               <td>847 (8)</td>
-              <td  class=" bg-light ">-</td>
+              <td class="bg-light">-</td>
               <td>-</td>
             </tr>
             <tr class="total">
-              <td  class=" bg-light ">Salary Gross</td>
+              <td class="bg-light">Salary Gross</td>
               <td>20500</td>
               <td>Total Deductions -B</td>
               <td>4999</td>
@@ -412,8 +412,6 @@ exports.createPayroll = async (req, res) => {
           </tbody>
         </table>
       </div>
-
-      
     </div>
   </body>
 </html>
@@ -439,7 +437,25 @@ exports.createPayroll = async (req, res) => {
         user: "developers@asherdn.com", // Replace with valid email
         pass: "asherDn@1234", // Replace with valid password
       },
+      tls: {
+        rejectUnauthorized: false, // Accept self-signed certificates
+      },
     });
+
+    //--------------------------------------------------------------------------------------------------------------
+
+    // const transporter = nodemailer.createTransport({
+    //   service: "gmail",
+    //   auth: {
+    //     user: "crouselearn@gmail.com",
+    //     pass: "praveenK48706@gmail.com",
+    //   },
+    //   tls: {
+    //     rejectUnauthorized: false, // Accept self-signed certificates
+    //   },
+    // });
+
+    //--------------------------------------------------------------------------------------------------------------
 
     // Set up email data
     const mailOptions = {
