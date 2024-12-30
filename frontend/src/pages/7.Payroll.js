@@ -192,6 +192,12 @@ export default function PayrollPage() {
           employeeId: emp.employeeId || "",
           employeeMobileNumber: emp.mobileNumber || "",
           employeeAadhaarNo: emp.aadhaarNo || "",
+
+          bankName: emp.bankName || "",
+          bankBranch: emp.bankBranch || "",
+          designation: emp.designation || "",
+          bankAccountNumber: emp.bankAccountNumber || "",
+          bankIFSCCode: emp.bankIFSCCode || "",
           employeePANNumber: emp.PANNumber || "",
           employeeESICId: emp.esicId || "",
           employeeEPFId: emp.epfId || "",
