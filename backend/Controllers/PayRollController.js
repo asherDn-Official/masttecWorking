@@ -28,6 +28,32 @@ const uploadDir = path.join(__dirname, "../uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
+
+function getMonthName(monthNumber) {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  if (monthNumber < 1 || monthNumber > 12) {
+    throw new Error(
+      "Invalid month number. Please provide a number between 1 and 12."
+    );
+  }
+
+  return months[monthNumber - 1];
+}
+
 // Create a new payroll record
 
 exports.createPayroll = async (req, res) => {
@@ -48,11 +74,18 @@ exports.createPayroll = async (req, res) => {
       .status(400)
       .json({ message: "Both month and year are required." });
   }
+  let monthName;
+  try {
+    monthName = getMonthName(month);
+    console.log("Selected Month: ", monthName);
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
   const date = await formatDate(new Date());
   // Define pdfPath here for later access
   const pdfPath = path.join(
     uploadDir,
-    `${employeeData.employeeId}-payslip-${month.toUpperCase()}-${year}.pdf`
+    `${employeeData.employeeId}-payslip-${monthName.toUpperCase()}-${year}.pdf`
   );
   try {
     const payroll = await Payroll.findOne({
@@ -263,7 +296,7 @@ exports.createPayroll = async (req, res) => {
             KATTUPAKKAM,CHENNAI-56
           </p>
         </div>
-        <h2 style="float: right;">Pay Slip - October 2024</h2>
+        <h2 style="float: right;">Pay Slip - ${monthName} 2024</h2>
         <!-- <p>Pay Date: 24-11-2024</p> -->
       </div>
       <div style="clear: both;"></div>
