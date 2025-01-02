@@ -324,7 +324,7 @@ exports.createPayroll = async (req, res) => {
             <th>Bank & Branch</th>
             <td> ${getValueOrDash(employeeData?.bankName)}/${
       employeeData?.bankBranch
-    }}</td> 
+    }</td> 
           </tr>
           <tr>
             <th>Date of Joining</th>
