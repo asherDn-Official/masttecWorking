@@ -397,6 +397,8 @@ export default function PayrollPage() {
 
       // Check results for failures
       const failed = results.filter((result) => !result.success);
+      
+    
 
     
 
@@ -456,7 +458,8 @@ export default function PayrollPage() {
               <select
                 value={selectedMonth} // Bind the select value to state
                 onChange={(e) => {
-                  handleMonth(e); // Update state
+                  // handleMonth(e); // Update state
+                  setSelectedMonth(e.target.value); 
                   handleMonthChange(e); // Process the selected month
                 }}
                 className="pojejrejrerer"
