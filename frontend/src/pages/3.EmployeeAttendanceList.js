@@ -71,6 +71,7 @@ export default function EmployeeAttendanceList() {
   useEffect(() => {
     fetchEmployees();
   }, [date]);
+
   useEffect(() => {
     // Update designation options after attendance details are set
     const uniqueDesignations = getUniqueDesignations(attendanceDetails);
@@ -248,6 +249,7 @@ export default function EmployeeAttendanceList() {
                     <div className="secondtoprowhe">
                       <div className="headcontdisplay">
                         <div className="allheadsnoh">ID No</div>
+                        <div className="allheadsnoh">Emp Id</div>
                         <div className="allheadsponumh">Employee Name</div>
                         <div className="allheadsjobnameh">
                           <select
@@ -307,6 +309,7 @@ export default function EmployeeAttendanceList() {
                       <div className="secondtoprow" key={index}>
                         <div className="headcontdisplay">
                           <div className="allheadsno">{index + 1}</div>
+                          <div className="allheadsno">{employee.employeeId}</div>
                           <div className="allheadsponum">
                             {employee.employeeName}
                           </div>

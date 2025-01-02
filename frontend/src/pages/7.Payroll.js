@@ -75,7 +75,7 @@ export default function PayrollPage() {
       setIsLoading(false);
     }
   };
-  console.log("month:", selectedMonth);
+  console.log("month: ", selectedMonth);
   console.log("year:", selectedYear);
   const fetchHolidays = async () => {
     setIsLoading(true);
@@ -181,8 +181,26 @@ export default function PayrollPage() {
           Number(emp.esic);
         const payOn5th =
           basicSalary + houseRent - Number(emp.epf) - Number(emp.esic);
+
         const payOn20th = ot1Amount + ot2Amount;
         const productionLossAmount = unpaidLeave * salaryPerHr * 8;
+
+        const grossSalary =
+          basicSalary +
+          houseRent +
+          ot1Amount +
+          ot2Amount +
+          emp.incentives +
+          emp.allowances +
+          emp.advance;
+
+
+        const TotalDeductions =
+          Number(emp.epf) +
+          Number(emp.esic) +
+          productionLossAmount ;
+         
+
         return {
           employeeName: emp.employeeName || "",
           employeePicture: emp.employeePicture || "",
@@ -225,7 +243,9 @@ export default function PayrollPage() {
           empSalary: empSalary > 0 ? empSalary : 0 || 0, // Total salary (with overtime)
           empBalance: emp.empBalance || 0,
           totalOT1: `${totalOT1Hours} hrs ${totalOT1RemainderMinutes} mins`, // OT1 in time format
-          totalOT2: `${totalOT2Hours} hrs ${totalOT2RemainderMinutes} mins`, // OT2 in time format
+          totalOT2: `${totalOT2Hours} hrs ${totalOT2RemainderMinutes} mins`, // OT2 in time format,
+          grossSalary,
+          TotalDeductions,
         };
       });
 
@@ -377,6 +397,8 @@ export default function PayrollPage() {
 
       // Check results for failures
       const failed = results.filter((result) => !result.success);
+      
+    
 
       if (failed.length > 0) {
         console.warn(
@@ -417,18 +439,25 @@ export default function PayrollPage() {
     { label: "Pay on 20th", field: "payOn20th" },
     { label: "Salary", field: "empSalary" },
     { label: "Balance", field: "empBalance" },
+    // { label: "Salary", field: "empSalary" },
+    // { label: "Balance", field: "empBalance" },
+    // { label: "Salary", field: "empSalary" },
+    // { label: "Balance", field: "empBalance" },
+    // { label: "Salary", field: "empSalary" },
   ];
   return (
     <div>
       <div className="ksierperki4545454">
         <div className="lpieoroeroerrere">
           <div className="psioo5o4o54io5k5">Payroll Details</div>
-          <div>
+
+          <div className="header-section">
             <div>
               <select
                 value={selectedMonth} // Bind the select value to state
                 onChange={(e) => {
-                  handleMonth(e); // Update state
+                  // handleMonth(e); // Update state
+                  setSelectedMonth(e.target.value); 
                   handleMonthChange(e); // Process the selected month
                 }}
                 className="pojejrejrerer"
@@ -451,6 +480,7 @@ export default function PayrollPage() {
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                className="  selection-option"
               >
                 <option value="">Select Year</option>
                 {Array.from({ length: 5 }, (_, i) => {
@@ -464,7 +494,11 @@ export default function PayrollPage() {
               </select>
             </div>
           </div>
+
+
         </div>
+
+
         <div className="ldijk45rrt">
           <div className="overviewPayroll">Overview</div>
           <div>
@@ -596,6 +630,9 @@ export default function PayrollPage() {
                   <div className="nameofthejkd">Salary - ₹ {emp.salary}</div>
                   <div className="nameofthejkd">
                     Salary/Hr - ₹ {emp.employeePerHrSalary}
+                  </div>
+                  <div className="nameofthejkd">
+                     <button className="pay-slip" onClick={()=>sendEmployeeData(emp)}> pay slip </button>
                   </div>
                 </div>
                 <div>

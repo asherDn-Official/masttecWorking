@@ -278,7 +278,7 @@ body {
 }
 
 .secondtoprowhe {
-  width: 100%;
+  width: 1220px;
   height: auto;
   background: #17215e;
   border-radius: 5px;
@@ -291,7 +291,7 @@ body {
   font-family: "Poppins", sans-serif;
   font-size: 16px;
   font-weight: 500;
-  width: 45px;
+  /* width: 45px; */
   text-align: center;
 }
 .allheadsponumh {

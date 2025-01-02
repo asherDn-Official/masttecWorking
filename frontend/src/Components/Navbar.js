@@ -1,5 +1,6 @@
 import React from "react";
 import "./MasttecNav.css"; // Assuming you save the CSS in a file named MasttecNav.css
+import { Link } from "react-router-dom";
 
 const MasttecNav = () => {
   return (
@@ -13,15 +14,25 @@ const MasttecNav = () => {
           />
         </a>
         <ul className="masttec-menu">
-          {/* <li className="masttec-menu-item">
-            <a className="masttec-menu-link" href="#">
-              Dashboard
-            </a>
-          </li> */}
           <li className="masttec-menu-item">
-            <a className="masttec-menu-link" href="/employeesAttendance">
-              Daily Attendance 
-            </a>
+            <Link className="masttec-menu-link" to="/">
+              Home
+            </Link>
+          </li>
+          <li className="masttec-menu-item">
+            <Link className="masttec-menu-link" to="/payrun">
+              Payrun
+            </Link>
+          </li>
+          <li className="masttec-menu-item">
+            <Link className="masttec-menu-link" to="/accountsDashboard">
+              Dashboard
+            </Link>
+          </li>
+          <li className="masttec-menu-item">
+            <Link className="masttec-menu-link" to="/employeesAttendance">
+              Daily Attendance
+            </Link>
           </li>
           {/*<li className="masttec-menu-item">
             <a className="masttec-menu-link" href="#">

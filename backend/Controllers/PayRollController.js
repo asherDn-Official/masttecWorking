@@ -32,7 +32,7 @@ if (!fs.existsSync(uploadDir)) {
 
 exports.createPayroll = async (req, res) => {
   const { employeeData, email, month, year } = req.body;
-  console.log("employee : ", email);
+  console.log("employee :   ", email);
 
   console.log("employeeData : ", employeeData);
 
@@ -510,7 +510,7 @@ exports.getAllPayrolls = async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Error retrieving payroll records", error });
+      .json({ message: "Error retrieving payroll records ", error });
   }
 };
 
