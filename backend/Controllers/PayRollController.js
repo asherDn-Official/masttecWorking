@@ -157,7 +157,7 @@ exports.createPayroll = async (req, res) => {
       await newPayroll.save();
     }
     const getValueOrDash = (value) =>
-      value !== undefined && value !== null ? value : "-";
+      value !== undefined && value !== null && value !== "" ? value : "-";
 
     const pdfContent = `<!DOCTYPE html>
 <html lang="en">
@@ -273,65 +273,69 @@ exports.createPayroll = async (req, res) => {
         <table>
           <tr>
             <th>Name</th>
-            <td>${employeeData?.employeeName}</td>
+            <td>${getValueOrDash(employeeData?.employeeName)}</td>
             <th>Aadhaar No.</th>
-            <td>${employeeData?.employeeAadhaarNo}</td>
+            <td>${getValueOrDash(employeeData?.employeeAadhaarNo)}</td>
           </tr>
           <tr>
             <th>Designation</th>
-            <td>${employeeData?.employeeDesignation}</td>
+            <td>${getValueOrDash(employeeData?.employeeDesignation)}</td>
             <th>Bank A/c No.</th>
-            <td>${employeeData?.employeeBankAccount}</td>  //not found
+            <td>${getValueOrDash(
+              employeeData?.bankAccountNumber
+            )}  </td>  //not found
           </tr>
           <tr>
             <th>Department</th>
-            <td>${employeeData?.employeeDepartment}</td>
+            <td>${getValueOrDash(employeeData?.employeeDepartment)}</td>
             <th>Bank & Branch</th>
-            <td>${employeeData?.employeeBankBranch}</td>  //not found
+            <td> ${getValueOrDash(employeeData?.bankName)}/${
+      employeeData?.bankBranch
+    }}</td> 
           </tr>
           <tr>
             <th>Date of Joining</th>
-            <td>${employeeData?.employeeDateOfJoining}</td>  //not found
+            <td> ${ employeeData?.employeeDateOfJoining}</td>  //not found
             <th>IFSC Code</th>
-            <td>${employeeData?.employeeIFSC}</td>  //not found
+            <td>${getValueOrDash(employeeData?.bankIFSCCode)}</td> 
           </tr>
           <tr>
             <th>Increment on Salary</th>
             <td> N/A </td>        //not needed
             <th>EPF Member ID</th>  
-            <td> ${employeeData?.employeeEPFId}</td>
+            <td> ${getValueOrDash(employeeData?.employeeEPF)}</td>
           </tr>
           <tr>
             <th>Payable Days</th>  
-            <td>${employeeData?.employeePresentDays}</td>
+            <td>${getValueOrDash(employeeData?.employeePresentDays)}</td>
             <th>UAN No.</th>
-            <td>${employeeData?.employeeUANNo}</td>
+            <td>${getValueOrDash(employeeData?.employeeUANNo)}</td>
           </tr>
 
           <tr>
             <th>Per Day Salary</th>
-            <td>${employeeData?.employeePerHrSalary * 8}</td>   
+            <td>${getValueOrDash(employeeData?.employeePerHrSalary * 8)}</td>   
             <th>ESIC No</th>
-            <td> ${employeeData?.employeeESIC}</td>
+            <td> ${getValueOrDash(employeeData?.employeeESIC)}</td>
           </tr>
 
           <tr>
             <th>1 Hour salary</th>
             <td>${employeeData?.employeePerHrSalary}</td>   
             <th>PAN NO</th>  
-            <td>${employeeData?.employeePANNumber}</td>
+            <td>${getValueOrDash(employeeData?.employeePANNumber)}</td>
           </tr>
 
           <tr>
             <th>Leave/Absent</th>
-            <td>${30 - employeeData?.employeePresentDays}</td>
+            <td>${getValueOrDash(30 - employeeData?.employeePresentDays)}</td>
             <th>Emploement ID</th>
-            <td>${employeeData?.employeeId}</td>
+            <td>${getValueOrDash(employeeData?.employeeId)}</td>
           </tr>
 
           <tr>
             <th>Mobile number</th>
-            <td>${employeeData?.employeeMobileNumber}</td>
+            <td>${getValueOrDash(employeeData?.employeeMobileNumber)}</td>
             <th></th>
             <td></td>
           </tr>
@@ -352,27 +356,27 @@ exports.createPayroll = async (req, res) => {
           <tbody>
             <tr>
               <td class="bg-light">Basic</td>
-              <td>${employeeData?.employeeBasicSalary}</td>
+              <td>${getValueOrDash(employeeData?.employeeBasicSalary)}</td>
               <td class="bg-light">Loss of Pay</td>
               <td>968</td>
             </tr>
             <tr>
               <td class="bg-light">Incentive</td>
-              <td>${employeeData?.employeeIncentives}</td>
+              <td>${getValueOrDash(employeeData?.employeeIncentives)}</td>
               <td class="bg-light">EPF</td>
-              <td>${employeeData?.employeeEPFId}</td>
+              <td>${getValueOrDash(employeeData?.employeeEPFId)}</td>
             </tr>
             <tr>
               <td class="bg-light">Allowances</td>s
-              <td>${employeeData?.employeeAllowances}</td>
+              <td>${getValueOrDash(employeeData?.employeeAllowances)}</td>
               <td class="bg-light">ESIC</td>
-              <td>${employeeData?.employeeESICId}</td>
+              <td>${getValueOrDash(employeeData?.employeeESICId)}</td>
             </tr>
             <tr>
               <td class="bg-light">HRA</td>
-              <td>${employeeData?.employeeHouseRent}</td>
+              <td>${getValueOrDash(employeeData?.employeeHouseRent)}</td>
               <td class="bg-light">Advance</td>
-              <td>${employeeData?.employeeAdvance}</td>
+              <td>${getValueOrDash(employeeData?.employeeAdvance)}</td>
             </tr>
             <tr>
               <td class="bg-light">Others</td>  - not neeeded
@@ -381,7 +385,7 @@ exports.createPayroll = async (req, res) => {
               <td>-</td>
             </tr>
             <tr>
-              <td class="bg-light">Bonus</td>
+              <td class="bg-light">Bonus</td>  
               <td>-</td>
               <td class="bg-light">Other Debits</td>
               <td>-</td>
@@ -403,11 +407,11 @@ exports.createPayroll = async (req, res) => {
               <td class="bg-light">Salary Gross</td>
               <td>20500</td>
               <td>Total Deductions -B</td>
-              <td>4999</td>
+              <td>${getValueOrDash(employeeData?.TotalDeductions)}</td>
             </tr>
             <tr class="total">
               <td colspan="3">Salary Net - A-B</td>
-              <td>17557</td>
+              <td>${getValueOrDash(employeeData?.salary)}</td>
             </tr>
           </tbody>
         </table>
