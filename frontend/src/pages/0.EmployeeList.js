@@ -4,6 +4,7 @@ import axios from "axios";
 import url from "../Components/global";
 import ErrorPopup from "../Components/errorPopup";
 import { useNavigate } from "react-router-dom";
+import profileImage from "../assets/images/profile.png";
 
 export default function EmployeeList() {
   const [employees, setEmployees] = useState([]);
@@ -97,7 +98,7 @@ export default function EmployeeList() {
                     <div>
                       <img
                         className="empliyetegehpiccbd"
-                        src={`http://localhost:4000${emp.empImg}`}
+                        src={emp.empImg?`http://localhost:4000${emp.empImg}`:profileImage}
                         alt={emp.empName || "Employee"}
                       />
                     </div>
@@ -120,7 +121,7 @@ export default function EmployeeList() {
                     <div>
                       <img
                         className="empliyetegehpiccbd"
-                        src={`http://localhost:4000${emp.empImg}`}
+                        src={emp.empImg?`http://localhost:4000${emp.empImg}`:profileImage}
                         alt={emp.empName || "Employee"}
                       />
                     </div>

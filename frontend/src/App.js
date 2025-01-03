@@ -12,6 +12,7 @@ import PayrollPage from "./pages/7.Payroll";
 import MasttecNav from "./Components/Navbar";
 import HolidayPage from "./pages/HolidayPage";
 import { ToastContainer } from "react-toastify";
+import RoleMangement from "./pages/RoleMangement";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
         />
         <Route path="/payRun" element={<PayrollPage />} />
         <Route path="/holiday" element={<HolidayPage />} />
+        <Route path="/role-management" element={<RoleMangement />} />
         {/* <Route path="/" element={<Login />} /> */}
         {/* <Route path="/employees-list" element={<EmployeeList />} /> */}
       </Routes>

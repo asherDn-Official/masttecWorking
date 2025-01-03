@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import "../CSS/PayrollCSS.css";
 import url from "../Components/global";
 import axios from "axios";
+import profileImage from '../assets/images/profile.png';
 
 export default function PayrollPage() {
   const [employee, setEmployee] = useState([]);
@@ -395,10 +396,12 @@ export default function PayrollPage() {
         employee.map((emp) => sendEmployeeData(emp))
       );
 
+
+      console.log('results',results);
       // Check results for failures
-      const failed = results.filter((result) => !result.success);
+      const failed = results.filter((result) => !result.success);  
       
-    
+      console.log("failed : ", failed);
 
     
 
@@ -588,6 +591,7 @@ export default function PayrollPage() {
             </div>
           </div>
         </div>
+
         <div className="whgitebackgroundivsss">
           <div className="kkdkl4l34k4343443">
             <div className="employeeddtextfguh3453">Employee Details</div>
@@ -622,8 +626,8 @@ export default function PayrollPage() {
                 <div className="ksiskfdk54">
                   <div>
                     <img
-                      src={`http://localhost:4000${emp.employeePicture}`}
-                      alt=""
+                      src={emp.employeePicture?`http://localhost:4000${emp.employeePicture}`:profileImage}
+                      alt="profileImage"
                     />
                   </div>
                   <div className="nameofthejkd">{emp.employeeName}</div>
