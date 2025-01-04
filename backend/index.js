@@ -17,13 +17,20 @@ const payRunCalcRoutes = require("./Routes/PayRunCalcRoute");
 const TempEmployeeRoutes = require("./Routes/TempEmployeeRouter");
 const payrollRoutes = require("./Routes/PayRollRoutes");
 const holidayRoutes = require("./Routes/HolidayRouter");
+const authRoutes = require("./Routes/authRoutes");
+const bodyParser = require("body-parser");
+
 
 const app = express();
+// Middleware
+app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
 
 const port = 4000;
 connectDb();
+
 
 // Serve static files from the 'uploads/images' directory
 app.use(
@@ -109,6 +116,9 @@ app.use("/v1/api/payruncalc", payRunCalcRoutes);
 app.use("/v1/api/tempEmployee", TempEmployeeRoutes);
 app.use("/v1/api/payroll", payrollRoutes);
 app.use("/v1/api/holiday", holidayRoutes);
+//role-based authentication
+
+app.use("/v1/api/auth", authRoutes);
 
 // Cron job to initialize daily attendance at midnight
 cron.schedule("0 0 * * *", () => {
