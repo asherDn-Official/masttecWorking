@@ -28,7 +28,7 @@ exports.login = async (req, res) => {
 
     // Step 4: Check if the employee's role is authorized for the department
     const role = await Role.findOne({ role: department });
-    console.log(role);
+    // console.log(role);
     if (role && role.authorizedPersons.includes(employeeId)) {
       // Step 5: Generate JWT token
       const token = jwt.sign(

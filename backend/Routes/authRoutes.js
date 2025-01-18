@@ -3,6 +3,6 @@ const router = express.Router();
 const authController = require("../Controllers/authController");
 
 router.post("/login", authController.login);
-router.post("/verify", authController.verifyToken);
-router.post("/logout", authController.logout);
+router.get("/verify", authController.verifyToken);
+router.get("/logout", authController.logout);
 module.exports = router;
