@@ -14,4 +14,10 @@ router.put("/removeAuthorizedPerson", rolesController.removeAuthorizedPerson);
 // Route to delete a role
 router.delete("/deleteRole", rolesController.deleteRole);
 
+// Route to get a role and its assigned members
+router.get("/getRole/:role", rolesController.getRole);
+
+// Route to get all roles and their data
+router.get("/getAllRoles", rolesController.getAllRoles);
+
 module.exports = router;

@@ -108,3 +108,50 @@ exports.deleteRole = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+// 5. Get a role and its assigned members
+exports.getRole = async (req, res) => {
+  const { role } = req.params;
+
+  if (!role) {
+    return res.status(400).json({ error: "Role is required" });
+  }
+
+  try {
+    const existingRole = await Role.findOne({ role });
+    if (!existingRole) {
+      return res.status(404).json({ error: "Role not found" });
+    }
+
+    res.status(200).json({
+      message: "Role retrieved successfully",
+      role: existingRole.role,
+      authorizedPersons: existingRole.authorizedPersons,
+    });
+  } catch (error) {
+    console.error("Error retrieving role:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// 6. Get all roles and their assigned members
+exports.getAllRoles = async (req, res) => {
+  try {
+    const roles = await Role.find();
+
+    if (roles.length === 0) {
+      return res.status(404).json({ error: "No roles found" });
+    }
+
+    res.status(200).json({
+      message: "Roles retrieved successfully",
+      roles: roles.map((role) => ({
+        role: role.role,
+        authorizedPersons: role.authorizedPersons,
+      })),
+    });
+  } catch (error) {
+    console.error("Error retrieving roles:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
