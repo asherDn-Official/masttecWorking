@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 
-
-
 import SearchResults from "./SearchResults";
 import SearchInput from "./SearchInput";
 import UserCard from "./UserCard";

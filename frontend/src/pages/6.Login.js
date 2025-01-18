@@ -1,47 +1,42 @@
 import { useState } from "react";
 import "../CSS/LoginCss.css";
+import axios from "axios";
+import API_URL from "../global";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const [loginUsers, setLoginuUsers] = useState({});
   const [loginDetail, setLoginDetail] = useState({
     department: "",
-    userid: "",
+    employeeId: "",
     password: "",
   });
   const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    console.log(loginDetail);
+
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/employees/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            department: loginDetail.department, // Include department
-            employeeId: loginDetail.userid,
-            password: loginDetail.password,
-          }),
-        }
+      const respose = await axios.post(
+        `${API_URL}/v1/api/auth/login`,
+        loginDetail
       );
+      // console.log(respose.data.message);
+      toast.success(respose.data.message, {
+        position: "top-right",
+      });
 
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || "Login failed");
-      }
-
-      setLoginuUsers(data.employee);
       setLoginDetail({
         department: "",
         userid: "",
         password: "",
       });
-      alert("Login successful!");
     } catch (error) {
-      setError(error.message);
+      toast.error(error.response.data.error, {
+        position: "top-right",
+      });
     }
   };
 
@@ -57,7 +52,7 @@ export default function Login() {
       <div className="Login-left-side"></div>
       <div className="Login-right-side">
         <div className="Login-top-logo">
-          <img src="/images/Logo 1.png" alt="Masttec Moulds" />
+          {/* <img src="/images/Logo 1.png" alt="Masttec Moulds" /> */}
         </div>
         <h1>Log in</h1>
         {error && <div className="Login-error">{error}</div>}{" "}
@@ -65,28 +60,30 @@ export default function Login() {
         <div className="forme-centeore">
           <form className="form-word" onSubmit={handleSubmit}>
             <div className="Login-form-group">
-              <label htmlFor="department">Department</label>
+              <label htmlFor="department">Role</label>
               <select
                 name="department"
                 onChange={hanldeChange}
                 id="department"
                 value={loginDetail.department}
+                required
               >
-                <option disabled></option>
-                <option>Accounts</option>
-                <option>Production</option>
-                <option>Maintenance</option>
+                <option defa></option>
+                <option>Accountant</option>
+                <option>Supervisor</option>
+                <option>SuperAdmin</option>
               </select>
             </div>
 
             <div className="Login-form-group">
-              <label htmlFor="userid">Employee Id</label>
+              <label htmlFor="employeeId">Employee Id</label>
               <input
-                type="text"
-                id="userid"
-                name="userid"
+                type="number"
+                id="employeeId"
+                name="employeeId"
                 onChange={hanldeChange}
                 value={loginDetail.userid}
+                required
               />
             </div>
             <div className="Login-form-group">
@@ -98,6 +95,7 @@ export default function Login() {
                   name="password"
                   onChange={hanldeChange}
                   value={loginDetail.password}
+                  required
                 />
                 <span className="Login-password-toggle">
                   <i className="fa-solid fa-eye"></i>
@@ -105,10 +103,10 @@ export default function Login() {
                 </span>
               </div>
             </div>
-            <div className="Login-remember-me">
-              <input type="checkbox" id="remember" />
-              <label htmlFor="remember">Remember me</label>
-            </div>
+            {/* <div className="Login-remember-me"> */}
+            {/* <input type="checkbox" id="remember" /> */}
+            {/* <label htmlFor="remember">Remember me</label> */}
+            {/* </div> */}
             <div className="Login-forgot-password">
               <a href="#">Forgot Password?</a>
             </div>
@@ -117,9 +115,9 @@ export default function Login() {
             </button>
           </form>
         </div>
-        <div className="Login-create-account">
+        {/* <div className="Login-create-account">
           Not Registered yet? <a href="#">Create an account</a>
-        </div>
+        </div> */}
       </div>
     </div>
   );

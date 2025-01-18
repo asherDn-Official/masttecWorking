@@ -1,6 +1,6 @@
 .Login-container {
   display: flex;
-  height: 100%;
+  height: 100vh;
 }
 .Login-left-side {
   flex: 1;

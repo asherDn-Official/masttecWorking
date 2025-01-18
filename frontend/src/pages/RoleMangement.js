@@ -23,33 +23,35 @@ export default function RoleMangement() {
   const [selectedUser, setSelectedUser] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
 
-  async function getemployee(){
+  async function getemployee() {
     try {
-      const response = await axios.get(`${url}/v1/api/employees`);      
-      const data =await response.data;
-      
-      if(data){
-        const alldata= data.map((emp,index) => {
-          return { id: index, name: emp.employeeName, email: emp.mailId, empId: emp.employeeId, roles: [], profileUrl:emp.employeePicture} 
+      const response = await axios.get(`${url}/v1/api/employees`);
+      const data = await response.data;
+
+      if (data) {
+        const alldata = data.map((emp, index) => {
+          return {
+            id: index,
+            name: emp.employeeName,
+            email: emp.mailId,
+            empId: emp.employeeId,
+            roles: [],
+            profileUrl: emp.employeePicture,
+          };
         });
         console.log(alldata);
-        setUsers(alldata)
+        setUsers(alldata);
       }
-
-      
     } catch (error) {
-      console.error('Error fetching data:', error);
-   }
+      console.error("Error fetching data:", error);
+    }
   }
 
-   useEffect(() => {  
-    getemployee();   
-   },[]);
-
+  useEffect(() => {
+    getemployee();
+  }, []);
 
   const handleAssignRole = () => {
-
-
     if (!selectedUser || !selectedRole) return;
     setUsers(
       users.map((user) => {
@@ -65,8 +67,7 @@ export default function RoleMangement() {
     setSelectedUser("");
     setSelectedRole("");
 
-    console.log(users)
-
+    console.log(users);
   };
 
   const handleRemoveUserRole = (userId, roleName) => {
@@ -82,7 +83,6 @@ export default function RoleMangement() {
       })
     );
   };
-
 
   return (
     <div className="digital-container ">
@@ -103,13 +103,12 @@ export default function RoleMangement() {
       <div className="section">
         <h2 className=" h-2">Assign Role</h2>
         <div className="add-new-role">
-          
-        <UserSearch 
-              users={users} 
-              onUserSelect={setSelectedUser} 
-              selectedUser={selectedUser}
-              onClearSelection={() => setSelectedUser(null)}
-        />
+          <UserSearch
+            users={users}
+            onUserSelect={setSelectedUser}
+            selectedUser={selectedUser}
+            onClearSelection={() => setSelectedUser(null)}
+          />
           <select
             value={selectedRole}
             onChange={(e) => setSelectedRole(e.target.value)}
@@ -127,7 +126,6 @@ export default function RoleMangement() {
           </button>
         </div>
       </div>
-
 
       {/* users roles */}
       <div className="section space">
