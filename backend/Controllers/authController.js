@@ -66,7 +66,7 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.verifyToken = (req, res) => {
+exports.verifyToken = async (req, res) => {
   try {
     // Step 1: Get the token from cookies
     const token = req.cookies.authToken;
@@ -78,10 +78,15 @@ exports.verifyToken = (req, res) => {
 
     // Step 2: Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
+    const employee = await Employee.findOne({ employeeId: decoded.employeeId });
+    if (!employee) {
+      return res.status(400).json({ error: "Employee not found" });
+    }
     // Step 3: Send the decoded token details to the frontend
     res.status(200).json({
       message: "Token is valid",
+      employeeName: employee.employeeName,
+      employeePicture: employee.employeePicture,
       employeeId: decoded.employeeId,
       role: decoded.role,
       department: decoded.department,
