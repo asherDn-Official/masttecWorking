@@ -3,46 +3,47 @@ import "../CSS/LoginCss.css";
 import axios from "axios";
 import API_URL from "../global";
 import { toast } from "react-toastify";
-import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const [loginUsers, setLoginuUsers] = useState({});
   const [loginDetail, setLoginDetail] = useState({
     department: "",
     employeeId: "",
     password: "",
   });
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const respose = await axios.post(
+      const response = await axios.post(
         `${API_URL}/v1/api/auth/login`,
         loginDetail
       );
-      // console.log(respose.data.message);
-      toast.success(respose.data.message, {
+      toast.success(response.data.message, {
         position: "top-right",
       });
 
-      navigate("/");
+      window.location.href = "/";
 
       setLoginDetail({
         department: "",
-        userid: "",
+        employeeId: "",
         password: "",
       });
     } catch (error) {
-      toast.error(error.response.data.error, {
-        position: "top-right",
-      });
+      if (error.response && error.response.data && error.response.data.error) {
+        toast.error(error.response.data.error, {
+          position: "top-right",
+        });
+      } else {
+        toast.error("An unexpected error occurred.", {
+          position: "top-right",
+        });
+      }
     }
   };
 
-  const hanldeChange = (e) => {
+  const handleChange = (e) => {
     setLoginDetail((oldDetail) => ({
       ...oldDetail,
       [e.target.name]: e.target.value,
@@ -53,24 +54,20 @@ export default function Login() {
     <div className="Login-container">
       <div className="Login-left-side"></div>
       <div className="Login-right-side">
-        <div className="Login-top-logo">
-          {/* <img src="/images/Logo 1.png" alt="Masttec Moulds" /> */}
-        </div>
+        <div className="Login-top-logo"></div>
         <h1>Log in</h1>
-        {error && <div className="Login-error">{error}</div>}{" "}
-        {/* Display error message */}
         <div className="forme-centeore">
           <form className="form-word" onSubmit={handleSubmit}>
             <div className="Login-form-group">
               <label htmlFor="department">Role</label>
               <select
                 name="department"
-                onChange={hanldeChange}
+                onChange={handleChange}
                 id="department"
                 value={loginDetail.department}
                 required
               >
-                <option defa></option>
+                <option value="" default></option>
                 <option>Accountant</option>
                 <option>Supervisor</option>
                 <option>SuperAdmin</option>
@@ -83,8 +80,8 @@ export default function Login() {
                 type="number"
                 id="employeeId"
                 name="employeeId"
-                onChange={hanldeChange}
-                value={loginDetail.userid}
+                onChange={handleChange}
+                value={loginDetail.employeeId}
                 required
               />
             </div>
@@ -95,7 +92,7 @@ export default function Login() {
                   type="password"
                   id="password"
                   name="password"
-                  onChange={hanldeChange}
+                  onChange={handleChange}
                   value={loginDetail.password}
                   required
                 />
@@ -105,10 +102,6 @@ export default function Login() {
                 </span>
               </div>
             </div>
-            {/* <div className="Login-remember-me"> */}
-            {/* <input type="checkbox" id="remember" /> */}
-            {/* <label htmlFor="remember">Remember me</label> */}
-            {/* </div> */}
             <div className="Login-forgot-password">
               <a href="#">Forgot Password?</a>
             </div>
@@ -117,9 +110,6 @@ export default function Login() {
             </button>
           </form>
         </div>
-        {/* <div className="Login-create-account">
-          Not Registered yet? <a href="#">Create an account</a>
-        </div> */}
       </div>
     </div>
   );

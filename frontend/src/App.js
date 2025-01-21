@@ -27,11 +27,12 @@ function App() {
   const shouldShowNavbar = !hideNavbarForPaths.includes(location.pathname);
   const [profile, setProfile] = useState({});
 
-  console.log(profile.role);
+  console.log(profile);
 
   async function getVerifyToken() {
     try {
       const res = await axios.get(`${API_URL}/v1/api/auth/verify`);
+      console.log(res.data);
       setProfile(res.data);
     } catch (error) {
       // if not cookie found go to login
