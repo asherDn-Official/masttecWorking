@@ -3,6 +3,7 @@ import "../CSS/LoginCss.css";
 import axios from "axios";
 import API_URL from "../global";
 import { toast } from "react-toastify";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [loginUsers, setLoginuUsers] = useState({});
@@ -12,11 +13,10 @@ export default function Login() {
     password: "",
   });
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    console.log(loginDetail);
 
     try {
       const respose = await axios.post(
@@ -27,6 +27,8 @@ export default function Login() {
       toast.success(respose.data.message, {
         position: "top-right",
       });
+
+      navigate("/");
 
       setLoginDetail({
         department: "",

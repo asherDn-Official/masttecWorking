@@ -31,6 +31,17 @@
   .masttec-menu {
     display: flex;
     list-style-type: none;
+    align-items: center;
+  }
+
+  .profile-image{
+    border-radius: 50%;
+    width: 50px;
+    outline: none;
+  }
+
+  .profile-links{
+    outline: none;
   }
 
   .masttec-menu-item {
@@ -75,6 +86,65 @@
 
   .masttec-submenu-link:hover {
     color: #d9d9d9;
+  }
+
+  /* USER PROFILE */
+
+  .user-profile{
+     background-color:#fff;
+     /* border-radius: 50%; */
+     width: 250px;
+     height: 160px;
+     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+     position: absolute;
+     top: 85px;
+     right: 5px;
+     z-index: 100;
+     padding: 10px;
+     border-radius: 10px;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: space-between;
+     text-align: center;
+     
+  }
+
+  .user-profile div >div{
+     padding-top: 2px;
+  }
+
+  .active{
+    display: none;
+  }
+
+  .user-name{
+    font-weight: 600;
+    font-size: 20px;
+  }
+
+  .user-Admin{
+    font-weight: 500;
+  }
+
+  .user-id{
+    color: #beb7b7;
+    font-size: small;
+  }
+
+  .logout{
+    background-color: #3c3b6e;
+    width: 100%;
+    color: #fff;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: small;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .logout:hover{  
+    background-color: #2f3b88;
   }
 
   /* Responsive Styles */
