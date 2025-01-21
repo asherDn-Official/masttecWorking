@@ -14,19 +14,19 @@ const MasttecNav = () => {
     Accountant: [
       { path: "/", linkName: "Home" },
       { path: "/payrun", linkName: "Payrun" },
-      { path: "/employeeDatails", linkName: "Employee list" },
+      { path: "/employeeDatails", linkName: "Employees" },
     ],
-    Supervisors: [
-      { path: "/", linkName: "home" },
-      { path: "/employeeDatails", linkName: "employees" },
+    Supervisor: [
+      { path: "/", linkName: "Home" },
+      { path: "/employeeDatails", linkName: "Employees" },
     ],
-    superAdmin: [
+    SuperAdmin: [
       { path: "/", linkName: "Role Management" },
       { path: "/holiday-page", linkName: "Holiday Approval" },
       { path: "/employeeDatails", linkName: "employees" },
       { path: "/payrun", linkName: "payrun" },
       { path: "/accountsDashboard", linkName: "Account Dashboard" },
-      { path: "/employeesAttendance", linkName: "Amployee Attendance" },
+      { path: "/employeesAttendance", linkName: "Employee Attendance" },
     ],
   });
 

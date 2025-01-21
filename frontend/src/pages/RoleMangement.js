@@ -3,25 +3,49 @@ import "../CSS/roleassignment.css";
 import UserSearch from "../Components/UserSearch";
 import axios from "axios";
 import url from "../Components/global";
+import { toast } from "react-toastify";
 
 const initialRoles = [
-  { id: "1", name: "SuperAdmin", createdAt: new Date() },
-  { id: "2", name: "Accountant", createdAt: new Date() },
-  { id: "3", name: "Supervisor", createdAt: new Date() },
+  { id: "1", name: "SuperAdmin"},
+  { id: "2", name: "Accountant"},
+  { id: "3", name: "Supervisor"},
 ];
-
-// const initialUsers = [
-//   { id: '1', name: 'John Doe', email: 'john@example.com', empId: 'EMP001', roles: [] },
-//   { id: '2', name: 'Jane Smith', email: 'jane@example.com', empId: 'EMP002', roles: [] },
-//   { id: '3', name: 'Mike Johnson', email: 'mike@example.com', empId: 'EMP003', roles: [] },
-// ];
 
 export default function RoleMangement() {
   const [roles, setRoles] = useState(initialRoles);
   const [users, setUsers] = useState([]);
-  // const [newRole, setNewRole] = useState("");
   const [selectedUser, setSelectedUser] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
+  const [autherizedUser, setautherizedUser] = useState([]);
+
+  async function getauthEmployee() {
+    try {
+      const response = await axios.get(`${url}/v1/api/role/getallroles`);
+
+      const userRolesMap = {};
+      response.data.roles.forEach(({ role, authorizedPersons }) => {
+        authorizedPersons.forEach((empId) => {
+          // If empId doesn't exist in the map, create an entry
+          if (!userRolesMap[empId]) {
+            userRolesMap[empId] = [];
+          }
+          // Add the role to the empId's roles array
+          userRolesMap[empId].push(role);
+        });
+
+        const initialUsers = Object.entries(userRolesMap).map(
+          ([empId, roles]) => ({
+            empId,
+            roles,
+          })
+        );
+
+        setautherizedUser(initialUsers);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   async function getemployee() {
     try {
@@ -39,7 +63,6 @@ export default function RoleMangement() {
             profileUrl: emp.employeePicture,
           };
         });
-        console.log(alldata);
         setUsers(alldata);
       }
     } catch (error) {
@@ -49,55 +72,56 @@ export default function RoleMangement() {
 
   useEffect(() => {
     getemployee();
+    getauthEmployee();
   }, []);
 
-  const handleAssignRole = () => {
-    if (!selectedUser || !selectedRole) return;
-    setUsers(
-      users.map((user) => {
-        if (user.id === selectedUser.id) {
-          return {
-            ...user,
-            roles: [...new Set([...user.roles, selectedRole])],
-          };
+  const handleAssignRole = async () => {
+    try {
+      const response = await axios.put(
+        `${url}/v1/api/role/addAuthorizedPerson`,
+        {
+          role: selectedRole,
+          employeeId: selectedUser.empId,
         }
-        return user;
-      })
-    );
-    setSelectedUser("");
-    setSelectedRole("");
+      );
 
-    console.log(users);
+      toast.success(response.data || "Role assigned successfully!", {
+        position: "top-right",
+      });
+
+      getauthEmployee();
+      //  empty the data after click
+      setSelectedUser("");
+      setSelectedRole("");
+    } catch (err) {
+      console.log(err);
+      toast.error(err.response || "Role assigned successfully!", {
+        position: "top-right",
+      });
+    }
   };
 
-  const handleRemoveUserRole = (userId, roleName) => {
-    setUsers(
-      users.map((user) => {
-        if (user.id === userId) {
-          return {
-            ...user,
-            roles: user.roles.filter((role) => role !== roleName),
-          };
+  const handleRemoveUserRole = async (userId, roleName) => {
+    try {
+      const response = await axios.put(
+        `${url}/v1/api/role/removeAuthorizedPerson`,
+        {
+          role: roleName,
+          employeeId: userId,
         }
-        return user;
-      })
-    );
+      );
+      console.log(response.data);
+
+      getauthEmployee();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
     <div className="digital-container ">
       <h1>Role Management</h1>
 
-      {/*role assignment  */}
-      {/* <div className="section">
-        <h2 className=" h-2">User Search</h2>
-        <UserSearch 
-              users={users} 
-              onUserSelect={setSelectedUser} 
-              selectedUser={selectedUser}
-              onClearSelection={() => setSelectedUser(null)}
-        />
-      </div> */}
 
       {/* assign role */}
       <div className="section">
@@ -135,16 +159,18 @@ export default function RoleMangement() {
           <div key={role.id} className="  roles-container ">
             <h3 className=" h-3">{role.name}</h3>
             <div className="added-users">
-              {users
+              {autherizedUser
                 .filter((user) => user.roles.includes(role.name))
-                .map((user) => (
-                  <div key={user.id} className=" user-item ">
+                .map((user,index) => (
+                  <div key={index} className=" user-item ">
                     <div>
                       <p className="font-medium">{user.name}</p>
                       <p className="user-email">Employee ID: {user.empId}</p>
                     </div>
                     <button
-                      onClick={() => handleRemoveUserRole(user.id, role.name)}
+                      onClick={() =>
+                        handleRemoveUserRole(user.empId, role.name)
+                      }
                       className=" remove-role-button"
                       title="Remove role from user"
                     >

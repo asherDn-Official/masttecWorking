@@ -5,12 +5,27 @@ import url from "../Components/global";
 import ErrorPopup from "../Components/errorPopup";
 import { useNavigate } from "react-router-dom";
 import profileImage from "../assets/images/profile.png";
+import DisableScreen from "../Components/DisableScreen";
+import API_URL from "../global";
 
 export default function EmployeeList() {
   const [employees, setEmployees] = useState([]);
   const [tempEmpData, setTempEmpData] = useState([]);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [profile,setProfile] = useState({}) 
+
+
+  async function getVerifyToken() {
+    try {
+      const res = await axios.get(`${API_URL}/v1/api/auth/verify`);
+      setProfile(res.data);
+
+    } catch (error) {
+      // if not cookie found go to login
+      navigate("/login");
+    }
+  }
 
   const fetchEmployees = async () => {
     try {
@@ -48,6 +63,7 @@ export default function EmployeeList() {
   useEffect(() => {
     fetchEmployees();
     fetchTempEmployees();
+    getVerifyToken();
   }, []);
   const navigateToEdit = (empID) => {
     navigate(`/edit-employee-details/${empID}`);
@@ -58,7 +74,6 @@ export default function EmployeeList() {
   async function navigateToDraft(id) {
     navigate(`/draft/${id}`);
   }
-  console.log(employees);
   return (
     <div>
       {error && <ErrorPopup error={error} setError={setError} />}
@@ -98,7 +113,11 @@ export default function EmployeeList() {
                     <div>
                       <img
                         className="empliyetegehpiccbd"
-                        src={emp.empImg?`http://localhost:4000${emp.empImg}`:profileImage}
+                        src={
+                          emp.empImg
+                            ? `http://localhost:4000${emp.empImg}`
+                            : profileImage
+                        }
                         alt={emp.empName || "Employee"}
                       />
                     </div>
@@ -121,7 +140,11 @@ export default function EmployeeList() {
                     <div>
                       <img
                         className="empliyetegehpiccbd"
-                        src={emp.empImg?`http://localhost:4000${emp.empImg}`:profileImage}
+                        src={
+                          emp.empImg
+                            ? `http://localhost:4000${emp.empImg}`
+                            : profileImage
+                        }
                         alt={emp.empName || "Employee"}
                       />
                     </div>
@@ -138,6 +161,7 @@ export default function EmployeeList() {
           </div>
         </div>
       </div>
+      {profile.role == "Supervisor" && <DisableScreen />}
     </div>
   );
 }

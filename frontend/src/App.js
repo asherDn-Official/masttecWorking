@@ -27,12 +27,10 @@ function App() {
   const shouldShowNavbar = !hideNavbarForPaths.includes(location.pathname);
   const [profile, setProfile] = useState({});
 
-  console.log(profile);
 
   async function getVerifyToken() {
     try {
       const res = await axios.get(`${API_URL}/v1/api/auth/verify`);
-      console.log(res.data);
       setProfile(res.data);
     } catch (error) {
       // if not cookie found go to login
@@ -54,12 +52,12 @@ function App() {
             <Route path="/payRun" element={<PayrollPage />} />
             <Route path="/employeeDatails" element={<EmployeeList />} />
           </>
-        ) : profile.role === "Supervisors" ? (
+        ) : profile.role === "Supervisor" ? (
           <>
             <Route path="/" element={<EmployeeAttendanceList />} />
-            <Route path="/employeeDatails" element={<EmployeeList />} />
+            <Route path="/employeeDatails" element={<EmployeeList  />} />
           </>
-        ) : profile.role === "superAdmin" ? (
+        ) : profile.role === "SuperAdmin" ? (
           <>
             <Route path="/" element={<RoleMangement />} />
             <Route path="/holiday-page" element={<HolidayPage />} />
@@ -74,6 +72,8 @@ function App() {
         ) : (
           <></>
         )}
+
+{/* <Route path="/role" element={<RoleMangement />} /> */}
 
         <Route path="/login" element={<Login />} />
         <Route
