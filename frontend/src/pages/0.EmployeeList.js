@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "../CSS/EmployeeListCss.css";
 import axios from "axios";
 import url from "../Components/global";
@@ -6,26 +6,14 @@ import ErrorPopup from "../Components/errorPopup";
 import { useNavigate } from "react-router-dom";
 import profileImage from "../assets/images/profile.png";
 import DisableScreen from "../Components/DisableScreen";
-import API_URL from "../global";
+import { ContentProvieder } from "../global";
 
 export default function EmployeeList() {
   const [employees, setEmployees] = useState([]);
   const [tempEmpData, setTempEmpData] = useState([]);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const [profile,setProfile] = useState({}) 
-
-
-  async function getVerifyToken() {
-    try {
-      const res = await axios.get(`${API_URL}/v1/api/auth/verify`);
-      setProfile(res.data);
-
-    } catch (error) {
-      // if not cookie found go to login
-      navigate("/login");
-    }
-  }
+  const profile = useContext(ContentProvieder);
 
   const fetchEmployees = async () => {
     try {
@@ -63,7 +51,6 @@ export default function EmployeeList() {
   useEffect(() => {
     fetchEmployees();
     fetchTempEmployees();
-    getVerifyToken();
   }, []);
   const navigateToEdit = (empID) => {
     navigate(`/edit-employee-details/${empID}`);
@@ -161,7 +148,7 @@ export default function EmployeeList() {
           </div>
         </div>
       </div>
-      {profile.role == "Supervisor" && <DisableScreen />}
+      {profile.role === "Supervisor" && <DisableScreen />}
     </div>
   );
 }

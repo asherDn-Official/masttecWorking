@@ -16,7 +16,8 @@ import RoleMangement from "./pages/RoleMangement";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import API_URL from "./global";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+import { ContentProvieder } from "./global";
 axios.defaults.withCredentials = true; //store cookie
 
 function App() {
@@ -26,7 +27,6 @@ function App() {
   const hideNavbarForPaths = ["/login"];
   const shouldShowNavbar = !hideNavbarForPaths.includes(location.pathname);
   const [profile, setProfile] = useState({});
-
 
   async function getVerifyToken() {
     try {
@@ -44,46 +44,47 @@ function App() {
 
   return (
     <div className="App">
-      {shouldShowNavbar && <MasttecNav />}
-      <Routes>
-        {profile.role === "Accountant" ? (
-          <>
-            <Route path="/" element={<EmployeeData />} />
-            <Route path="/payRun" element={<PayrollPage />} />
-            <Route path="/employeeDatails" element={<EmployeeList />} />
-          </>
-        ) : profile.role === "Supervisor" ? (
-          <>
-            <Route path="/" element={<EmployeeAttendanceList />} />
-            <Route path="/employeeDatails" element={<EmployeeList  />} />
-          </>
-        ) : profile.role === "SuperAdmin" ? (
-          <>
-            <Route path="/" element={<RoleMangement />} />
-            <Route path="/holiday-page" element={<HolidayPage />} />
-            <Route
-              path="/employeesAttendance"
-              element={<EmployeeAttendanceList />}
-            />
-            <Route path="/employeeDatails" element={<EmployeeList />} />
-            <Route path="/payRun" element={<PayrollPage />} />
-            <Route path="/accountsDashboard" element={<EmployeeData />} />
-          </>
-        ) : (
-          <></>
-        )}
+      <ContentProvieder.Provider value={profile}>
+        {shouldShowNavbar && <MasttecNav />}
 
-{/* <Route path="/role" element={<RoleMangement />} /> */}
+        <Routes>
+          {profile.role === "Accountant" ? (
+            <>
+              <Route path="/" element={<EmployeeData />} />
+              <Route path="/payRun" element={<PayrollPage />} />
+              <Route path="/employeeDatails" element={<EmployeeList />} />
+            </>
+          ) : profile.role === "Supervisor" ? (
+            <>
+              <Route path="/" element={<EmployeeAttendanceList />} />
+              <Route path="/employeeDatails" element={<EmployeeList />} />
+            </>
+          ) : profile.role === "SuperAdmin" ? (
+            <>
+              <Route path="/" element={<RoleMangement />} />
+              <Route path="/holiday-page" element={<HolidayPage />} />
+              <Route
+                path="/employeesAttendance"
+                element={<EmployeeAttendanceList />}
+              />
+              <Route path="/employeeDatails" element={<EmployeeList />} />
+              <Route path="/payRun" element={<PayrollPage />} />
+              <Route path="/accountsDashboard" element={<EmployeeData />} />
+            </>
+          ) : (
+            <></>
+          )}
 
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/employees-data1"
-          element={<EmployeeDataSecondSection />}
-        />
-        <Route path="/add-employee-details" element={<AddEmployee />} />
-        <Route path="/draft/:id" element={<DraftEmployee />} />
-        <Route path="/edit-employee-details/:id" element={<EditEmployee />} />
-      </Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/employees-data1"
+            element={<EmployeeDataSecondSection />}
+          />
+          <Route path="/add-employee-details" element={<AddEmployee />} />
+          <Route path="/draft/:id" element={<DraftEmployee />} />
+          <Route path="/edit-employee-details/:id" element={<EditEmployee />} />
+        </Routes>
+      </ContentProvieder.Provider>
 
       <ToastContainer />
     </div>

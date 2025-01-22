@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./MasttecNav.css"; // Assuming you save the CSS in a file named MasttecNav.css
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import API_URL from "../global";
 import { toast } from "react-toastify";
+import { ContentProvieder } from "../global";
 
 const MasttecNav = () => {
   const [initial, setinitial] = useState(["", ""]);
   const navigate = useNavigate();
-  const [profile, setProfile] = useState({});
+  const profile = useContext(ContentProvieder);
 
   const [navigateLink, setNavigateLink] = useState({
     Accountant: [
@@ -33,7 +34,7 @@ const MasttecNav = () => {
   async function getVerifyToken() {
     try {
       const res = await axios.get(`${API_URL}/v1/api/auth/verify`);
-      setProfile(res.data);
+      // setProfile(res.data);
     } catch (error) {
       // if not cookie found go to login
       navigate("/login");
@@ -100,33 +101,6 @@ const MasttecNav = () => {
               />
             </Link>
           </li>
-          {/*<li className="masttec-menu-item">
-            <a className="masttec-menu-link" href="#">
-              Payroll
-            </a>
-            {/* //  Uncomment the submenu if needed 
-            <ul className="masttec-submenu">
-              <li className="masttec-submenu-item">
-                <a className="masttec-submenu-link" href="#">View Payroll</a>
-              </li>
-              <li className="masttec-submenu-item">
-                <a className="masttec-submenu-link" href="#">Generate Payroll</a>
-              </li>
-              <li className="masttec-submenu-item">
-                <a className="masttec-submenu-link" href="#">Payroll Settings</a>
-              </li>
-            </ul> 
-          </li>*/}
-          {/* <li className="masttec-menu-item">
-            <a className="masttec-menu-link" href="#">
-              Settings
-            </a>
-          </li>
-          <li className="masttec-menu-item">
-            <a className="masttec-menu-link" href="#">
-              Log Out
-            </a>
-          </li> */}
         </ul>
       </nav>
       <div className="user-profile active">
