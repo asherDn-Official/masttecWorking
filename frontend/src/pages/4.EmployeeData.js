@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import EmployeeDataCss from "../CSS/EmployeeDataCss.css";
 import { formatDistanceToNow } from "date-fns";
 import url from "../Components/global";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import PieAnimation from "../Components/Pichart";
-
+import { ContentProvieder } from "../global";
 // profile picture
-import profile from '../assets/images/profile.png'
+import profile from "../assets/images/profile.png";
 
 export default function EmployeeData() {
   const [tempEmpData, setTempEmpData] = useState([]);
@@ -19,9 +19,11 @@ export default function EmployeeData() {
   );
   const [shiftTime, setShiftTime] = useState("19:00");
   const [summary, setSummary] = useState(null);
-
+  const profile = useContext(ContentProvieder);
   const shiftOptions = ["7:00", "9:00", "15:00", "19:00"];
-
+  const currentDate = new Date();
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Ensures two-digit format
+  const year = currentDate.getFullYear();
   const fetchAttendance = async () => {
     try {
       // Fetch employee and attendance data
@@ -95,12 +97,14 @@ export default function EmployeeData() {
             <div className="yrt454564565">
               <img
                 className="j46436646363"
-                src={profile}
+                src={`http://localhost:4000${profile.employeePicture}`}
                 alt="accountsectionimage"
               />
 
               <div>
-                <div className="msj3434jj785786">Hello, Sugumaran</div>
+                <div className="msj3434jj785786">
+                  Hello, {profile.employeeName}
+                </div>
                 <div className="nfi4j5j45">Accounts Department</div>
               </div>
             </div>
@@ -281,7 +285,7 @@ export default function EmployeeData() {
                   <div className="diviejdjj43"></div>
                   <div>
                     <div className="mooooossssooo">Pay Date</div>
-                    <div className="qioqiweie">26/08/2024</div>
+                    <div className="qioqiweie">05/{`${month}/${year}`}</div>
                   </div>
                 </div>
               </div>
@@ -306,11 +310,16 @@ export default function EmployeeData() {
                       />
                     </svg>
                     <span className="kkkkkkk2232332">
-                      Please process your Payrun before 25/08/2024
+                      Please process your Payrun before 05/{`${month}/${year}`}
                     </span>
                   </div>
                   <div>
-                    <button onClick={()=>navigate('/payrun')} className="CreatePayRun">Create Pay Run</button>
+                    <button
+                      onClick={() => navigate("/payrun")}
+                      className="CreatePayRun"
+                    >
+                      Create Pay Run
+                    </button>
                   </div>
                 </div>
               </div>
