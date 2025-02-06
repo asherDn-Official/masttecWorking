@@ -19,6 +19,7 @@ body {
   width: 177px;
   height: 259.15px;
   border-radius: 5px;
+  cursor: pointer;
   background-color: #fff;
   display: flex;
   flex-direction: column;
