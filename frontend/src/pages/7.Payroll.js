@@ -715,12 +715,12 @@ export default function PayrollPage() {
                 <div className="ksiskfdk54">
                   <div>
                     <img
-                      src={
-                        emp.employeePicture
-                          ? `http://localhost:4000${emp.employeePicture}`
-                          : profileImage
-                      }
-                      alt="profileImage"
+                      src={`http://localhost:4000${emp.employeePicture}`}
+                      alt={emp.empName || "Employee"}
+                      onError={(e) => {
+                        e.target.onerror = null; // prevent infinite loop
+                        e.target.src = profileImage; // fallback
+                      }}
                     />
                   </div>
                   <div className="nameofthejkd">{emp.employeeName}</div>

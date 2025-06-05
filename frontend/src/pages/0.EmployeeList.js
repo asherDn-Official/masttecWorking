@@ -98,15 +98,16 @@ export default function EmployeeList() {
                     onClick={() => navigateToEdit(emp.empID)}
                   >
                     <div>
-                      <img
-                        className="empliyetegehpiccbd"
-                        src={
-                          emp.empImg
-                            ? `http://localhost:4000${emp.empImg}`
-                            : profileImage
-                        }
-                        alt={emp.empName || "Employee"}
-                      />
+               <img
+  className="empliyetegehpiccbd"
+  src={`http://localhost:4000${emp.empImg}`}
+  alt={emp.empName || "Employee"}
+  onError={(e) => {
+    e.target.onerror = null;
+    e.target.src = profileImage;
+  }}
+/>
+
                     </div>
                     <div className="employeename122">{emp.empName}</div>
                     <div className="employedddworktype11">

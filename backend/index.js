@@ -13,6 +13,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const employeeRoutes = require("./Routes/EmployeeRoute");
 const attendanceRoutes = require("./Routes/AttendanceRouter");
+const attendanceRecordsRoutes = require("./Routes/attendance");
 const payRunCalcRoutes = require("./Routes/PayRunCalcRoute");
 const TempEmployeeRoutes = require("./Routes/TempEmployeeRouter");
 const payrollRoutes = require("./Routes/PayRollRoutes");
@@ -115,10 +116,12 @@ app.use("/v1/api/payruncalc", payRunCalcRoutes);
 app.use("/v1/api/tempEmployee", TempEmployeeRoutes);
 app.use("/v1/api/payroll", payrollRoutes);
 app.use("/v1/api/holiday", holidayRoutes);
+app.use('/v1/api/attendanceRecord', attendanceRecordsRoutes);
 //role-based authentication
 
 app.use("/v1/api/auth", authRoutes);
 app.use("/v1/api/role", roleRoutes);
+
 
 // Cron job to initialize daily attendance at midnight
 cron.schedule("0 0 * * *", () => {
