@@ -1,5 +1,6 @@
 const AttendanceRecord = require('../models/AttendanceRecord');
 const pdfExtractor = require('./pdfExtractor');
+const csvExcelExtractor = require('./csvExcelExtractor');
 
 class AttendanceService {
     async extractAndSaveAttendanceData(filePath, fileName = '') {
@@ -70,6 +71,73 @@ class AttendanceService {
 
         } catch (error) {
             console.error('Error in extractAndSaveAttendanceData:', error);
+            throw error;
+        }
+    }
+
+    async processAndSaveCSVExcelData(attendanceData, dateHeaders, reportPeriod) {
+        try {
+            console.log(`Processing CSV/Excel data for ${attendanceData.length} employees`);
+            
+            // Process the data using the CSV/Excel extractor
+            const parsedData = csvExcelExtractor.processAttendanceData(attendanceData, dateHeaders, reportPeriod);
+            
+            if (!parsedData.employees || parsedData.employees.length === 0) {
+                throw new Error('No employee data found in processed data');
+            }
+
+            console.log(`Found ${parsedData.employees.length} employees in the processed data`);
+
+            // Save each employee's data to MongoDB
+            const savedRecords = [];
+            for (const employee of parsedData.employees) {
+                const attendanceRecord = new AttendanceRecord({
+                    reportOverallDate: parsedData.reportOverallDate,
+                    reportPeriodFrom: parsedData.reportPeriodFrom,
+                    reportPeriodTo: parsedData.reportPeriodTo,
+                    employeeId: employee.id,
+                    employeeName: employee.name,
+                    department: employee.department,
+                    designation: employee.designation,
+                    category: employee.category,
+                    branch: employee.branch,
+                    dailyAttendance: employee.attendance,
+                    monthlySummary: employee.summary,
+                    pdfFileName: 'CSV_Excel_Upload'
+                });
+
+                // Check if record already exists
+                const existingRecord = await AttendanceRecord.findOne({
+                    employeeId: employee.id,
+                    reportPeriodFrom: parsedData.reportPeriodFrom,
+                    reportPeriodTo: parsedData.reportPeriodTo
+                });
+
+                if (existingRecord) {
+                    console.log(`Updating existing record for employee ${employee.id}`);
+                    Object.assign(existingRecord, attendanceRecord.toObject());
+                    existingRecord.extractedAt = new Date();
+                    await existingRecord.save();
+                    savedRecords.push(existingRecord);
+                } else {
+                    console.log(`Creating new record for employee ${employee.id}`);
+                    const savedRecord = await attendanceRecord.save();
+                    savedRecords.push(savedRecord);
+                }
+            }
+
+            return {
+                success: true,
+                message: `Successfully processed ${savedRecords.length} employee records from CSV/Excel`,
+                data: {
+                    reportPeriod: `${parsedData.reportPeriodFrom} to ${parsedData.reportPeriodTo}`,
+                    employeesProcessed: savedRecords.length,
+                    recordIds: savedRecords.map(record => record._id)
+                }
+            };
+
+        } catch (error) {
+            console.error('Error in processAndSaveCSVExcelData:', error);
             throw error;
         }
     }

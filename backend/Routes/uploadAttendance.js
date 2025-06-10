@@ -105,6 +105,51 @@ router.post('/process-local', async (req, res) => {
     }
 });
 
+// POST /api/attendance/upload-csv-excel - Process CSV/Excel data from frontend
+router.post('/upload-csv-excel', async (req, res) => {
+    try {
+        const { attendanceData, dateHeaders, reportPeriod } = req.body;
+        
+        if (!attendanceData || !Array.isArray(attendanceData) || attendanceData.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'No attendance data provided'
+            });
+        }
+
+        if (!dateHeaders || !Array.isArray(dateHeaders)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Date headers are required'
+            });
+        }
+
+        if (!reportPeriod || !reportPeriod.from || !reportPeriod.to) {
+            return res.status(400).json({
+                success: false,
+                message: 'Report period (from and to dates) is required'
+            });
+        }
+
+        console.log(`Processing CSV/Excel data for ${attendanceData.length} employees`);
+        
+        const result = await attendanceService.processAndSaveCSVExcelData(
+            attendanceData,
+            dateHeaders,
+            reportPeriod
+        );
+
+        res.json(result);
+    } catch (error) {
+        console.error('CSV/Excel processing error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error processing CSV/Excel data',
+            error: error.message
+        });
+    }
+});
+
 // GET /api/attendance/employee/:employeeId - Get specific employee attendance
 router.get('/employee/:employeeId', async (req, res) => {
     try {

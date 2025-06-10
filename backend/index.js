@@ -13,7 +13,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const employeeRoutes = require("./Routes/EmployeeRoute");
 const attendanceRoutes = require("./Routes/AttendanceRouter");
-const attendanceRecordsRoutes = require("./Routes/attendance");
+const attendanceRecordsRoutes = require("./Routes/uploadAttendance");
 const payRunCalcRoutes = require("./Routes/PayRunCalcRoute");
 const TempEmployeeRoutes = require("./Routes/TempEmployeeRouter");
 const payrollRoutes = require("./Routes/PayRollRoutes");
@@ -24,8 +24,8 @@ const bodyParser = require("body-parser");
 
 const app = express();
 // Middleware
-app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '50mb' })); // Increase JSON payload limit
+app.use(express.urlencoded({ limit: '50mb', extended: true })); // Increase URL-encoded payload limit
 app.use(cookieParser());
 app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
 
@@ -106,8 +106,8 @@ app.post("/v1/api/upload", upload, (req, res) => {
 });
 
 // Body parsers should be applied after multer middleware for other routes
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// app.use(express.json()); // Already configured with bodyParser above
+// app.use(express.urlencoded({ extended: false })); // Already configured above
 
 // Employee and Attendance routes
 app.use("/v1/api/employees", employeeRoutes);
@@ -116,7 +116,7 @@ app.use("/v1/api/payruncalc", payRunCalcRoutes);
 app.use("/v1/api/tempEmployee", TempEmployeeRoutes);
 app.use("/v1/api/payroll", payrollRoutes);
 app.use("/v1/api/holiday", holidayRoutes);
-app.use('/v1/api/attendanceRecord', attendanceRecordsRoutes);
+app.use('/v1/api/uploads', attendanceRecordsRoutes);
 //role-based authentication
 
 app.use("/v1/api/auth", authRoutes);

@@ -13,6 +13,8 @@ import MasttecNav from "./Components/Navbar";
 import HolidayPage from "./pages/HolidayPage";
 import { ToastContainer } from "react-toastify";
 import RoleMangement from "./pages/RoleMangement";
+import UploadAttendancePage from './pages/UploadAttendancePage'; // Adjust path if needed
+
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import API_URL from "./global";
@@ -70,6 +72,8 @@ function App() {
               <Route path="/employeeDatails" element={<EmployeeList />} />
               <Route path="/payRun" element={<PayrollPage />} />
               <Route path="/accountsDashboard" element={<EmployeeData />} />
+                        <Route path="/upload-attendance" element={<UploadAttendancePage />} />
+
             </>
           ) : (
             <></>
