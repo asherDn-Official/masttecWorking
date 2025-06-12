@@ -8,6 +8,9 @@ router.post("/", payrollController.createPayroll);
 // Get all payroll records
 router.get("/", payrollController.getAllPayrolls);
 
+// Process payroll from attendance data
+router.post("/process-from-attendance", payrollController.processPayrollFromAttendance);
+
 // Get a specific payroll record by employee ID
 router.get("/:employeeId", payrollController.getPayrollByEmployeeId);
 

@@ -1,6 +1,7 @@
 const AttendanceRecord = require('../models/AttendanceRecord');
 const pdfExtractor = require('./pdfExtractor');
 const csvExcelExtractor = require('./csvExcelExtractor');
+const payrollService = require('./payrollService');
 
 class AttendanceService {
     async extractAndSaveAttendanceData(filePath, fileName = '') {
@@ -56,6 +57,17 @@ class AttendanceService {
                     console.log(`Creating new record for employee ${employee.id}`);
                     const savedRecord = await attendanceRecord.save();
                     savedRecords.push(savedRecord);
+                }
+                
+                // Generate payroll data from attendance record
+                try {
+                    await payrollService.createOrUpdatePayrollFromAttendance(
+                        existingRecord || savedRecords[savedRecords.length - 1]
+                    );
+                    console.log(`Generated payroll data for employee ${employee.id}`);
+                } catch (payrollError) {
+                    console.error(`Error generating payroll for employee ${employee.id}:`, payrollError);
+                    // Continue processing other employees even if payroll generation fails for one
                 }
             }
 
@@ -123,6 +135,17 @@ class AttendanceService {
                     console.log(`Creating new record for employee ${employee.id}`);
                     const savedRecord = await attendanceRecord.save();
                     savedRecords.push(savedRecord);
+                }
+                
+                // Generate payroll data from attendance record
+                try {
+                    await payrollService.createOrUpdatePayrollFromAttendance(
+                        existingRecord || savedRecords[savedRecords.length - 1]
+                    );
+                    console.log(`Generated payroll data for employee ${employee.id}`);
+                } catch (payrollError) {
+                    console.error(`Error generating payroll for employee ${employee.id}:`, payrollError);
+                    // Continue processing other employees even if payroll generation fails for one
                 }
             }
 

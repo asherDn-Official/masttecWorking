@@ -89,19 +89,40 @@ const extractDateHeadersMap = (jsonData) => {
     return map.size > 0 ? map : null;
   };
 
+// Helper to parse various date formats into YYYY-MM-DD
+const parseAndFormatDateToYYYYMMDD = (dateString) => {
+  if (!dateString) return null;
+  // Try parsing DD-MMM-YYYY (e.g., 01-May-2025)
+  let parts = dateString.match(/(\d{2})-([A-Za-z]{3})-(\d{4})/);
+  if (parts) {
+    const day = parts[1];
+    const monthStr = parts[2];
+    const year = parts[3];
+    const monthMap = { Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06', Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12' };
+    const month = monthMap[monthStr.charAt(0).toUpperCase() + monthStr.slice(1).toLowerCase()];
+    if (month) return `${year}-${month}-${day}`;
+  }
+  // Try parsing DD-MM-YYYY (e.g., 01-05-2025)
+  parts = dateString.match(/(\d{2})-(\d{2})-(\d{4})/);
+  if (parts) {
+    return `${parts[3]}-${parts[2]}-${parts[1]}`;
+  }
+  // Add more parsers if needed or use a library like date-fns or dayjs for robust parsing
+  console.warn(`Could not parse date: ${dateString}. Returning as is or null.`);
+  return dateString; // Fallback or return null
+};
+
 const extractReportPeriodFromExcel = (jsonData, defaultDate) => {
     let fromDate = defaultDate;
     let toDate = defaultDate;
     for (const row of jsonData) {
         for (const key in row) {
             const cellValue = String(row[key]);
-            const periodMatch = cellValue.match(/Period From\s*:\s*(\d{2}-[A-Za-z]{3}-\d{4}|\d{2}-\d{2}-\d{4})\s*-\s*(\d{2}-[A-Za-z]{3}-\d{4}|\d{2}-\d{2}-\d{4})/i);
+            const periodMatch = cellValue.match(/Period From\s*:\s*(\d{2}-(?:[A-Za-z]{3}|\d{2})-\d{4})\s*-\s*(\d{2}-(?:[A-Za-z]{3}|\d{2})-\d{4})/i);
             if (periodMatch) {
-                // Placeholder: In a real scenario, parse and format these dates to YYYY-MM-DD
-                console.warn("Excel period found. Implement proper date parsing. Using default for now.", periodMatch[1], periodMatch[2]);
-                // fromDate = parseAndFormatDate(periodMatch[1]);
-                // toDate = parseAndFormatDate(periodMatch[2]);
-                return { from: fromDate, to: toDate }; // Return as soon as found
+                const parsedFrom = parseAndFormatDateToYYYYMMDD(periodMatch[1]);
+                const parsedTo = parseAndFormatDateToYYYYMMDD(periodMatch[2]);
+                return { from: parsedFrom || defaultDate, to: parsedTo || defaultDate }; // Return as soon as found
             }
         }
     }
@@ -138,7 +159,7 @@ const parseDetailsForDisplay = (employeeBlockDetails, dateMapObject) => {
 };
 
 // Parses details for backend payload
-const parseDetailsForBackendPayload = (employeeBlockDetails, dateMapObject) => {
+const parseDetailsForBackendPayload = (employeeBlockDetails, dateMapObject, reportYear) => {
     // This function is similar to parseEmployeeDetailsForBackend from 3.EmployeeAttendanceList.js
     // It structures the 'details' part of the payload for the backend.
     if (!dateMapObject || Object.keys(dateMapObject).length === 0) return [];
@@ -159,7 +180,12 @@ const parseDetailsForBackendPayload = (employeeBlockDetails, dateMapObject) => {
 
     sortedDates.forEach(dateStr => {
         const excelColumnKey = dateMapObject[dateStr];
-        const record = { date: dateStr };
+        // dateStr is "DD-MM". Combine with reportYear for "YYYY-MM-DD"
+        const [day, month] = dateStr.split('-');
+        const fullDateForPayload = reportYear && day && month ? `${reportYear}-${month}-${day}` : dateStr; // Fallback to DD-MM if year is missing
+
+        const record = { date: fullDateForPayload };
+
         frontendCategories.forEach(category => {
             const rowData = dataByCategory.get(category);
             let backendKey = category.toLowerCase().replace('.', ''); // Basic key conversion
@@ -225,18 +251,20 @@ export default function UploadAttendancePage() {
       const employeesFromCSV = extractEmployeeNamesFromCSV(csvContent);
       const employeeDataGroupsFromExcel = groupEmployeeData(jsonDataFromExcel);
       const extractedDateMap = extractDateHeadersMap(jsonDataFromExcel); // This is a Map
-      
+
       // Set date map for display functions
       setDateMapForDisplay(extractedDateMap);
-      // Set date headers for backend payload
-      if(extractedDateMap) {
-        setDateHeadersForPayload(Array.from(extractedDateMap.keys()));
-      }
-
 
       const today = new Date().toISOString().split("T")[0];
       const extractedReportPeriod = extractReportPeriodFromExcel(jsonDataFromExcel, today);
       setReportPeriod(extractedReportPeriod);
+
+      // Set date headers for backend payload, now including the year
+      if(extractedDateMap && extractedReportPeriod.from) {
+        const reportYear = extractedReportPeriod.from.split('-')[0]; // Extract YYYY from "YYYY-MM-DD"
+        const fullDateHeaders = Array.from(extractedDateMap.keys()).map(ddmm => `${reportYear}-${ddmm.split('-')[1]}-${ddmm.split('-')[0]}`); // YYYY-MM-DD
+        setDateHeadersForPayload(fullDateHeaders);
+      }
 
 
       if (employeesFromCSV.length === 0 || employeeDataGroupsFromExcel.length === 0 || !extractedDateMap || extractedDateMap.size === 0) {
@@ -255,13 +283,14 @@ export default function UploadAttendancePage() {
         }
       });
       
+      const reportYearForPayload = extractedReportPeriod.from ? extractedReportPeriod.from.split('-')[0] : new Date().getFullYear().toString();
       // Now, structure the data for display and for the backend payload
       const finalProcessedData = mergedData.map(emp => ({
         ...emp,
         // Details structured for display on this page
         displayDetails: parseDetailsForDisplay(emp.rawDetails, Object.fromEntries(extractedDateMap)),
         // Details structured for the backend payload
-        payloadDetails: parseDetailsForBackendPayload(emp.rawDetails, Object.fromEntries(extractedDateMap))
+        payloadDetails: parseDetailsForBackendPayload(emp.rawDetails, Object.fromEntries(extractedDateMap), reportYearForPayload)
       }));
 
       setProcessedAttendanceData(finalProcessedData);
@@ -299,7 +328,7 @@ export default function UploadAttendancePage() {
 
       const payload = {
         attendanceData: payloadData,
-        dateHeaders: dateHeadersForPayload, // Array of "DD-MM" date strings
+        dateHeaders: dateHeadersForPayload, // Now an array of "YYYY-MM-DD" date strings
         reportPeriod: reportPeriod, // { from: "YYYY-MM-DD", to: "YYYY-MM-DD" }
       };
       const response = await axios.post(`${API_URL}/v1/api/uploads/upload-csv-excel`, payload);

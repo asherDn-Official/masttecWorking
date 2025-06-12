@@ -128,4 +128,4 @@ const AttendanceRecordSchema = new mongoose.Schema({
 // Create compound index for efficient queries
 AttendanceRecordSchema.index({ employeeId: 1, reportPeriodFrom: 1, reportPeriodTo: 1 });
 
-module.exports = mongoose.model('AttendanceRecord', AttendanceRecordSchema);
+module.exports = mongoose.models.AttendanceRecord || mongoose.model('AttendanceRecord', AttendanceRecordSchema);

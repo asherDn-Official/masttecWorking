@@ -32,7 +32,7 @@ class CSVExcelExtractor {
             
             return {
                 employees: processedEmployees,
-                reportOverallDate: new Date().toISOString().split('T')[0],
+                reportOverallDate: reportPeriod.from, // Set to the start of the report period
                 reportPeriodFrom: reportPeriod.from,
                 reportPeriodTo: reportPeriod.to,
                 reportDates: dateHeaders

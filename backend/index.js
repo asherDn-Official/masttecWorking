@@ -20,6 +20,7 @@ const payrollRoutes = require("./Routes/PayRollRoutes");
 const holidayRoutes = require("./Routes/HolidayRouter");
 const authRoutes = require("./Routes/authRoutes");
 const roleRoutes = require("./Routes/RolesRoute");
+const attendanceRecordApiRoutes = require("./Routes/AttendanceRecordRouter"); // Added for AttendanceRecord
 const bodyParser = require("body-parser");
 
 const app = express();
@@ -117,6 +118,7 @@ app.use("/v1/api/tempEmployee", TempEmployeeRoutes);
 app.use("/v1/api/payroll", payrollRoutes);
 app.use("/v1/api/holiday", holidayRoutes);
 app.use('/v1/api/uploads', attendanceRecordsRoutes);
+app.use("/v1/api/attendance-records", attendanceRecordApiRoutes); // Added for AttendanceRecord
 //role-based authentication
 
 app.use("/v1/api/auth", authRoutes);
