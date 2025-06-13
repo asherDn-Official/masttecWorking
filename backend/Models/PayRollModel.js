@@ -9,29 +9,28 @@ const payrollSchema = new mongoose.Schema(
     },
     payrunHistory: [
       {
-        salaryMonth: { type: String },
-        salaryYear: { type: String },
-        present: { type: String },
-        absent: { type: String },
-        basic: { type: String },
-        houseRent: { type: String },
-        EPF: { type: String },
-        ESIC: { type: String },
-        incentives: { type: String },
-        allowances: { type: String },
-        advance: { type: String },
-        paymentLossDays: { type: String },
-        paymentLossAmount: { type: String },
-        OT1Hours: { type: String },
-        OT1Amount: { type: String },
-        OT2Hours: { type: String },
-        OT2Amount: { type: String },
-        holdOT: { type: String, default: "0" },
-        totalBasicPayment: { type: String },
-        totalOTPayment: { type: String },
-        payableSalary: { type: String },
-        balance: { type: String },
-        workedHours: { type: String },
+        salaryMonth: { type: String, required: true },
+        salaryYear: { type: String, required: true },
+        present: { type: String, default: "0" }, // From AttendanceRecord
+        absent: { type: String, default: "0" }, // From AttendanceRecord
+        basic: { type: String, default: "0" }, // From Employee model (salary)
+        houseRent: { type: String, default: "0" }, // Admin update
+        EPF: { type: String, default: "0" }, // From Employee model
+        ESIC: { type: String, default: "0" }, // From Employee model
+        incentives: { type: String, default: "0" }, // Admin update
+        allowances: { type: String, default: "0" }, // Admin update
+        advance: { type: String, default: "0" }, // Admin update
+        paymentLossDays: { type: String, default: "0" }, // Admin update
+        paymentLossAmount: { type: String, default: "0" }, // Admin update
+        OT1Hours: { type: String, default: "0" }, // Admin update
+        OT1Amount: { type: String, default: "0" }, // Admin update
+        OT2Hours: { type: String, default: "0" }, // Admin update
+        OT2Amount: { type: String, default: "0" }, // Admin update
+        holdOT: { type: String, default: "0" }, // Admin update
+        totalBasicPayment: { type: String, default: "0" }, // Admin update
+        totalOTPayment: { type: String, default: "0" }, // Admin update
+        payableSalary: { type: String, default: "0" }, // Admin update
+        balance: { type: String, default: "0" }, // Admin update
       },
     ],
   },

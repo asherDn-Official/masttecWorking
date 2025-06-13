@@ -1,5 +1,6 @@
 const Payroll = require('../Models/PayRollModel');
 const AttendanceRecord = require('../models/AttendanceRecord');
+const Employee = require('../Models/EmployeeModel');
 
 class PayrollService {
     /**
@@ -204,25 +205,78 @@ class PayrollService {
     }
 
     /**
-     * Generate payroll data from attendance record
+     * Generate payroll data from attendance record and employee data
      * @param {Object} attendanceRecord - Attendance record
-     * @param {number} basicSalary - Basic salary (default: 15000)
+     * @param {Object} employeeData - Employee data from Employee model
      * @returns {Object} Payroll data
      */
-    generatePayrollFromAttendance(attendanceRecord, basicSalary = 15000) {
+    async generatePayrollFromAttendance(attendanceRecord, employeeData = null) {
         try {
-            const { employeeId, employeeName, reportPeriodFrom, reportPeriodTo, dailyAttendance, monthlySummary } = attendanceRecord;
+            const { employeeId, employeeName, department, designation, reportPeriodFrom, reportPeriodTo, dailyAttendance, monthlySummary } = attendanceRecord;
+            
+            // Get employee data if not provided
+            if (!employeeData) {
+                employeeData = await Employee.findOne({ employeeId });
+                if (!employeeData) {
+                    console.warn(`Employee data not found for employeeId: ${employeeId}. Creating basic employee record.`);
+                    
+                    // Create basic employee record using the attendance data
+                    try {
+                        employeeData = new Employee({
+                            employeeId: employeeId,
+                            employeeName: employeeName || `Employee ${employeeId}`,
+                            salary: '0',
+                            epf: '0',
+                            esic: '0',
+                            status: true,
+                            department: attendanceRecord.department || '', // Use department from attendance record
+                            designation: attendanceRecord.designation || '', // Use designation from attendance record
+                            // Other fields will have default values
+                        });
+                        
+                        await employeeData.save();
+                        console.log(`✓ Created basic employee record for ID: ${employeeId}, Name: ${employeeName}`);
+                    } catch (createError) {
+                        console.error(`Error creating employee record for ${employeeId}:`, createError);
+                        // Fall back to using a temporary employee data structure
+                        employeeData = {
+                            employeeId: employeeId,
+                            salary: '0',
+                            epf: '0',
+                            esic: '0',
+                            employeeName: employeeName || `Employee ${employeeId}`
+                        };
+                    }
+                }
+            }
             
             // Extract month and year from report period
-            const [day, month, year] = reportPeriodFrom.split('-');
-            const salaryMonth = month;
-            const salaryYear = year;
+            // Handle both YYYY-MM-DD and DD-MM-YYYY formats
+            let salaryMonth, salaryYear;
+            const dateParts = reportPeriodFrom.split('-');
+            
+            if (dateParts[0].length === 4) {
+                // YYYY-MM-DD format
+                const [year, month, day] = dateParts;
+                salaryMonth = month;
+                salaryYear = year;
+            } else {
+                // DD-MM-YYYY format
+                const [day, month, year] = dateParts;
+                salaryMonth = month;
+                salaryYear = year;
+            }
+            
+            // Get salary, EPF, and ESIC from employee model
+            const basicSalary = parseFloat(employeeData.salary || '0');
+            const epfAmount = parseFloat(employeeData.epf || '0');
+            const esicAmount = parseFloat(employeeData.esic || '0');
             
             // Calculate hourly rate
             const hourlyRate = this.calculateHourlyRate(basicSalary);
-            console.log(`Hourly rate for employee ${employeeId}: ${hourlyRate}`);
+            console.log(`Employee ${employeeId}: Basic Salary: ${basicSalary}, EPF: ${epfAmount}, ESIC: ${esicAmount}, Hourly rate: ${hourlyRate}`);
             
-            // Calculate present and absent days
+            // Get present and absent days from attendance summary
             const presentDays = parseInt(monthlySummary.presentDays || '0');
             const absentDays = parseInt(monthlySummary.absentDays || '0');
             console.log(`Present days: ${presentDays}, Absent days: ${absentDays}`);
@@ -282,24 +336,23 @@ class PayrollService {
                 present: presentDays.toString(),
                 absent: absentDays.toString(),
                 basic: basicSalary.toString(),
-                houseRent: '0', // Default values, to be updated from frontend
-                EPF: '0',
-                ESIC: '0',
-                incentives: '0',
-                allowances: '0',
-                advance: '0',
+                houseRent: '0', // Default value for admin update
+                EPF: epfAmount.toString(), // From Employee model
+                ESIC: esicAmount.toString(), // From Employee model
+                incentives: '0', // Default value for admin update
+                allowances: '0', // Default value for admin update
+                advance: '0', // Default value for admin update
                 paymentLossDays,
                 paymentLossAmount,
                 OT1Hours: totalOT1Hours.toFixed(2),
                 OT1Amount: ot1Amount.toString(),
                 OT2Hours: totalOT2Hours.toFixed(2),
                 OT2Amount: ot2Amount.toString(),
-                holdOT: '0',
+                holdOT: '0', // Default value for admin update
                 totalBasicPayment,
                 totalOTPayment,
                 payableSalary,
-                balance: payableSalary, // Initially, balance equals payable salary
-                workedHours: totalWorkedHours.toFixed(2)
+                balance: payableSalary // Initially, balance equals payable salary
             };
             
             return payrollData;
@@ -325,7 +378,7 @@ class PayrollService {
             console.log(`Creating/updating payroll for employee ${employeeId}`);
             
             // Generate payroll data
-            const payrollData = this.generatePayrollFromAttendance(attendanceRecord);
+            const payrollData = await this.generatePayrollFromAttendance(attendanceRecord);
             
             if (!payrollData) {
                 console.error('Failed to generate payroll data for employee:', employeeId);
@@ -375,7 +428,8 @@ class PayrollService {
             return {
                 error: true,
                 message: error.message,
-                employeeId: attendanceRecord?.employeeId || 'unknown'
+                employeeId: attendanceRecord?.employeeId || 'unknown',
+                details: `Failed to process payroll for employee ${attendanceRecord?.employeeId}. ${error.message}`
             };
         }
     }
@@ -479,6 +533,74 @@ class PayrollService {
             return await Payroll.findOne({ employeeId });
         } catch (error) {
             console.error(`Error getting payroll for employee ${employeeId}:`, error);
+            throw error;
+        }
+    }
+
+    /**
+     * Get payroll records filtered by month and year
+     * @param {string} month - Month (MM format)
+     * @param {string} year - Year (YYYY format)
+     * @returns {Array} Payroll records for the specified month
+     */
+    async getPayrollByMonth(month, year) {
+        try {
+            const payrolls = await Payroll.find({
+                'payrunHistory.salaryMonth': month,
+                'payrunHistory.salaryYear': year
+            });
+
+            // Filter to return only the relevant payrun data for the specified month
+            const filteredPayrolls = payrolls.map(payroll => {
+                const relevantPayruns = payroll.payrunHistory.filter(
+                    payrun => payrun.salaryMonth === month && payrun.salaryYear === year
+                );
+                
+                return {
+                    ...payroll.toObject(),
+                    payrunHistory: relevantPayruns
+                };
+            }).filter(payroll => payroll.payrunHistory.length > 0);
+
+            return filteredPayrolls;
+        } catch (error) {
+            console.error(`Error getting payroll for month ${month}/${year}:`, error);
+            throw error;
+        }
+    }
+
+    /**
+     * Get all payroll records for a specific month with employee details
+     * @param {string} month - Month (MM format)
+     * @param {string} year - Year (YYYY format)
+     * @returns {Array} Payroll records with employee details
+     */
+    async getPayrollWithEmployeeDetailsByMonth(month, year) {
+        try {
+            const payrolls = await this.getPayrollByMonth(month, year);
+            
+            // Populate employee details for each payroll
+            const payrollsWithDetails = await Promise.all(
+                payrolls.map(async (payroll) => {
+                    try {
+                        const employee = await Employee.findOne({ employeeId: payroll.employeeId });
+                        return {
+                            ...payroll,
+                            employeeDetails: employee || null
+                        };
+                    } catch (error) {
+                        console.error(`Error fetching employee details for ${payroll.employeeId}:`, error);
+                        return {
+                            ...payroll,
+                            employeeDetails: null
+                        };
+                    }
+                })
+            );
+
+            return payrollsWithDetails;
+        } catch (error) {
+            console.error(`Error getting payroll with employee details for month ${month}/${year}:`, error);
             throw error;
         }
     }

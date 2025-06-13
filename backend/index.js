@@ -124,12 +124,23 @@ app.use("/v1/api/attendance-records", attendanceRecordApiRoutes); // Added for A
 app.use("/v1/api/auth", authRoutes);
 app.use("/v1/api/role", roleRoutes);
 
+// Health check endpoint
+app.get("/v1/api/health", (req, res) => {
+  res.json({ 
+    success: true, 
+    message: "API is working", 
+    timestamp: new Date().toISOString(),
+    port: port 
+  });
+});
 
 // Cron job to initialize daily attendance at midnight
 cron.schedule("0 0 * * *", () => {
   attendanceController.createDailyAttendance();
   console.log("Daily attendance initialized at midnight");
 });
+
+// IMPORTANT: Static files and catch-all route MUST be LAST
 app.use(express.static(path.join(__dirname, "../frontend/build")));
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
