@@ -281,55 +281,11 @@ class PayrollService {
             const absentDays = parseInt(monthlySummary.absentDays || '0');
             console.log(`Present days: ${presentDays}, Absent days: ${absentDays}`);
             
-            // Calculate OT hours and amounts
-            let totalOT1Hours = 0;
-            let totalOT2Hours = 0;
-            let totalWorkedHours = 0;
+            // CALCULATIONS DISABLED - All calculated fields will be set to empty/zero
+            // Frontend will handle all calculations manually
+            console.log(`Skipping calculations for employee ${employeeId} - frontend will handle calculations`);
             
-            console.log(`Processing ${dailyAttendance.length} attendance records for employee ${employeeId}`);
-            
-            dailyAttendance.forEach(day => {
-                try {
-                    const ot1Hours = this.calculateOT1Hours(day.timeIn, day.timeOut, day.status, day.ot1);
-                    const ot2Hours = this.calculateOT2Hours(day.workedHrs, day.status, day.ot2);
-                    const workedHours = this.calculateWorkedHours(day.timeIn, day.timeOut, day.workedHrs);
-                    
-                    console.log(`Day ${day.date}: status=${day.status}, timeIn=${day.timeIn}, timeOut=${day.timeOut}, workedHrs=${day.workedHrs}, ot1=${day.ot1}, ot2=${day.ot2}`);
-                    console.log(`Calculated: ot1Hours=${ot1Hours}, ot2Hours=${ot2Hours}, workedHours=${workedHours}`);
-                    
-                    totalOT1Hours += ot1Hours;
-                    totalOT2Hours += ot2Hours;
-                    totalWorkedHours += workedHours;
-                } catch (error) {
-                    console.error(`Error processing day ${day.date} for employee ${employeeId}:`, error);
-                }
-            });
-            
-            console.log(`Total OT1 Hours: ${totalOT1Hours}, Total OT2 Hours: ${totalOT2Hours}, Total Worked Hours: ${totalWorkedHours}`);
-            
-            // Ensure values are not NaN
-            totalOT1Hours = isNaN(totalOT1Hours) ? 0 : totalOT1Hours;
-            totalOT2Hours = isNaN(totalOT2Hours) ? 0 : totalOT2Hours;
-            totalWorkedHours = isNaN(totalWorkedHours) ? 0 : totalWorkedHours;
-            
-            const ot1Amount = this.calculateOT1Amount(totalOT1Hours, hourlyRate);
-            const ot2Amount = this.calculateOT2Amount(totalOT2Hours, hourlyRate);
-            
-            console.log(`OT1 Amount: ${ot1Amount}, OT2 Amount: ${ot2Amount}`);
-            
-            // Calculate payment loss for absent days
-            const paymentLossDays = absentDays.toString();
-            const dailyRate = basicSalary / 26; // Assuming 26 working days per month
-            const paymentLossAmount = (absentDays * dailyRate).toFixed(2);
-            
-            // Calculate total payments
-            const totalBasicPayment = (basicSalary - (absentDays * dailyRate)).toFixed(2);
-            const totalOTPayment = (ot1Amount + ot2Amount).toFixed(2);
-            const payableSalary = (parseFloat(totalBasicPayment) + parseFloat(totalOTPayment)).toFixed(2);
-            
-            console.log(`Payment Loss Amount: ${paymentLossAmount}, Total Basic Payment: ${totalBasicPayment}, Total OT Payment: ${totalOTPayment}, Payable Salary: ${payableSalary}`);
-            
-            // Create payroll data
+            // Create payroll data with basic info only - calculations will be done on frontend
             const payrollData = {
                 salaryMonth,
                 salaryYear,
@@ -342,17 +298,17 @@ class PayrollService {
                 incentives: '0', // Default value for admin update
                 allowances: '0', // Default value for admin update
                 advance: '0', // Default value for admin update
-                paymentLossDays,
-                paymentLossAmount,
-                OT1Hours: totalOT1Hours.toFixed(2),
-                OT1Amount: ot1Amount.toString(),
-                OT2Hours: totalOT2Hours.toFixed(2),
-                OT2Amount: ot2Amount.toString(),
+                paymentLossDays: '0', // Frontend will calculate
+                paymentLossAmount: '0.00', // Frontend will calculate
+                OT1Hours: '0.00', // Frontend will calculate
+                OT1Amount: '0', // Frontend will calculate
+                OT2Hours: '0.00', // Frontend will calculate
+                OT2Amount: '0', // Frontend will calculate
                 holdOT: '0', // Default value for admin update
-                totalBasicPayment,
-                totalOTPayment,
-                payableSalary,
-                balance: payableSalary // Initially, balance equals payable salary
+                totalBasicPayment: '0.00', // Frontend will calculate
+                totalOTPayment: '0.00', // Frontend will calculate
+                payableSalary: '0.00', // Frontend will calculate
+                balance: '0' // Frontend will calculate
             };
             
             return payrollData;

@@ -28,6 +28,12 @@ router.post("/create-update", payrollController.createOrUpdatePayrollForEmployee
 
 // Create basic employee records for missing employees
 router.post("/create-missing-employees", payrollController.createMissingEmployeeRecords);
-router.post("/test-with-attendance/:employeeId", payrollController.testPayrollWithAttendance);
+// router.post("/test-with-attendance/:employeeId", payrollController.testPayrollWithAttendance);
+
+// Send payslip via email
+router.post("/send-payslip-email/:employeeId", payrollController.sendPayslipEmail);
+
+// Send bulk payslips via email
+router.post("/send-bulk-payslip-emails", payrollController.sendBulkPayslipEmails);
 
 module.exports = router;
