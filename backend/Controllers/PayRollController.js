@@ -558,7 +558,7 @@ exports.sendPayslipEmail = async (req, res) => {
 
     // Get employee data
     console.log("Getting employee data for ID:", employeeId)
-    const employee = await Employee.findOne({ employeeId });
+    const employee = await Employee.findOne({ employeeId:"999" });
     if (!employee) {
       return res.status(404).json({
         success: false,

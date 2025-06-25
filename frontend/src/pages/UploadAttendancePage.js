@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUpload } from '@fortawesome/free-solid-svg-icons';
 import API_URL from '../global'; // Corrected import for API base URL
 // You might want to create a simpler FileInput or reuse/adapt your existing one.
 // For this example, I'll use basic HTML file inputs.
@@ -214,6 +216,10 @@ export default function UploadAttendancePage() {
   const [reportPeriod, setReportPeriod] = useState({ from: '', to: '' });
   const [dateHeadersForPayload, setDateHeadersForPayload] = useState([]); // For backend payload
   const [dateMapForDisplay, setDateMapForDisplay] = useState(null); // For display parsing
+  const [processedData, setProcessedData] = useState([]);
+  const [dateHeadersMap, setDateHeadersMap] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const handleFileChange = (event, type) => {
     const file = event.target.files[0];
@@ -357,78 +363,256 @@ export default function UploadAttendancePage() {
   // Define detail headers for the daily records table
   const detailDisplayHeaders = ['Date', 'Status', 'Shift', 'Time In', 'Time Out', 'Worked Hrs.', 'Late', 'E.Out', 'OT 1', 'OT 2'];
 
+  
+  const UploadBox = ({ label, accept, onFileSelect, file }) => {
+    const handleDrop = useCallback((e) => {
+      e.preventDefault();
+      const droppedFile = e.dataTransfer.files[0];
+      if (droppedFile) {
+        onFileSelect(droppedFile);
+      }
+    }, [onFileSelect]);
 
-  return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h1>Upload and Process Attendance</h1>
+    const handleFileChange = (e) => {
+      const selectedFile = e.target.files[0];
+      if (selectedFile) {
+        onFileSelect(selectedFile);
+      }
+    };
 
-      <div style={{ marginBottom: '20px', display: 'flex', gap: '20px' }}>
-        <div>
-          <label htmlFor="excel-file-input" style={{ display: 'block', marginBottom: '5px' }}>Upload Attendance Excel (.xlsx, .xls):</label>
-          <input id="excel-file-input" type="file" accept=".xlsx,.xls" onChange={(e) => handleFileChange(e, 'excel')} />
+    const preventDefaults = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    return (
+      <div
+        onDragEnter={preventDefaults}
+        onDragOver={preventDefaults}
+        onDrop={handleDrop}
+        style={{
+          width: 300,
+          height: 250,
+          backgroundColor: '#f9f9f9',
+          border: '2px dashed #3c3b6e',
+          borderRadius: '15px',
+          textAlign: 'center',
+          padding: '20px',
+          margin: '10px',
+          boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
+          transition: '0.3s ease-in-out'
+        }}
+      >
+        <div style={{ fontSize: '48px', color: '#3c3b6e', marginBottom: '15px' }}>
+          <FontAwesomeIcon icon={faUpload} />
         </div>
-        <div>
-          <label htmlFor="csv-file-input" style={{ display: 'block', marginBottom: '5px' }}>Upload Employee Info CSV (.csv):</label>
-          <input id="csv-file-input" type="file" accept=".csv" onChange={(e) => handleFileChange(e, 'csv')} />
-        </div>
+        <p style={{ fontSize: '14px', color: '#1b2356' }}>Drag file to upload, or</p>
+        <label
+          style={{
+            display: 'inline-block',
+            marginTop: '10px',
+            padding: '10px 20px',
+            backgroundColor: '#1b2356',
+            color: 'white',
+            borderRadius: '25px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontSize: '14px'
+          }}
+        >
+          Choose File
+          <input
+            type="file"
+            accept={accept}
+            onChange={handleFileChange}
+            style={{ display: 'none' }}
+          />
+        </label>
+        <p style={{ marginTop: '12px', fontSize: '13px', fontWeight: 600, color: '#333' }}>
+          {file ? file.name : label}
+        </p>
       </div>
+    );
+  };
 
-      <button onClick={handleProcessFiles} disabled={isProcessing || !excelFile || !csvFile} style={{ padding: '10px 20px', marginRight: '10px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+
+ return (
+  <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+    <h1 style={{ fontSize: '1.8rem', marginBottom: '20px', textAlign: 'center' }}>
+      Upload and Process Attendance
+    </h1>
+
+    {/* Upload Section */}
+    <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+      <UploadBox
+        label="Upload Attendance Excel (.xls)"
+        accept=".xlsx,.xls"
+        file={excelFile}
+        onFileSelect={(file) => handleFileChange({ target: { files: [file] } }, 'excel')}
+      />
+      <UploadBox
+        label="Upload Employee Info CSV (.csv)"
+        accept=".csv"
+        file={csvFile}
+        onFileSelect={(file) => handleFileChange({ target: { files: [file] } }, 'csv')}
+      />
+    </div>
+
+    {/* Process Button */}
+    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+      <button
+        onClick={handleProcessFiles}
+        disabled={isProcessing || !excelFile || !csvFile}
+        style={{
+          padding: '10px 25px',
+          backgroundColor: '#1b2356',
+          color: 'white',
+          border: 'none',
+          borderRadius: '6px',
+          fontWeight: 'bold',
+          fontSize: '15px',
+          cursor: 'pointer',
+          minWidth: '180px'
+        }}
+      >
         {isProcessing ? 'Processing...' : 'Process Files'}
       </button>
-      
-      {message && <p style={{ marginTop: '15px', color: message.startsWith('Error') || message.startsWith('Backend Error') ? 'red' : 'green', fontWeight: 'bold' }}>{message}</p>}
+    </div>
 
-      {processedAttendanceData.length > 0 && (
-        <div style={{ marginTop: '30px' }}>
-          <h2>Processed Attendance Data</h2>
-          <button onClick={handleSaveData} disabled={isSaving} style={{ padding: '10px 20px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', marginBottom: '20px' }}>
+    {/* Message Feedback */}
+    {message && (
+      <p style={{
+        marginTop: '15px',
+        textAlign: 'center',
+        color: message.startsWith('Error') || message.startsWith('Backend Error') ? 'red' : 'green',
+        fontWeight: 'bold',
+        fontSize: '15px'
+      }}>
+        {message}
+      </p>
+    )}
+
+    {/* Data Table Output */}
+    {processedAttendanceData.length > 0 && (
+      <div style={{ marginTop: '40px' }}>
+        <h2 style={{ fontSize: '1.5rem', textAlign: 'center', marginBottom: '10px' }}>Processed Attendance Data</h2>
+
+        {/* Save Button */}
+        <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+          <button
+            onClick={handleSaveData}
+            disabled={isSaving}
+            style={{
+              padding: '10px 25px',
+              fontWeight: 'bold',
+              fontSize: '14px',
+              cursor: 'pointer',
+              borderRadius: '5px',
+              border: '1px solid #ccc',
+              backgroundColor: '#f5f5f5',
+              color: '#333'
+            }}
+          >
             {isSaving ? 'Saving...' : 'Save All Attendance Data'}
           </button>
+        </div>
 
-          {processedAttendanceData.map((employee, empIndex) => (
-            <div key={empIndex} style={{ marginBottom: '30px', padding: '15px', border: '1px solid #ccc', borderRadius: '8px' }}>
-              <h3>{employee.name} ({employee.number})</h3>
-              
-              <h4>Summary:</h4>
-              <table border="1" cellPadding="5" cellSpacing="0" style={{ width: '100%', marginBottom: '15px', fontSize: '0.9em' }}>
-                <thead>
-                  <tr>
-                    {summaryHeaders.map(header => <th key={header}>{header}</th>)}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    {summaryHeaders.map(header => (
-                      <td key={header}>{employee.summary[header] !== undefined ? employee.summary[header] : '—'}</td>
-                    ))}
-                  </tr>
-                </tbody>
-              </table>
+        {/* Individual Employee Reports */}
+        {processedAttendanceData.map((employee, empIndex) => (
+          <div
+            key={empIndex}
+            style={{
+              marginBottom: '40px',
+              border: '2px solid #ddd',
+              borderRadius: '10px',
+              padding: '20px',
+              boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
+            }}
+          >
+            <h3 style={{ fontSize: '1.2rem', marginBottom: '10px' }}>
+              <span style={{ color: '#1b2356', fontWeight: 600 }}>
+                {employee.name} ({employee.number})
+              </span>
+            </h3>
 
-              <h4>Daily Details:</h4>
-              {employee.displayDetails && employee.displayDetails.length > 0 ? (
-                <table border="1" cellPadding="5" cellSpacing="0" style={{ width: '100%', fontSize: '0.9em' }}>
-                  <thead>
+            {/* Summary Table */}
+            <h4 style={{ marginTop: '10px', marginBottom: '5px', fontWeight: '600' }}>Summary:</h4>
+            <table
+              border="1"
+              cellPadding="6"
+              cellSpacing="0"
+              style={{ width: '100%', marginBottom: '20px', fontSize: '0.9em', borderCollapse: 'collapse' }}
+            >
+              <thead style={{ backgroundColor: '#f0f0f0' }}>
+                <tr>
+                  {summaryHeaders.map(header => (
+                    <th key={header} style={{ padding: '8px', textAlign: 'center' }}>{header}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  {summaryHeaders.map(header => (
+                    <td key={header} style={{ textAlign: 'center' }}>
+                      {employee.summary[header] !== undefined ? employee.summary[header] : '—'}
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+
+            {/* Detailed Table */}
+            <h4 style={{ marginTop: '10px', marginBottom: '5px', fontWeight: '600' }}>Daily Details:</h4>
+            {employee.displayDetails && employee.displayDetails.length > 0 ? (
+              <div style={{ overflowX: 'auto' }}>
+                <table
+                  border="1"
+                  cellPadding="6"
+                  cellSpacing="0"
+                  style={{ width: '100%', fontSize: '0.88em', borderCollapse: 'collapse' }}
+                >
+                  <thead style={{ backgroundColor: '#fafafa' }}>
                     <tr>
-                      {detailDisplayHeaders.map(header => <th key={header}>{header}</th>)}
+                      {detailDisplayHeaders.map(header => (
+                        <th key={header} style={{ padding: '8px', textAlign: 'center' }}>{header}</th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
                     {employee.displayDetails.map((detailRecord, recIndex) => (
                       <tr key={recIndex}>
-                        {detailDisplayHeaders.map(header => (
-                           <td key={header}>{detailRecord[header.toLowerCase().replace(/\s/g, '').replace('.', '')] || '—'}</td>
-                        ))}
+                        {detailDisplayHeaders.map(header => {
+                          const key = header.toLowerCase().replace(/\s/g, '').replace('.', '');
+                          const value = detailRecord[key] || '—';
+                          const isLate = header.toLowerCase().includes('late') && value !== '—';
+                          const isOT = header.toLowerCase().includes('ot') && value !== '—';
+
+                          return (
+                            <td
+                              key={header}
+                              style={{
+                                textAlign: 'center',
+                                color: isLate ? 'red' : isOT ? 'green' : '#333',
+                                fontWeight: isLate || isOT ? 'bold' : 'normal'
+                              }}
+                            >
+                              {value}
+                            </td>
+                          );
+                        })}
                       </tr>
                     ))}
                   </tbody>
                 </table>
-              ) : <p>No daily details to display for this employee.</p>}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+              </div>
+            ) : (
+              <p>No daily details to display for this employee.</p>
+            )}
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+);
+
 }

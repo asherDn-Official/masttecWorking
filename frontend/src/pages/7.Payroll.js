@@ -76,6 +76,7 @@ export default function PayrollPage() {
       setIsLoading(false);
     }
   };
+
   console.log("month: ", selectedMonth);
   console.log("year:", selectedYear);
   const fetchHolidays = async () => {
@@ -255,14 +256,82 @@ export default function PayrollPage() {
     }
   };
 
+  const fetchPayrollData = useCallback(async (year, month) => {
+  try {
+    setIsLoading(true);
+    const monthStr = String(month).padStart(2, '0');
+    const apiUrl = `http://localhost:4000/v1/api/payroll/month/${monthStr}/${year}`;
+    console.log(`Fetching payroll data from: ${apiUrl}`);
+
+    const response = await axios.get(apiUrl);
+    if (response.data.success && Array.isArray(response.data.data)) {
+      const mappedData = response.data.data.map(item => {
+        const emp = item.employeeDetails || {};
+        const payrun = (item.payrunHistory && item.payrunHistory[0]) || {};
+
+        return {
+          employeeId: item.employeeId,
+          employeeName: emp.employeeName || 'N/A',
+          employeePicture: emp.employeePicture ? `${url}${emp.employeePicture}` : profileImage,
+          employeeDepartment: emp.department || 'N/A',
+
+          // Mapped fields to match your input fields
+          employeePresentDays: payrun.present || '0',
+          employeeAbsentDays: payrun.absent || '0',
+          employeeBasicSalary: payrun.basic || '0',
+          employeeHouseRent: payrun.houseRent || '0',
+          employeeEPF: payrun.EPF || '0',
+          employeeESIC: payrun.ESIC || '0',
+          employeeIncentives: payrun.incentives || '0',
+          employeeAllowances: payrun.allowances || '0',
+          employeeAdvance: payrun.advance || '0',
+          employeePLoss: payrun.paymentLossDays || '0',
+          employeePLossAmount: payrun.paymentLossAmount || '0',
+          employeeOT1Hours: payrun.OT1Hours || '0',
+          employeeOT1Amount: payrun.OT1Amount || '0',
+          employeeOT2Hours: payrun.OT2Hours || '0',
+          employeeOT2Amount: payrun.OT2Amount || '0',
+          employeeHoldOT: payrun.holdOT || '0',
+          payOn5th: payrun.payOn5th || '0',
+          payOn20th: payrun.payOn20th || '0',
+          empSalary: payrun.payableSalary || '0',
+          empBalance: payrun.balance || '0',
+        };
+      });
+      setEmployee(mappedData);
+    } else {
+      setEmployee([]);
+    }
+  } catch (error) {
+    console.error("Error fetching payroll data:", error);
+    handleError("Failed to fetch payroll data.");
+  } finally {
+    setIsLoading(false);
+  }
+}, []);
+
+
+
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchAttendance();
-      await fetchEmployee(attendanceData);
-      await fetchHolidays();
-    };
-    fetchData();
-  }, [selectedYear]);
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      await Promise.all([
+        fetchPayrollData(selectedYear, selectedMonth),
+        fetchAttendance(),
+        fetchHolidays()
+      ]);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      handleError("Failed to fetch payroll, attendance, or holidays data.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  fetchData();
+}, [selectedYear, selectedMonth, fetchPayrollData]);
+
   const handleError = (message) => {
     setError(message);
     setTimeout(() => setError(""), 5000);
@@ -454,7 +523,7 @@ export default function PayrollPage() {
               <select
                 value={selectedMonth} // Bind the select value to state
                 onChange={(e) => {
-                  // handleMonth(e); // Update state
+                  handleMonth(e); // Update state
                   setSelectedMonth(e.target.value);
                   handleMonthChange(e); // Process the selected month
                 }}
@@ -627,27 +696,6 @@ export default function PayrollPage() {
                   </div>
                 </div>
               </div>
-              <div className="sliderfk5445">
-                <div>
-                  <svg
-                    width="43"
-                    height="43"
-                    viewBox="0 0 43 43"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <rect width="43" height="43" rx="21.5" fill="#17215E" />
-                    <path
-                      d="M20.9031 22.0964C23.2335 22.0964 25.345 22.8678 26.894 23.9465C28.3659 24.973 29.6126 26.4984 29.6126 28.1395C29.6126 29.0403 29.2282 29.7868 28.6222 30.3418C28.0524 30.8656 27.3083 31.2052 26.5419 31.4367C25.0103 31.9008 22.9934 32.0501 20.9031 32.0501C18.8129 32.0501 16.796 31.9008 15.2644 31.4367C14.4979 31.2052 13.7539 30.8656 13.1828 30.3418C12.5794 29.7881 12.1936 29.0416 12.1936 28.1407C12.1936 26.4996 13.4403 24.9742 14.9123 23.9477C16.4613 22.8678 18.5727 22.0964 20.9031 22.0964ZM29.6126 23.3406C30.9116 23.3406 32.0911 23.7698 32.9633 24.377C33.7596 24.9332 34.5895 25.8576 34.5895 26.9849C34.5895 27.6281 34.3095 28.1619 33.8927 28.5439C33.512 28.8935 33.0417 29.0988 32.6124 29.2282C32.0276 29.4049 31.3371 29.4957 30.6204 29.5355C30.7722 29.1063 30.8568 28.6397 30.8568 28.1395C30.8568 26.2296 29.6636 24.6072 28.3286 23.4812C28.7503 23.388 29.1808 23.3409 29.6126 23.3406ZM12.1936 23.3406C12.6391 23.3422 13.0671 23.3891 13.4777 23.4812C12.1439 24.6072 10.9494 26.2296 10.9494 28.1395C10.9494 28.6397 11.034 29.1063 11.1858 29.5355C10.4692 29.4957 9.77988 29.4049 9.19385 29.2282C8.7646 29.0988 8.29429 28.8935 7.91231 28.5439C7.69336 28.3477 7.51825 28.1076 7.3984 27.8392C7.27856 27.5708 7.21668 27.2801 7.2168 26.9861C7.2168 25.8601 8.04544 24.9344 8.84298 24.3782C9.82947 23.7019 10.9976 23.3402 12.1936 23.3406ZM28.9905 15.8753C29.8155 15.8753 30.6067 16.203 31.19 16.7863C31.7733 17.3697 32.1011 18.1609 32.1011 18.9858C32.1011 19.8108 31.7733 20.602 31.19 21.1853C30.6067 21.7686 29.8155 22.0964 28.9905 22.0964C28.1656 22.0964 27.3744 21.7686 26.791 21.1853C26.2077 20.602 25.88 19.8108 25.88 18.9858C25.88 18.1609 26.2077 17.3697 26.791 16.7863C27.3744 16.203 28.1656 15.8753 28.9905 15.8753ZM12.8158 15.8753C13.6407 15.8753 14.4319 16.203 15.0152 16.7863C15.5986 17.3697 15.9263 18.1609 15.9263 18.9858C15.9263 19.8108 15.5986 20.602 15.0152 21.1853C14.4319 21.7686 13.6407 22.0964 12.8158 22.0964C11.9908 22.0964 11.1996 21.7686 10.6163 21.1853C10.0329 20.602 9.70522 19.8108 9.70522 18.9858C9.70522 18.1609 10.0329 17.3697 10.6163 16.7863C11.1996 16.203 11.9908 15.8753 12.8158 15.8753ZM20.9031 10.8984C22.2231 10.8984 23.489 11.4228 24.4223 12.3561C25.3556 13.2895 25.88 14.5553 25.88 15.8753C25.88 17.1952 25.3556 18.4611 24.4223 19.3945C23.489 20.3278 22.2231 20.8521 20.9031 20.8521C19.5832 20.8521 18.3173 20.3278 17.384 19.3945C16.4506 18.4611 15.9263 17.1952 15.9263 15.8753C15.9263 14.5553 16.4506 13.2895 17.384 12.3561C18.3173 11.4228 19.5832 10.8984 20.9031 10.8984Z"
-                      fill="#EDEDED"
-                    />
-                  </svg>
-                </div>
-                <div className="keofroei4o5454">
-                  <div className="totalEmployewgy434">Total Deduction</div>
-                  <div className="noofemplueelist34">₹ 2,00,000.00</div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -709,60 +757,56 @@ export default function PayrollPage() {
               </div>
             </div>
           </div>
-          {employee &&
-            employee.map((emp, index) => (
-              <div className="flexofjo4546656" key={index}>
-                <div className="ksiskfdk54">
-                  <div>
-                    <img
-                      src={`http://localhost:4000${emp.employeePicture}`}
-                      alt={emp.empName || "Employee"}
-                      onError={(e) => {
-                        e.target.onerror = null; // prevent infinite loop
-                        e.target.src = profileImage; // fallback
-                      }}
-                    />
-                  </div>
-                  <div className="nameofthejkd">{emp.employeeName}</div>
-                  <div className="nameofthejkd">{emp.designation}</div>
-                  <div className="nameofthejkd">Emp Id - {emp.employeeId}</div>
-                  <div className="nameofthejkd">Salary - ₹ {emp.salary}</div>
-                  <div className="nameofthejkd">
-                    Salary/Hr - ₹ {emp.employeePerHrSalary}
-                  </div>
-                  <div className="nameofthejkd">
-                    <button
-                      className="pay-slip"
-                      onClick={() => sendEmployeeData(emp)}
-                    >
-                      {" "}
-                      pay slip{" "}
-                    </button>
-                  </div>
-                </div>
+          {employee.map((emp, index) => (
+            <div className="flexofjo4546656" key={emp.employeeId || index}>
+              <div className="ksiskfdk54">
                 <div>
-                  <div className="inputfLEXSHSH">
-                    {fields.map(({ label, field }) => (
-                      <div className="onekdi4545" key={field}>
-                        <div>
-                          <label className="lABLETTITLEII" htmlFor="">
-                            {label}
-                          </label>
-                        </div>
-                        <input
-                          onChange={(e) =>
-                            handleChange(e, emp.employeeId, field)
-                          }
-                          className="inputpayroll"
-                          type="number"
-                          value={emp[field]}
-                        />
-                      </div>
-                    ))}
-                  </div>
+                  <img
+                    src={emp.employeePicture}
+                    alt={emp.employeeName || "Employee"}
+                    onError={(e) => {
+                      e.target.onerror = null; // prevent infinite loop
+                      e.target.src = profileImage; // fallback image
+                    }}
+                    className="employee-image"
+                  />
+                </div>
+                <div className="nameofthejkd">{emp.employeeName}</div>
+                <div className="nameofthejkd">{emp.employeeDesignation || emp.designation || 'N/A'}</div>
+                <div className="nameofthejkd">Emp Id - {emp.employeeId}</div>
+                <div className="nameofthejkd">Salary - ₹ {emp.salary || 0}</div>
+                <div className="nameofthejkd">Salary/Hr - ₹ {emp.employeePerHrSalary || 0}</div>
+                <div className="nameofthejkd">
+                  <button
+                    className="pay-slip"
+                    onClick={() => sendEmployeeData(emp)}
+                  >
+                    Pay Slip
+                  </button>
                 </div>
               </div>
-            ))}
+
+              <div>
+                <div className="inputfLEXSHSH">
+                  {fields.map(({ label, field }) => (
+                    <div className="onekdi4545" key={`${emp.employeeId}-${field}`}>
+                      <div>
+                        <label className="lABLETTITLEII">
+                          {label}
+                        </label>
+                      </div>
+                      <input
+                        onChange={(e) => handleChange(e, emp.employeeId, field)}
+                        className="inputpayroll"
+                        type="number"
+                        value={emp[field] || 0}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
