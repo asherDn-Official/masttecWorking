@@ -109,7 +109,10 @@ router.post('/process-local', async (req, res) => {
 router.post('/upload-csv-excel', async (req, res) => {
     try {
         const { attendanceData, dateHeaders, reportPeriod } = req.body;
-        
+        // console.log("Received attendanceData:", attendanceData);
+        // console.log("Received dateHeaders:", dateHeaders);
+        console.log("Received reportPeriod:", reportPeriod);
+
         if (!attendanceData || !Array.isArray(attendanceData) || attendanceData.length === 0) {
             return res.status(400).json({
                 success: false,

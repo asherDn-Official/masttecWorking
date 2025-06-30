@@ -558,7 +558,7 @@ exports.sendPayslipEmail = async (req, res) => {
 
     // Get employee data
     console.log("Getting employee data for ID:", employeeId)
-    const employee = await Employee.findOne({ employeeId:"999" });
+    const employee = await Employee.findOne({ employeeId });
     if (!employee) {
       return res.status(404).json({
         success: false,
@@ -668,7 +668,7 @@ exports.sendBulkPayslipEmails = async (req, res) => {
     };
 
     // Configure nodemailer transporter
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: process.env.EMAIL_USER || 'your-email@gmail.com',
