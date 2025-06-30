@@ -6,48 +6,46 @@ import profileImage from "../assets/images/profile.png";
 
 export default function PayrollPage() {
   const [employee, setEmployee] = useState([]);
+  const [originalEmployeeData, setOriginalEmployeeData] = useState([]);
   const [attendanceData, setAttendanceData] = useState([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // Default to current month (1-based index)
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // Initialize with current year
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [holidayList, setHolidayList] = useState();
   const [searchQuery, setSearchQuery] = useState("");
+  const [modifiedEmployees, setModifiedEmployees] = useState({});
+
   const handleMonth = (e) => {
-    setSelectedMonth(e.target.value); // Update state with the selected value
+    setSelectedMonth(e.target.value);
   };
+
   const searchfilter = async (e) => {
     e.preventDefault();
     if (searchQuery) {
       setEmployee((prevState) =>
-        prevState.filter(
-          (emp) =>
+        prevState.filter((emp) => {
+          return (
             emp.employeeName
               .toLowerCase()
               .includes(searchQuery.toLowerCase()) ||
             emp.employeeId.toString().includes(searchQuery)
-        )
+          );
+        })
       );
     } else {
-      setEmployee(employee);
+      setEmployee(originalEmployeeData);
     }
   };
-  // const handleYearChange = async (e) => {
-  //   setSelectedYear(e.target.value);
-  // };
-  const handleMonthChange = (event) => {
-    const selectedMonthValue = parseInt(event.target.value); // Parse the selected value
-    //const currentYear = new Date().getFullYear(); // Get the current year
 
-    // Filter attendance data by the selected month and year
+  const handleMonthChange = (event) => {
+    const selectedMonthValue = parseInt(event.target.value);
     const filteredData = filterRecordsByMonth(
       attendanceData,
       selectedYear,
       selectedMonthValue
     );
-
-    // Fetch and update employee data with filtered records
-    fetchEmployee(filteredData); // Assuming fetchEmployee updates state or performs relevant tasks
+    fetchEmployee(filteredData);
   };
 
   const filterRecordsByMonth = useCallback((data, year, month) => {
@@ -77,27 +75,24 @@ export default function PayrollPage() {
     }
   };
 
-  console.log("month: ", selectedMonth);
-  console.log("year:", selectedYear);
   const fetchHolidays = async () => {
     setIsLoading(true);
     try {
-      console.log(selectedYear);
       const response = await axios.get(`${url}/v1/api/holiday/${selectedYear}`);
       setHolidayList(response.data.holidays);
-      console.log("holiday : ", holidayList);
     } catch (error) {
       handleError("Error fetching attendance data.");
     } finally {
       setIsLoading(false);
     }
   };
+
   const fetchEmployee = async (filteredAttendance) => {
     try {
       const empResponse = await axios.get(`${url}/v1/api/employees`);
       const employeeData = empResponse.data;
 
-      const totalOvertimeHours = {}; // Initialize total overtime storage
+      const totalOvertimeHours = {};
 
       const mappedEmployeeData = employeeData.map((emp) => {
         const attendanceRecord = filteredAttendance.find(
@@ -117,13 +112,12 @@ export default function PayrollPage() {
               (rec) => rec.status === "Up-Paid Leave"
             ).length
           : 0;
-        const salaryPerHr = Math.round(emp.salary / (30 * 8)) || 0; // Hourly rate calculation
-        const basicSalary = Math.round(salaryPerHr * presentDays * 8) / 2 || 0; // Adjusted for present days
-        const houseRent = Math.round(salaryPerHr * presentDays * 8) / 4 || 0; // Adjusted for present days
-        let totalOT1Minutes = 0; // Overtime for Present status
-        let totalOT2Minutes = 0; // Overtime for Sunday/Holiday status
+        const salaryPerHr = Math.round(emp.salary / (30 * 8)) || 0;
+        const basicSalary = Math.round(salaryPerHr * presentDays * 8) / 2 || 0;
+        const houseRent = Math.round(salaryPerHr * presentDays * 8) / 4 || 0;
+        let totalOT1Minutes = 0;
+        let totalOT2Minutes = 0;
 
-        // Calculate overtime from attendance records
         attendanceRecord?.records.forEach((record) => {
           const punchIn = new Date(record.punchIn);
           const punchOut = new Date(record.punchOut);
@@ -132,28 +126,25 @@ export default function PayrollPage() {
             const diffInMinutes = Math.floor(
               (punchOut - punchIn) / (1000 * 60)
             );
-            const excessMinutes = Math.max(0, diffInMinutes - 8 * 60); // Check for overtime
+            const excessMinutes = Math.max(0, diffInMinutes - 8 * 60);
 
-            // Assign overtime to the correct category based on the status
             if (
-              record.status === "Sunday" || // Check if it's Sunday
-              record.date.includes(holidayList) // Or a holiday
+              record.status === "Sunday" ||
+              record.date.includes(holidayList)
             ) {
-              totalOT2Minutes += diffInMinutes; // OT2 for Sunday/Holiday
+              totalOT2Minutes += diffInMinutes;
             } else if (record.status === "Present") {
-              totalOT1Minutes += excessMinutes; // OT1 for Present
+              totalOT1Minutes += excessMinutes;
             }
           }
         });
 
-        // Convert overtime minutes to hours and minutes
         const totalOT1Hours = Math.floor(totalOT1Minutes / 60);
         const totalOT1RemainderMinutes = totalOT1Minutes % 60;
 
         const totalOT2Hours = Math.floor(totalOT2Minutes / 60);
         const totalOT2RemainderMinutes = totalOT2Minutes % 60;
 
-        // Store the overtime hours for both OT1 and OT2
         totalOvertimeHours[emp.employeeId] = {
           OT1: {
             hours: totalOT1Hours,
@@ -165,15 +156,12 @@ export default function PayrollPage() {
           },
         };
 
-        // Convert OT1 and OT2 to decimal hours
         const ot1Decimal = totalOT1Hours + totalOT1RemainderMinutes / 60;
         const ot2Decimal = totalOT2Hours + totalOT2RemainderMinutes / 60;
 
-        // Calculate OT1 and OT2 amounts with the respective multipliers
-        const ot1Amount = Math.round(ot1Decimal * salaryPerHr * 1.25); // OT1 at 1.25x
-        const ot2Amount = Math.round(ot2Decimal * salaryPerHr * 1.75); // OT2 at 1.75x
+        const ot1Amount = Math.round(ot1Decimal * salaryPerHr * 1.25);
+        const ot2Amount = Math.round(ot2Decimal * salaryPerHr * 1.75);
 
-        // Calculate total salary and payments (automatically interlinked)
         const empSalary =
           basicSalary +
           houseRent +
@@ -208,7 +196,6 @@ export default function PayrollPage() {
           employeeId: emp.employeeId || "",
           employeeMobileNumber: emp.mobileNumber || "",
           employeeAadhaarNo: emp.aadhaarNo || "",
-
           bankName: emp.bankName || "",
           bankBranch: emp.bankBranch || "",
           designation: emp.designation || "",
@@ -230,25 +217,25 @@ export default function PayrollPage() {
           employeeAdvance: emp.employeeAdvance || 0,
           employeePLoss: unpaidLeave || 0,
           employeePLossAmount: productionLossAmount || 0,
-          employeeOT1Hours: ot1Decimal || 0, // OT1 in decimal
+          employeeOT1Hours: ot1Decimal || 0,
           employeeOT1Amount: ot1Amount || 0,
-          employeeOT2Hours: ot2Decimal || 0, // OT2 in decimal
+          employeeOT2Hours: ot2Decimal || 0,
           employeeOT2Amount: ot2Amount || 0,
           salary: emp.salary || 0,
           employeeHoldOT: emp.employeeHoldOT || 0,
-          payOn5th: payOn5th > 0 ? payOn5th : 0 || 0, // Calculated pay on 5th (without overtime)
-          payOn20th: payOn20th > 0 ? payOn20th : 0 || 0, // Calculated pay on 20th (with overtime)
-          empSalary: empSalary > 0 ? empSalary : 0 || 0, // Total salary (with overtime)
+          payOn5th: payOn5th > 0 ? payOn5th : 0 || 0,
+          payOn20th: payOn20th > 0 ? payOn20th : 0 || 0,
+          empSalary: empSalary > 0 ? empSalary : 0 || 0,
           empBalance: emp.empBalance || 0,
-          totalOT1: `${totalOT1Hours} hrs ${totalOT1RemainderMinutes} mins`, // OT1 in time format
-          totalOT2: `${totalOT2Hours} hrs ${totalOT2RemainderMinutes} mins`, // OT2 in time format,
+          totalOT1: `${totalOT1Hours} hrs ${totalOT1RemainderMinutes} mins`,
+          totalOT2: `${totalOT2Hours} hrs ${totalOT2RemainderMinutes} mins`,
           grossSalary,
           TotalDeductions,
         };
       });
 
       setEmployee(mappedEmployeeData);
-      console.log("employee : ", employee);
+      setOriginalEmployeeData(mappedEmployeeData);
     } catch (error) {
       console.error("Error fetching employee data:", error);
       setError("Error fetching employee data.");
@@ -257,80 +244,79 @@ export default function PayrollPage() {
   };
 
   const fetchPayrollData = useCallback(async (year, month) => {
-  try {
-    setIsLoading(true);
-    const monthStr = String(month).padStart(2, '0');
-    const apiUrl = `http://localhost:4000/v1/api/payroll/month/${monthStr}/${year}`;
-    console.log(`Fetching payroll data from: ${apiUrl}`);
-
-    const response = await axios.get(apiUrl);
-    if (response.data.success && Array.isArray(response.data.data)) {
-      const mappedData = response.data.data.map(item => {
-        const emp = item.employeeDetails || {};
-        const payrun = (item.payrunHistory && item.payrunHistory[0]) || {};
-
-        return {
-          employeeId: item.employeeId,
-          employeeName: emp.employeeName || 'N/A',
-          employeePicture: emp.employeePicture ? `${url}${emp.employeePicture}` : profileImage,
-          employeeDepartment: emp.department || 'N/A',
-
-          // Mapped fields to match your input fields
-          employeePresentDays: payrun.present || '0',
-          employeeAbsentDays: payrun.absent || '0',
-          employeeBasicSalary: payrun.basic || '0',
-          employeeHouseRent: payrun.houseRent || '0',
-          employeeEPF: payrun.EPF || '0',
-          employeeESIC: payrun.ESIC || '0',
-          employeeIncentives: payrun.incentives || '0',
-          employeeAllowances: payrun.allowances || '0',
-          employeeAdvance: payrun.advance || '0',
-          employeePLoss: payrun.paymentLossDays || '0',
-          employeePLossAmount: payrun.paymentLossAmount || '0',
-          employeeOT1Hours: payrun.OT1Hours || '0',
-          employeeOT1Amount: payrun.OT1Amount || '0',
-          employeeOT2Hours: payrun.OT2Hours || '0',
-          employeeOT2Amount: payrun.OT2Amount || '0',
-          employeeHoldOT: payrun.holdOT || '0',
-          payOn5th: payrun.payOn5th || '0',
-          payOn20th: payrun.payOn20th || '0',
-          empSalary: payrun.payableSalary || '0',
-          empBalance: payrun.balance || '0',
-        };
-      });
-      setEmployee(mappedData);
-    } else {
-      setEmployee([]);
-    }
-  } catch (error) {
-    console.error("Error fetching payroll data:", error);
-    handleError("Failed to fetch payroll data.");
-  } finally {
-    setIsLoading(false);
-  }
-}, []);
-
-
-
-  useEffect(() => {
-  const fetchData = async () => {
-    setIsLoading(true);
     try {
-      await Promise.all([
-        fetchPayrollData(selectedYear, selectedMonth),
-        fetchAttendance(),
-        fetchHolidays()
-      ]);
-    } catch (err) {
-      console.error("Error fetching data:", err);
-      handleError("Failed to fetch payroll, attendance, or holidays data.");
+      setIsLoading(true);
+      const monthStr = String(month).padStart(2, "0");
+      const apiUrl = `${url}/v1/api/payroll/month/${monthStr}/${year}`;
+
+      const response = await axios.get(apiUrl);
+      if (response.data.success && Array.isArray(response.data.data)) {
+        const mappedData = response.data.data.map((item) => {
+          const emp = item.employeeDetails || {};
+          const payrun = (item.payrunHistory && item.payrunHistory[0]) || {};
+
+          return {
+            employeeId: item.employeeId,
+            employeeName: emp.employeeName || "N/A",
+            employeePicture: emp.employeePicture
+              ? `${url}${emp.employeePicture}`
+              : profileImage,
+            employeeDepartment: emp.department || "N/A",
+            employeePresentDays: payrun.present || "0",
+            employeeAbsentDays: payrun.absent || "0",
+            employeeBasicSalary: payrun.basic || "0",
+            employeeHouseRent: payrun.houseRent || "0",
+            employeeEPF: payrun.EPF || "0",
+            employeeESIC: payrun.ESIC || "0",
+            employeeIncentives: payrun.incentives || "0",
+            employeeAllowances: payrun.allowances || "0",
+            employeeAdvance: payrun.advance || "0",
+            employeePLoss: payrun.paymentLossDays || "0",
+            employeePLossAmount: payrun.paymentLossAmount || "0",
+            employeeOT1Hours: payrun.OT1Hours || "0",
+            employeeOT1Amount: payrun.OT1Amount || "0",
+            employeeOT2Hours: payrun.OT2Hours || "0",
+            employeeOT2Amount: payrun.OT2Amount || "0",
+            employeeHoldOT: payrun.holdOT || "0",
+            payOn5th: payrun.payOn5th || "0",
+            payOn20th: payrun.payOn20th || "0",
+            empSalary: payrun.payableSalary || "0",
+            empBalance: payrun.balance || "0",
+          };
+        });
+        setEmployee(mappedData);
+        setOriginalEmployeeData(mappedData);
+      } else {
+        setEmployee([]);
+        setOriginalEmployeeData([]);
+      }
+    } catch (error) {
+      console.error("Error fetching payroll data:", error);
+      handleError("Failed to fetch payroll data.");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  fetchData();
-}, [selectedYear, selectedMonth, fetchPayrollData]);
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        await Promise.all([
+          fetchPayrollData(selectedYear, selectedMonth),
+          fetchAttendance(),
+          fetchHolidays(),
+        ]);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        handleError("Failed to fetch payroll, attendance, or holidays data.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [selectedYear, selectedMonth, fetchPayrollData]);
 
   const handleError = (message) => {
     setError(message);
@@ -394,16 +380,84 @@ export default function PayrollPage() {
       prevData.map((emp) => {
         if (emp.employeeId === id) {
           const updatedEmp = { ...emp, [field]: value };
-
-          // Calculate fields based on the updated employee data
           const calculatedFields = calculateFields(updatedEmp);
 
-          // Update the employee's fields
+          setModifiedEmployees((prev) => ({
+            ...prev,
+            [id]: true,
+          }));
+
           return { ...updatedEmp, ...calculatedFields };
         }
         return emp;
       })
     );
+  };
+
+  const handleUpdateEmployee = async (employeeId) => {
+    try {
+      const employeeToUpdate = employee.find(
+        (emp) => emp.employeeId === employeeId
+      );
+      if (!employeeToUpdate) {
+        alert("Employee not found");
+        return;
+      }
+
+      const payload = {
+        payrunHistory: [
+          {
+            salaryMonth: selectedMonth.toString(),
+            salaryYear: selectedYear.toString(),
+            present: employeeToUpdate.employeePresentDays,
+            absent: employeeToUpdate.employeeAbsentDays,
+            basic: employeeToUpdate.employeeBasicSalary,
+            houseRent: employeeToUpdate.employeeHouseRent,
+            EPF: employeeToUpdate.employeeEPF,
+            ESIC: employeeToUpdate.employeeESIC,
+            incentives: employeeToUpdate.employeeIncentives,
+            allowances: employeeToUpdate.employeeAllowances,
+            advance: employeeToUpdate.employeeAdvance,
+            paymentLossDays: employeeToUpdate.employeePLoss,
+            paymentLossAmount: employeeToUpdate.employeePLossAmount,
+            OT1Hours: employeeToUpdate.employeeOT1Hours,
+            OT1Amount: employeeToUpdate.employeeOT1Amount,
+            OT2Hours: employeeToUpdate.employeeOT2Hours,
+            OT2Amount: employeeToUpdate.employeeOT2Amount,
+            holdOT: employeeToUpdate.employeeHoldOT,
+            payableSalary: employeeToUpdate.empSalary,
+            balance: employeeToUpdate.empBalance,
+            payOn5th: employeeToUpdate.payOn5th,
+            payOn20th: employeeToUpdate.payOn20th,
+          },
+        ],
+      };
+
+      const response = await axios.put(
+        `${url}/v1/api/payroll/${employeeId}`,
+        payload,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (response.data.success) {
+        alert("Payroll record updated successfully!");
+        setModifiedEmployees((prev) => {
+          const newState = { ...prev };
+          delete newState[employeeId];
+          return newState;
+        });
+      } else {
+        alert(response.data.message || "Failed to update payroll record");
+      }
+    } catch (error) {
+      console.error("Error updating payroll record:", error);
+      const errorMsg =
+        error.response?.data?.message ||
+        "An error occurred while updating payroll record.";
+      alert(errorMsg);
+    }
   };
 
   const sendEmployeeData = async (employeebase) => {
@@ -418,7 +472,6 @@ export default function PayrollPage() {
         return;
       }
 
-      // Prepare the payload
       const payload = {
         employeeData: employeebase,
         email: employeebase.employeeEmail,
@@ -426,12 +479,10 @@ export default function PayrollPage() {
         year: selectedYear,
       };
 
-      // Send the request
       const response = await axios.post(`${url}/v1/api/payroll`, payload, {
         headers: { "Content-Type": "application/json" },
       });
 
-      // Check the response status
       if ([200, 201].includes(response.status)) {
         return { success: true, message: "Employee data sent successfully!" };
       } else {
@@ -446,45 +497,83 @@ export default function PayrollPage() {
     }
   };
 
+  // const handleSendAllEmployees = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     if (!selectedMonth || !selectedYear) {
+  //       alert("Please select both month and year.");
+  //       return;
+  //     }
+
+  //     const results = await Promise.all(
+  //       employee.map((emp) => sendEmployeeData(emp))
+  //     );
+
+  //     const failed = results.filter((result) => !result.success);
+
+  //     if (failed.length > 0) {
+  //       console.warn(
+  //         `Failed to send data for ${failed.length} employee(s):`,
+  //         failed.map((result) => result.message)
+  //       );
+  //       alert(`Failed to send data for ${failed.length} employee(s).`);
+  //     } else {
+  //       alert("Data successfully sent to all employees!");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error sending employee data:", error);
+  //     alert(
+  //       "An unexpected error occurred while sending employee data. Please try again."
+  //     );
+  //   }
+  // };
   const handleSendAllEmployees = async (e) => {
     e.preventDefault();
 
     try {
-      // Validate input fields
       if (!selectedMonth || !selectedYear) {
         alert("Please select both month and year.");
         return;
       }
 
-      // Send data for all employees concurrently
-      const results = await Promise.all(
-        employee.map((emp) => sendEmployeeData(emp))
+      const employeeIds = employee.map((emp) => emp.employeeId);
+      const payload = {
+        employeeIds,
+        salaryMonth: selectedMonth.toString().padStart(2, "0"),
+        salaryYear: selectedYear.toString(),
+      };
+
+      const response = await axios.post(
+        `${url}/v1/api/payroll/send-bulk-payslip-emails`,
+        payload,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
       );
 
-      console.log("results", results);
-      // Check results for failures
-      const failed = results.filter((result) => !result.success);
-
-      console.log("failed : ", failed);
-
-      if (failed.length > 0) {
-        console.warn(
-          `Failed to send data for ${failed.length} employee(s):`,
-          failed.map((result) => result.message)
-        );
-        alert(`Failed to send data for ${failed.length} employee(s).`);
+      if (response.data.success) {
+        const { successful, failed } = response.data.data;
+        if (failed.length > 0) {
+          alert(
+            `Bulk payslip sending completed. Sent: ${successful.length}, Failed: ${failed.length}`
+          );
+        } else {
+          alert(
+            `Successfully sent payslips to all ${successful.length} employees!`
+          );
+        }
       } else {
-        alert("Data successfully sent to all employees!");
+        alert(response.data.message || "Failed to send bulk payslips");
       }
     } catch (error) {
-      console.error("Error sending employee data:", error);
-      alert(
-        "An unexpected error occurred while sending employee data. Please try again."
-      );
+      console.error("Error sending bulk payslips:", error);
+      const errorMsg =
+        error.response?.data?.message ||
+        "An error occurred while sending bulk payslips.";
+      alert(errorMsg);
     }
   };
-
-  console.log("attendance : ", attendanceData);
   const fields = [
     { label: "Present", field: "employeePresentDays" },
     { label: "Absent", field: "employeeAbsentDays" },
@@ -506,12 +595,8 @@ export default function PayrollPage() {
     { label: "Pay on 20th", field: "payOn20th" },
     { label: "Salary", field: "empSalary" },
     { label: "Balance", field: "empBalance" },
-    // { label: "Salary", field: "empSalary" },
-    // { label: "Balance", field: "empBalance" },
-    // { label: "Salary", field: "empSalary" },
-    // { label: "Balance", field: "empBalance" },
-    // { label: "Salary", field: "empSalary" },
   ];
+
   return (
     <div>
       <div className="ksierperki4545454">
@@ -521,11 +606,11 @@ export default function PayrollPage() {
           <div className="header-section">
             <div>
               <select
-                value={selectedMonth} // Bind the select value to state
+                value={selectedMonth}
                 onChange={(e) => {
-                  handleMonth(e); // Update state
+                  handleMonth(e);
                   setSelectedMonth(e.target.value);
-                  handleMonthChange(e); // Process the selected month
+                  handleMonthChange(e);
                 }}
                 className="pojejrejrerer"
               >
@@ -547,7 +632,7 @@ export default function PayrollPage() {
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                className="  selection-option"
+                className="selection-option"
               >
                 <option value="">Select Year</option>
                 {Array.from({ length: 5 }, (_, i) => {
@@ -734,26 +819,19 @@ export default function PayrollPage() {
                 </div>
               </div>
               <div className="lsoi34545545">
+                {/* <button
+                  className="sharetoexportbutton"
+                  onClick={handleSendAllEmployees}
+                >
+                  PayRun
+                </button> */}
                 <button
                   className="sharetoexportbutton"
                   onClick={handleSendAllEmployees}
                 >
                   PayRun
                 </button>
-                <div className="shareiicontorxpoort">
-                  {/* <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 18 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M15 20C14.1667 20 13.4583 19.7083 12.875 19.125C12.2917 18.5417 12 17.8333 12 17C12 16.8833 12.0083 16.7623 12.025 16.637C12.0417 16.5117 12.0667 16.3993 12.1 16.3L5.05 12.2C4.76667 12.45 4.45 12.646 4.1 12.788C3.75 12.93 3.38333 13.0007 3 13C2.16667 13 1.45833 12.7083 0.875 12.125C0.291667 11.5417 0 10.8333 0 10C0 9.16667 0.291667 8.45833 0.875 7.875C1.45833 7.29167 2.16667 7 3 7C3.38333 7 3.75 7.071 4.1 7.213C4.45 7.355 4.76667 7.55067 5.05 7.8L12.1 3.7C12.0667 3.6 12.0417 3.48767 12.025 3.363C12.0083 3.23833 12 3.11733 12 3C12 2.16667 12.2917 1.45833 12.875 0.875C13.4583 0.291667 14.1667 0 15 0C15.8333 0 16.5417 0.291667 17.125 0.875C17.7083 1.45833 18 2.16667 18 3C18 3.83333 17.7083 4.54167 17.125 5.125C16.5417 5.70833 15.8333 6 15 6C14.6167 6 14.25 5.92933 13.9 5.788C13.55 5.64667 13.2333 5.45067 12.95 5.2L5.9 9.3C5.93333 9.4 5.95833 9.51267 5.975 9.638C5.99167 9.76333 6 9.884 6 10C6 10.116 5.99167 10.237 5.975 10.363C5.95833 10.489 5.93333 10.6013 5.9 10.7L12.95 14.8C13.2333 14.55 13.55 14.3543 13.9 14.213C14.25 14.0717 14.6167 14.0007 15 14C15.8333 14 16.5417 14.2917 17.125 14.875C17.7083 15.4583 18 16.1667 18 17C18 17.8333 17.7083 18.5417 17.125 19.125C16.5417 19.7083 15.8333 20 15 20Z"
-                      fill="white"
-                    />
-                  </svg> */}
-                </div>
+                <div className="shareiicontorxpoort"></div>
               </div>
             </div>
           </div>
@@ -765,17 +843,21 @@ export default function PayrollPage() {
                     src={emp.employeePicture}
                     alt={emp.employeeName || "Employee"}
                     onError={(e) => {
-                      e.target.onerror = null; // prevent infinite loop
-                      e.target.src = profileImage; // fallback image
+                      e.target.onerror = null;
+                      e.target.src = profileImage;
                     }}
                     className="employee-image"
                   />
                 </div>
                 <div className="nameofthejkd">{emp.employeeName}</div>
-                <div className="nameofthejkd">{emp.employeeDesignation || emp.designation || 'N/A'}</div>
+                <div className="nameofthejkd">
+                  {emp.employeeDesignation || emp.designation || "N/A"}
+                </div>
                 <div className="nameofthejkd">Emp Id - {emp.employeeId}</div>
                 <div className="nameofthejkd">Salary - ₹ {emp.salary || 0}</div>
-                <div className="nameofthejkd">Salary/Hr - ₹ {emp.employeePerHrSalary || 0}</div>
+                <div className="nameofthejkd">
+                  Salary/Hr - ₹ {emp.employeePerHrSalary || 0}
+                </div>
                 <div className="nameofthejkd">
                   <button
                     className="pay-slip"
@@ -783,17 +865,26 @@ export default function PayrollPage() {
                   >
                     Pay Slip
                   </button>
+                  {modifiedEmployees[emp.employeeId] && (
+                    <button
+                      className="update-button"
+                      onClick={() => handleUpdateEmployee(emp.employeeId)}
+                    >
+                      Update
+                    </button>
+                  )}
                 </div>
               </div>
 
               <div>
                 <div className="inputfLEXSHSH">
                   {fields.map(({ label, field }) => (
-                    <div className="onekdi4545" key={`${emp.employeeId}-${field}`}>
+                    <div
+                      className="onekdi4545"
+                      key={`${emp.employeeId}-${field}`}
+                    >
                       <div>
-                        <label className="lABLETTITLEII">
-                          {label}
-                        </label>
+                        <label className="lABLETTITLEII">{label}</label>
                       </div>
                       <input
                         onChange={(e) => handleChange(e, emp.employeeId, field)}
