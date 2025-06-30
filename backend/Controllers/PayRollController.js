@@ -200,6 +200,58 @@ exports.updatePayrollByEmployeeId = async (req, res) => {
   }
 };
 
+
+exports.updateMultiplePayrolls = async (req, res) => {
+  const updates = req.body; // Expecting an array of { employeeId, updateData }
+
+  if (!Array.isArray(updates)) {
+    return res.status(400).json({
+      success: false,
+      message: "Request body must be an array of updates",
+    });
+  }
+
+  try {
+    const results = await Promise.all(
+      updates.map(async ({ employeeId, updateData }) => {
+        try {
+          const updatedPayroll = await payrollService.updatePayrollByEmployeeId(
+            employeeId,
+            updateData
+          );
+          return {
+            employeeId,
+            success: true,
+            data: updatedPayroll,
+          };
+        } catch (error) {
+          return {
+            employeeId,
+            success: false,
+            error: error.message,
+          };
+        }
+      })
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Batch payroll update completed",
+      results,
+    });
+  } catch (error) {
+    console.error("Error processing batch payroll update:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error processing batch payroll update",
+      error: error.message,
+    });
+  }
+};
+
+
+
+
 // Delete a payroll record by employee ID
 exports.deletePayrollByEmployeeId = async (req, res) => {
   const { employeeId } = req.params;
