@@ -8,8 +8,8 @@ const EmployeeAttendance = () => {
   const getTodayDate = () => {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');  // Month is zero-based
-    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // Month is zero-based
+    const day = String(today.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
   const [selectedDate, setSelectedDate] = useState(getTodayDate());
@@ -68,7 +68,7 @@ const EmployeeAttendance = () => {
       "Late",
       "Early Out",
       "OT1",
-      "OT2"
+      "OT2",
     ];
     const rows = filteredData.map((r, i) => [
       i + 1,
@@ -83,10 +83,12 @@ const EmployeeAttendance = () => {
       r.late || "-",
       r.earlyOut || "-",
       r.ot1 || "-",
-      r.ot2 || "-"
+      r.ot2 || "-",
     ]);
-    const csvContent =
-      [headers.join(","), ...rows.map((row) => row.join(","))].join("\n");
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) => row.join(",")),
+    ].join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
@@ -100,9 +102,18 @@ const EmployeeAttendance = () => {
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial" }}>
-      <h2 style={{ color: "#1d275f", marginBottom: "10px" }}>Employee Details</h2>
+      <h2 style={{ color: "#1d275f", marginBottom: "10px" }}>
+        Employee Details
+      </h2>
 
-      <div style={{ display: "flex", gap: "10px", alignItems: "center", marginBottom: "10px" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "10px",
+          alignItems: "center",
+          marginBottom: "10px",
+        }}
+      >
         <input
           type="date"
           value={selectedDate}
@@ -111,7 +122,7 @@ const EmployeeAttendance = () => {
             padding: "4px",
             border: "1px solid #ccc",
             borderRadius: "4px",
-            width: "140px"
+            width: "140px",
           }}
         />
         <input
@@ -123,7 +134,7 @@ const EmployeeAttendance = () => {
             padding: "4px",
             border: "1px solid #ccc",
             borderRadius: "4px",
-            width: "160px"
+            width: "160px",
           }}
         />
         <button
@@ -134,10 +145,23 @@ const EmployeeAttendance = () => {
             padding: "4px 12px",
             border: "none",
             borderRadius: "4px",
-            cursor: "pointer"
+            cursor: "pointer",
           }}
         >
           Download CSV
+        </button>
+        <button
+          style={{
+            backgroundColor: "#1d275f",
+            color: "#fff",
+            padding: "4px 12px",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+          onClick={() => (window.location.href = "/upload-attendance")}
+        >
+          Upload Attendance
         </button>
       </div>
 
@@ -148,7 +172,7 @@ const EmployeeAttendance = () => {
         style={{
           width: "100%",
           borderCollapse: "collapse",
-          border: "1px solid #ccc"
+          border: "1px solid #ccc",
         }}
       >
         <thead>
@@ -204,72 +228,15 @@ const EmployeeAttendance = () => {
 const thStyle = {
   padding: "6px",
   border: "1px solid #ccc",
-  textAlign: "left"
+  textAlign: "left",
 };
 
 const tdStyle = {
   padding: "6px",
-  border: "1px solid #ccc"
+  border: "1px solid #ccc",
 };
 
 export default EmployeeAttendance;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import React, { useEffect, useState } from "react";
 // import "../CSS/EmployeeAttendanceListCss.css";
@@ -317,7 +284,6 @@ export default EmployeeAttendance;
 //           (attendance) => attendance.employeeId.toString() === employee.employeeId.toString()
 //         );
 
-
 //         // Extract only today’s attendance details if records are available
 //         const todayRecord = attendanceRecord?.records?.find(
 //           (record) => {
@@ -325,7 +291,6 @@ export default EmployeeAttendance;
 //             return recordDate === date;
 //           }
 //         );
-
 
 //         return {
 //           ...employee,
