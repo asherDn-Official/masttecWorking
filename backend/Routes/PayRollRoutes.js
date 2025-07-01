@@ -14,6 +14,8 @@ router.post("/process-from-attendance", payrollController.processPayrollFromAtte
 // Get a specific payroll record by employee ID
 router.get("/:employeeId", payrollController.getPayrollByEmployeeId);
 
+// In your routes file
+router.get("/email/results", payrollController.getEmailResults);
 // Update a payroll record by employee ID
 router.put("/:employeeId", payrollController.updatePayrollByEmployeeId);
 router.put("/bulkUpdate", payrollController.updateMultiplePayrolls);
@@ -36,5 +38,10 @@ router.post("/send-payslip-email/:employeeId", payrollController.sendPayslipEmai
 
 // Send bulk payslips via email
 router.post("/send-bulk-payslip-emails", payrollController.sendBulkPayslipEmails);
+
+
+
+
+
 
 module.exports = router;

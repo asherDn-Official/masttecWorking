@@ -6,7 +6,7 @@ const nodemailer = require("nodemailer");
 const htmlToPdf = require("html-pdf");
 const payrollService = require("../services/payrollService");
 const attendanceService = require("../services/attendanceService");
-
+const EmailResult =require("../Models/PayrollEmailResponse")
 // Helper function to format date
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -134,7 +134,7 @@ exports.getAllPayrolls = async (req, res) => {
       success: true,
       count: payrolls.length,
       data: payrolls,
-      message: `Retrieved ${payrolls.length} payroll records successfully`
+      message: `Retrieved ${payrolls.length} payroll records successfully`,
     });
   } catch (error) {
     console.error("Error retrieving payroll records:", error);
@@ -165,7 +165,10 @@ exports.getPayrollByEmployeeId = async (req, res) => {
       data: payroll,
     });
   } catch (error) {
-    console.error(`Error retrieving payroll for employee ${employeeId}:`, error);
+    console.error(
+      `Error retrieving payroll for employee ${employeeId}:`,
+      error
+    );
     res.status(500).json({
       success: false,
       message: "Error retrieving payroll record",
@@ -199,7 +202,6 @@ exports.updatePayrollByEmployeeId = async (req, res) => {
     });
   }
 };
-
 
 exports.updateMultiplePayrolls = async (req, res) => {
   const updates = req.body; // Expecting an array of { employeeId, updateData }
@@ -249,9 +251,6 @@ exports.updateMultiplePayrolls = async (req, res) => {
   }
 };
 
-
-
-
 // Delete a payroll record by employee ID
 exports.deletePayrollByEmployeeId = async (req, res) => {
   const { employeeId } = req.params;
@@ -296,7 +295,7 @@ exports.getPayrollByMonth = async (req, res) => {
     }
 
     const payrolls = await payrollService.getPayrollWithEmployeeDetailsByMonth(
-      month, 
+      month,
       year
     );
 
@@ -307,7 +306,10 @@ exports.getPayrollByMonth = async (req, res) => {
       data: payrolls,
     });
   } catch (error) {
-    console.error(`Error retrieving payroll for month ${month}/${year}:`, error);
+    console.error(
+      `Error retrieving payroll for month ${month}/${year}:`,
+      error
+    );
     res.status(500).json({
       success: false,
       message: "Error retrieving payroll records",
@@ -336,7 +338,7 @@ exports.createMissingEmployeeRecords = async (req, res) => {
       try {
         // Check if employee already exists
         const existingEmployee = await Employee.findOne({ employeeId });
-        
+
         if (existingEmployee) {
           existingEmployees.push(employeeId);
           continue;
@@ -357,10 +359,13 @@ exports.createMissingEmployeeRecords = async (req, res) => {
         createdEmployees.push(employeeId);
         console.log(`Created basic employee record for ID: ${employeeId}`);
       } catch (error) {
-        console.error(`Error creating employee record for ID ${employeeId}:`, error);
+        console.error(
+          `Error creating employee record for ID ${employeeId}:`,
+          error
+        );
         errors.push({
           employeeId,
-          error: error.message
+          error: error.message,
         });
       }
     }
@@ -376,9 +381,9 @@ exports.createMissingEmployeeRecords = async (req, res) => {
           totalProcessed: employeeIds.length,
           created: createdEmployees.length,
           existing: existingEmployees.length,
-          errors: errors.length
-        }
-      }
+          errors: errors.length,
+        },
+      },
     });
   } catch (error) {
     console.error("Error creating missing employee records:", error);
@@ -408,8 +413,8 @@ exports.createOrUpdatePayrollForEmployee = async (req, res) => {
     if (payrollRecord) {
       // Check if payrun for this month and year already exists
       const existingPayrunIndex = payrollRecord.payrunHistory.findIndex(
-        payrun => payrun.salaryMonth === salaryMonth && 
-                 payrun.salaryYear === salaryYear
+        (payrun) =>
+          payrun.salaryMonth === salaryMonth && payrun.salaryYear === salaryYear
       );
 
       if (existingPayrunIndex !== -1) {
@@ -419,15 +424,15 @@ exports.createOrUpdatePayrollForEmployee = async (req, res) => {
           payrunData: {
             ...payrunData,
             salaryMonth,
-            salaryYear
-          }
+            salaryYear,
+          },
         };
-        
+
         const updatedPayroll = await payrollService.updatePayrollByEmployeeId(
-          employeeId, 
+          employeeId,
           updateData
         );
-        
+
         return res.status(200).json({
           success: true,
           message: "Payroll record updated successfully",
@@ -458,15 +463,15 @@ exports.createOrUpdatePayrollForEmployee = async (req, res) => {
             totalBasicPayment: payrunData.totalBasicPayment || "0",
             totalOTPayment: payrunData.totalOTPayment || "0",
             payableSalary: payrunData.payableSalary || "0",
-            balance: payrunData.balance || "0"
-          }
+            balance: payrunData.balance || "0",
+          },
         };
-        
+
         const updatedPayroll = await payrollService.updatePayrollByEmployeeId(
-          employeeId, 
+          employeeId,
           updateData
         );
-        
+
         return res.status(201).json({
           success: true,
           message: "New payroll record added successfully",
@@ -497,7 +502,7 @@ exports.createOrUpdatePayrollForEmployee = async (req, res) => {
         totalBasicPayment: payrunData.totalBasicPayment || "0",
         totalOTPayment: payrunData.totalOTPayment || "0",
         payableSalary: payrunData.payableSalary || "0",
-        balance: payrunData.balance || "0"
+        balance: payrunData.balance || "0",
       };
 
       const newPayroll = await Payroll.create({
@@ -577,7 +582,7 @@ exports.createOrUpdatePayrollForEmployee = async (req, res) => {
 //           employeeId: employeeRecord.employeeId,
 //           employeeName: employeeRecord.employeeName,
 //           salary: employeeRecord.salary,
-//           epf: employeeRecord.epf,  
+//           epf: employeeRecord.epf,
 //           esic: employeeRecord.esic,
 //           wasCreated: true
 //         } : null
@@ -597,7 +602,7 @@ exports.createOrUpdatePayrollForEmployee = async (req, res) => {
 // Send payslip via email
 exports.sendPayslipEmail = async (req, res) => {
   try {
-    const {  salaryMonth, salaryYear } = req.body;
+    const { salaryMonth, salaryYear } = req.body;
     const { employeeId } = req.params;
 
     // Validate required fields
@@ -609,7 +614,7 @@ exports.sendPayslipEmail = async (req, res) => {
     }
 
     // Get employee data
-    console.log("Getting employee data for ID:", employeeId)
+    console.log("Getting employee data for ID:", employeeId);
     const employee = await Employee.findOne({ employeeId });
     if (!employee) {
       return res.status(404).json({
@@ -617,9 +622,9 @@ exports.sendPayslipEmail = async (req, res) => {
         message: `Employee not found with ID: ${employeeId}`,
       });
     }
-console.log("employeedetails",employee)
+    console.log("employeedetails", employee);
     // Check if employee has email
-    if (!employee.mailId || employee.mailId.trim() === '') {
+    if (!employee.mailId || employee.mailId.trim() === "") {
       return res.status(400).json({
         success: false,
         message: `Email address not found for employee: ${employee.employeeName}`,
@@ -637,7 +642,7 @@ console.log("employeedetails",employee)
 
     // Find the specific payrun for the month/year
     const payrun = payroll.payrunHistory.find(
-      p => p.salaryMonth === salaryMonth && p.salaryYear === salaryYear
+      (p) => p.salaryMonth === salaryMonth && p.salaryYear === salaryYear
     );
 
     if (!payrun) {
@@ -652,20 +657,22 @@ console.log("employeedetails",employee)
 
     // Configure nodemailer transporter
     const transporter = nodemailer.createTransport({
-      service: 'gmail', // You can change this to your email service
+      service: "gmail", // You can change this to your email service
       auth: {
         user: process.env.EMAIL_USER || "gangadharana01@gmail.com", // Set in environment variables
-        pass: process.env.EMAIL_PASS || 'moutcnnagdjyuobq' // Set in environment variables
-      }
+        pass: process.env.EMAIL_PASS || "moutcnnagdjyuobq", // Set in environment variables
+      },
     });
 
     // Email options
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'your-email@gmail.com',
+      from: process.env.EMAIL_USER || "your-email@gmail.com",
       // to: employee.mailId,
       to: "gangadharana01@gmail.com",
-      subject: `Payslip for ${getMonthName(salaryMonth)} ${salaryYear} - ${employee.employeeName}`,
-      html: payslipHTML
+      subject: `Payslip for ${getMonthName(salaryMonth)} ${salaryYear} - ${
+        employee.employeeName
+      }`,
+      html: payslipHTML,
     };
 
     // Send email
@@ -679,10 +686,9 @@ console.log("employeedetails",employee)
         employeeName: employee.employeeName,
         email: employee.mailId,
         period: `${getMonthName(salaryMonth)} ${salaryYear}`,
-        payableSalary: payrun.payableSalary
-      }
+        payableSalary: payrun.payableSalary,
+      },
     });
-
   } catch (error) {
     console.error("Error sending payslip email:", error);
     res.status(500).json({
@@ -699,7 +705,11 @@ exports.sendBulkPayslipEmails = async (req, res) => {
     const { employeeIds, salaryMonth, salaryYear } = req.body;
 
     // Validate required fields
-    if (!employeeIds || !Array.isArray(employeeIds) || employeeIds.length === 0) {
+    if (
+      !employeeIds ||
+      !Array.isArray(employeeIds) ||
+      employeeIds.length === 0
+    ) {
       return res.status(400).json({
         success: false,
         message: "Employee IDs array is required",
@@ -716,16 +726,16 @@ exports.sendBulkPayslipEmails = async (req, res) => {
     const results = {
       successful: [],
       failed: [],
-      total: employeeIds.length
+      total: employeeIds.length,
     };
 
     // Configure nodemailer transporter
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER || 'your-email@gmail.com',
-        pass: process.env.EMAIL_PASS || 'your-app-password'
-      }
+        user: process.env.EMAIL_USER || "your-email@gmail.com",
+        pass: process.env.EMAIL_PASS || "your-app-password",
+      },
     });
 
     // Process each employee
@@ -736,17 +746,17 @@ exports.sendBulkPayslipEmails = async (req, res) => {
         if (!employee) {
           results.failed.push({
             employeeId,
-            error: 'Employee not found'
+            error: "Employee not found",
           });
           continue;
         }
 
         // Check if employee has email
-        if (!employee.mailId || employee.mailId.trim() === '') {
+        if (!employee.mailId || employee.mailId.trim() === "") {
           results.failed.push({
             employeeId,
             employeeName: employee.employeeName,
-            error: 'Email address not found'
+            error: "Email address not found",
           });
           continue;
         }
@@ -757,21 +767,21 @@ exports.sendBulkPayslipEmails = async (req, res) => {
           results.failed.push({
             employeeId,
             employeeName: employee.employeeName,
-            error: 'Payroll record not found'
+            error: "Payroll record not found",
           });
           continue;
         }
 
         // Find the specific payrun
         const payrun = payroll.payrunHistory.find(
-          p => p.salaryMonth === salaryMonth && p.salaryYear === salaryYear
+          (p) => p.salaryMonth === salaryMonth && p.salaryYear === salaryYear
         );
 
         if (!payrun) {
           results.failed.push({
             employeeId,
             employeeName: employee.employeeName,
-            error: `Payroll record not found for ${salaryMonth}/${salaryYear}`
+            error: `Payroll record not found for ${salaryMonth}/${salaryYear}`,
           });
           continue;
         }
@@ -781,10 +791,12 @@ exports.sendBulkPayslipEmails = async (req, res) => {
 
         // Email options
         const mailOptions = {
-          from: process.env.EMAIL_USER || 'your-email@gmail.com',
+          from: process.env.EMAIL_USER || "your-email@gmail.com",
           to: employee.mailId,
-          subject: `Payslip for ${getMonthName(salaryMonth)} ${salaryYear} - ${employee.employeeName}`,
-          html: payslipHTML
+          subject: `Payslip for ${getMonthName(salaryMonth)} ${salaryYear} - ${
+            employee.employeeName
+          }`,
+          html: payslipHTML,
         };
 
         // Send email
@@ -794,27 +806,30 @@ exports.sendBulkPayslipEmails = async (req, res) => {
           employeeId,
           employeeName: employee.employeeName,
           email: employee.mailId,
-          payableSalary: payrun.payableSalary
+          payableSalary: payrun.payableSalary,
         });
 
         // Add small delay to avoid overwhelming the email server
-        await new Promise(resolve => setTimeout(resolve, 500));
-
+        await new Promise((resolve) => setTimeout(resolve, 500));
       } catch (error) {
-        console.error(`Error sending payslip to employee ${employeeId}:`, error);
+        console.error(
+          `Error sending payslip to employee ${employeeId}:`,
+          error
+        );
         results.failed.push({
           employeeId,
-          error: error.message
+          error: error.message,
         });
       }
     }
-
+    // Save results to the database
+    const emailResult = new EmailResult(results);
+    await emailResult.save();
     res.status(200).json({
       success: true,
       message: `Bulk payslip sending completed. Sent: ${results.successful.length}, Failed: ${results.failed.length}`,
-      data: results
+      data: results,
     });
-
   } catch (error) {
     console.error("Error sending bulk payslip emails:", error);
     res.status(500).json({
@@ -825,10 +840,32 @@ exports.sendBulkPayslipEmails = async (req, res) => {
   }
 };
 
+// In your controller file// In PayRollController.js
+exports.getEmailResults = async (req, res) => {
+  try {
+    console.log("getEmailResults endpoint called");
+    // Fetch email results from the database or service
+    const emailResults = await EmailResult.find(); // Assuming EmailResult is a model
+    res.status(200).json({
+      success: true,
+      data: emailResults,
+      message: "Email results retrieved successfully",
+    });
+  } catch (error) {
+    console.error("Error retrieving email results:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error retrieving email results",
+      error: error.message,
+    });
+  }
+};
+
+
 // Helper function to create payslip HTML template
 function createPayslipHTML(employee, payrun) {
   const monthName = getMonthName(payrun.salaryMonth);
-  
+
   return `
     <!DOCTYPE html>
     <html>
@@ -943,7 +980,9 @@ function createPayslipHTML(employee, payrun) {
         <div class="header">
           <div class="company-name">Massetec Technology Solutions</div>
           <div class="payslip-title">SALARY SLIP</div>
-          <div class="period">For the month of ${monthName} ${payrun.salaryYear}</div>
+          <div class="period">For the month of ${monthName} ${
+    payrun.salaryYear
+  }</div>
         </div>
 
         <div class="employee-info">
@@ -958,11 +997,11 @@ function createPayslipHTML(employee, payrun) {
             </div>
             <div class="detail-row">
               <span class="label">Department:</span>
-              <span>${employee.department || 'N/A'}</span>
+              <span>${employee.department || "N/A"}</span>
             </div>
             <div class="detail-row">
               <span class="label">Designation:</span>
-              <span>${employee.designation || 'N/A'}</span>
+              <span>${employee.designation || "N/A"}</span>
             </div>
           </div>
           <div class="employee-details">
@@ -976,11 +1015,11 @@ function createPayslipHTML(employee, payrun) {
             </div>
             <div class="detail-row">
               <span class="label">Bank Account:</span>
-              <span>${employee.bankAccountNumber || 'N/A'}</span>
+              <span>${employee.bankAccountNumber || "N/A"}</span>
             </div>
             <div class="detail-row">
               <span class="label">PAN Number:</span>
-              <span>${employee.PANNumber || 'N/A'}</span>
+              <span>${employee.PANNumber || "N/A"}</span>
             </div>
           </div>
         </div>
@@ -997,49 +1036,73 @@ function createPayslipHTML(employee, payrun) {
           <tbody>
             <tr>
               <td>Basic Salary</td>
-              <td class="amount">₹${parseFloat(payrun.basic || 0).toFixed(2)}</td>
+              <td class="amount">₹${parseFloat(payrun.basic || 0).toFixed(
+                2
+              )}</td>
               <td>EPF</td>
               <td class="amount">₹${parseFloat(payrun.EPF || 0).toFixed(2)}</td>
             </tr>
             <tr>
               <td>House Rent Allowance</td>
-              <td class="amount">₹${parseFloat(payrun.houseRent || 0).toFixed(2)}</td>
+              <td class="amount">₹${parseFloat(payrun.houseRent || 0).toFixed(
+                2
+              )}</td>
               <td>ESIC</td>
-              <td class="amount">₹${parseFloat(payrun.ESIC || 0).toFixed(2)}</td>
+              <td class="amount">₹${parseFloat(payrun.ESIC || 0).toFixed(
+                2
+              )}</td>
             </tr>
             <tr>
               <td>Incentives</td>
-              <td class="amount">₹${parseFloat(payrun.incentives || 0).toFixed(2)}</td>
+              <td class="amount">₹${parseFloat(payrun.incentives || 0).toFixed(
+                2
+              )}</td>
               <td>Advance</td>
-              <td class="amount">₹${parseFloat(payrun.advance || 0).toFixed(2)}</td>
+              <td class="amount">₹${parseFloat(payrun.advance || 0).toFixed(
+                2
+              )}</td>
             </tr>
             <tr>
               <td>Allowances</td>
-              <td class="amount">₹${parseFloat(payrun.allowances || 0).toFixed(2)}</td>
+              <td class="amount">₹${parseFloat(payrun.allowances || 0).toFixed(
+                2
+              )}</td>
               <td>Payment Loss</td>
-              <td class="amount">₹${parseFloat(payrun.paymentLossAmount || 0).toFixed(2)}</td>
+              <td class="amount">₹${parseFloat(
+                payrun.paymentLossAmount || 0
+              ).toFixed(2)}</td>
             </tr>
             <tr>
               <td>OT1 Payment (${payrun.OT1Hours || 0} hrs)</td>
-              <td class="amount">₹${parseFloat(payrun.OT1Amount || 0).toFixed(2)}</td>
+              <td class="amount">₹${parseFloat(payrun.OT1Amount || 0).toFixed(
+                2
+              )}</td>
               <td></td>
               <td class="amount"></td>
             </tr>
             <tr>
               <td>OT2 Payment (${payrun.OT2Hours || 0} hrs)</td>
-              <td class="amount">₹${parseFloat(payrun.OT2Amount || 0).toFixed(2)}</td>
+              <td class="amount">₹${parseFloat(payrun.OT2Amount || 0).toFixed(
+                2
+              )}</td>
               <td></td>
               <td class="amount"></td>
             </tr>
             <tr class="total-row">
               <td>TOTAL EARNINGS</td>
-              <td class="amount">₹${calculateTotalEarnings(payrun).toFixed(2)}</td>
+              <td class="amount">₹${calculateTotalEarnings(payrun).toFixed(
+                2
+              )}</td>
               <td>TOTAL DEDUCTIONS</td>
-              <td class="amount">₹${calculateTotalDeductions(payrun).toFixed(2)}</td>
+              <td class="amount">₹${calculateTotalDeductions(payrun).toFixed(
+                2
+              )}</td>
             </tr>
             <tr class="net-salary">
               <td colspan="2">NET SALARY</td>
-              <td colspan="2" class="amount">₹${parseFloat(payrun.payableSalary || 0).toFixed(2)}</td>
+              <td colspan="2" class="amount">₹${parseFloat(
+                payrun.payableSalary || 0
+              ).toFixed(2)}</td>
             </tr>
           </tbody>
         </table>
@@ -1057,26 +1120,40 @@ function createPayslipHTML(employee, payrun) {
 // Helper function to get month name
 function getMonthName(monthNumber) {
   const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
-  return months[parseInt(monthNumber) - 1] || 'Unknown';
+  return months[parseInt(monthNumber) - 1] || "Unknown";
 }
 
 // Helper function to calculate total earnings
 function calculateTotalEarnings(payrun) {
-  return parseFloat(payrun.basic || 0) +
-         parseFloat(payrun.houseRent || 0) +
-         parseFloat(payrun.incentives || 0) +
-         parseFloat(payrun.allowances || 0) +
-         parseFloat(payrun.OT1Amount || 0) +
-         parseFloat(payrun.OT2Amount || 0);
+  return (
+    parseFloat(payrun.basic || 0) +
+    parseFloat(payrun.houseRent || 0) +
+    parseFloat(payrun.incentives || 0) +
+    parseFloat(payrun.allowances || 0) +
+    parseFloat(payrun.OT1Amount || 0) +
+    parseFloat(payrun.OT2Amount || 0)
+  );
 }
 
 // Helper function to calculate total deductions
 function calculateTotalDeductions(payrun) {
-  return parseFloat(payrun.EPF || 0) +
-         parseFloat(payrun.ESIC || 0) +
-         parseFloat(payrun.advance || 0) +
-         parseFloat(payrun.paymentLossAmount || 0);
+  return (
+    parseFloat(payrun.EPF || 0) +
+    parseFloat(payrun.ESIC || 0) +
+    parseFloat(payrun.advance || 0) +
+    parseFloat(payrun.paymentLossAmount || 0)
+  );
 }
