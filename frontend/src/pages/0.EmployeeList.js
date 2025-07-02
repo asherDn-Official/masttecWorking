@@ -74,8 +74,23 @@ export default function EmployeeList() {
                   e.preventDefault();
                   navigateToAdd();
                 }}
+                style={{
+                  backgroundColor: "#1d275f", // Dark blue background
+                  color: "#ffffff", // White text
+                  padding: "8px 16px", // Vertical and horizontal padding
+                  border: "none", // No border
+                  borderRadius: "4px", // Slightly rounded corners
+                  cursor: "pointer", // Pointer cursor on hover
+                  fontSize: "14px", // Font size
+                  fontWeight: "500", // Medium font weight
+                  marginBottom: "20px",
+                  ":hover": {
+                    backgroundColor: "#2a3a7a", // Darker blue on hover
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.15)", // Stronger shadow on hover
+                  },
+                }}
               >
-                <div className="zvzgggw2323232">Add Emploee</div>
+                <div className="zvzgggw2323232">Add Employee</div>
               </button>
             </div>
 
@@ -98,16 +113,15 @@ export default function EmployeeList() {
                     onClick={() => navigateToEdit(emp.empID)}
                   >
                     <div>
-               <img
-  className="empliyetegehpiccbd"
-  src={`http://localhost:4000${emp.empImg}`}
-  alt={emp.empName || "Employee"}
-  onError={(e) => {
-    e.target.onerror = null;
-    e.target.src = profileImage;
-  }}
-/>
-
+                      <img
+                        className="empliyetegehpiccbd"
+                        src={`http://localhost:4000${emp.empImg}`}
+                        alt={emp.empName || "Employee"}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = profileImage;
+                        }}
+                      />
                     </div>
                     <div className="employeename122">{emp.empName}</div>
                     <div className="employedddworktype11">
