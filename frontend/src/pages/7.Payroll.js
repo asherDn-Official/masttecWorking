@@ -15,6 +15,8 @@ export default function PayrollPage() {
   const [holidayList, setHolidayList] = useState();
   const [searchQuery, setSearchQuery] = useState("");
   const [modifiedEmployees, setModifiedEmployees] = useState({});
+  const [isSendingPayslips, setIsSendingPayslips] = useState(false);
+  const [emailStatus, setEmailStatus] = useState({});
 
   const handleMonth = (e) => {
     setSelectedMonth(e.target.value);
@@ -91,14 +93,11 @@ export default function PayrollPage() {
     try {
       const empResponse = await axios.get(`${url}/v1/api/employees`);
       const employeeData = empResponse.data;
-
       const totalOvertimeHours = {};
-
       const mappedEmployeeData = employeeData.map((emp) => {
         const attendanceRecord = filteredAttendance.find(
           (att) => att.employeeId === emp.employeeId
         );
-
         const presentDays = attendanceRecord
           ? attendanceRecord.records.filter((rec) => rec.status === "Present")
               .length
@@ -117,17 +116,14 @@ export default function PayrollPage() {
         const houseRent = Math.round(salaryPerHr * presentDays * 8) / 4 || 0;
         let totalOT1Minutes = 0;
         let totalOT2Minutes = 0;
-
         attendanceRecord?.records.forEach((record) => {
           const punchIn = new Date(record.punchIn);
           const punchOut = new Date(record.punchOut);
-
           if (punchIn && punchOut && punchOut > punchIn) {
             const diffInMinutes = Math.floor(
               (punchOut - punchIn) / (1000 * 60)
             );
             const excessMinutes = Math.max(0, diffInMinutes - 8 * 60);
-
             if (
               record.status === "Sunday" ||
               record.date.includes(holidayList)
@@ -138,13 +134,10 @@ export default function PayrollPage() {
             }
           }
         });
-
         const totalOT1Hours = Math.floor(totalOT1Minutes / 60);
         const totalOT1RemainderMinutes = totalOT1Minutes % 60;
-
         const totalOT2Hours = Math.floor(totalOT2Minutes / 60);
         const totalOT2RemainderMinutes = totalOT2Minutes % 60;
-
         totalOvertimeHours[emp.employeeId] = {
           OT1: {
             hours: totalOT1Hours,
@@ -155,13 +148,10 @@ export default function PayrollPage() {
             minutes: totalOT2RemainderMinutes,
           },
         };
-
         const ot1Decimal = totalOT1Hours + totalOT1RemainderMinutes / 60;
         const ot2Decimal = totalOT2Hours + totalOT2RemainderMinutes / 60;
-
         const ot1Amount = Math.round(ot1Decimal * salaryPerHr * 1.25);
         const ot2Amount = Math.round(ot2Decimal * salaryPerHr * 1.75);
-
         const empSalary =
           basicSalary +
           houseRent +
@@ -171,10 +161,8 @@ export default function PayrollPage() {
           Number(emp.esic);
         const payOn5th =
           basicSalary + houseRent - Number(emp.epf) - Number(emp.esic);
-
         const payOn20th = ot1Amount + ot2Amount;
         const productionLossAmount = unpaidLeave * salaryPerHr * 8;
-
         const grossSalary =
           basicSalary +
           houseRent +
@@ -183,10 +171,8 @@ export default function PayrollPage() {
           emp.incentives +
           emp.allowances +
           emp.advance;
-
         const TotalDeductions =
           Number(emp.epf) + Number(emp.esic) + productionLossAmount;
-
         return {
           employeeName: emp.employeeName || "",
           employeePicture: emp.employeePicture || "",
@@ -233,7 +219,6 @@ export default function PayrollPage() {
           TotalDeductions,
         };
       });
-
       setEmployee(mappedEmployeeData);
       setOriginalEmployeeData(mappedEmployeeData);
     } catch (error) {
@@ -248,13 +233,11 @@ export default function PayrollPage() {
       setIsLoading(true);
       const monthStr = String(month).padStart(2, "0");
       const apiUrl = `${url}/v1/api/payroll/month/${monthStr}/${year}`;
-
       const response = await axios.get(apiUrl);
       if (response.data.success && Array.isArray(response.data.data)) {
         const mappedData = response.data.data.map((item) => {
           const emp = item.employeeDetails || {};
           const payrun = (item.payrunHistory && item.payrunHistory[0]) || {};
-
           return {
             employeeId: item.employeeId,
             employeeName: emp.employeeName || "N/A",
@@ -314,7 +297,6 @@ export default function PayrollPage() {
         setIsLoading(false);
       }
     };
-
     fetchData();
   }, [selectedYear, selectedMonth, fetchPayrollData]);
 
@@ -329,15 +311,12 @@ export default function PayrollPage() {
     const advance = employee.employeeAdvance;
     const holdOT = employee.employeeHoldOT;
     const productionLossAmount = employee.employeePLoss * salaryPerHr * 8 || 0;
-
     const basicSalary = Math.round(salaryPerHr * presentDays * 8) / 2 || 0;
     const houseRent = Math.round(salaryPerHr * presentDays * 8) / 4 || 0;
-
     const ot1Amount =
       Math.round(employee.employeeOT1Hours * salaryPerHr * 1.25) || 0;
     const ot2Amount =
       Math.round(employee.employeeOT2Hours * salaryPerHr * 1.75) || 0;
-
     const totalSalary =
       basicSalary +
       houseRent +
@@ -349,7 +328,6 @@ export default function PayrollPage() {
       ot1Amount +
       ot2Amount -
       holdOT;
-
     const payOn5th =
       basicSalary +
       houseRent +
@@ -359,7 +337,6 @@ export default function PayrollPage() {
       Number(employee.employeeEPF) +
       Number(advance);
     const payOn20th = ot1Amount + ot2Amount - holdOT;
-
     return {
       employeeBasicSalary: basicSalary,
       employeeHouseRent: houseRent,
@@ -375,18 +352,15 @@ export default function PayrollPage() {
 
   const handleChange = (e, id, field) => {
     const { value } = e.target;
-
     setEmployee((prevData) =>
       prevData.map((emp) => {
         if (emp.employeeId === id) {
           const updatedEmp = { ...emp, [field]: value };
           const calculatedFields = calculateFields(updatedEmp);
-
           setModifiedEmployees((prev) => ({
             ...prev,
             [id]: true,
           }));
-
           return { ...updatedEmp, ...calculatedFields };
         }
         return emp;
@@ -403,7 +377,6 @@ export default function PayrollPage() {
         alert("Employee not found");
         return;
       }
-
       const payload = {
         payrunHistory: [
           {
@@ -432,7 +405,6 @@ export default function PayrollPage() {
           },
         ],
       };
-
       const response = await axios.put(
         `${url}/v1/api/payroll/${employeeId}`,
         payload,
@@ -440,7 +412,6 @@ export default function PayrollPage() {
           headers: { "Content-Type": "application/json" },
         }
       );
-
       if (response.data.success) {
         alert("Payroll record updated successfully!");
         setModifiedEmployees((prev) => {
@@ -460,92 +431,19 @@ export default function PayrollPage() {
     }
   };
 
-  const sendEmployeeData = async (employeebase) => {
+  const sendEmployeePayslip = async (employeeId) => {
     try {
-      if (!employeebase || typeof employeebase !== "object") {
-        alert("Employee data is missing or invalid.");
-        return;
-      }
-
-      if (!employeebase.employeeEmail) {
-        alert("Employee email is required.");
-        return;
-      }
+      setEmailStatus((prev) => ({
+        ...prev,
+        [employeeId]: { status: "sending" },
+      }));
 
       const payload = {
-        employeeData: employeebase,
-        email: employeebase.employeeEmail,
-        month: selectedMonth,
-        year: selectedYear,
-      };
-
-      const response = await axios.post(`${url}/v1/api/payroll`, payload, {
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if ([200, 201].includes(response.status)) {
-        return { success: true, message: "Employee data sent successfully!" };
-      } else {
-        return { success: false, message: "Failed to send employee data." };
-      }
-    } catch (error) {
-      console.error("Error sending employee data:", error);
-      const errorMsg =
-        error.response?.data?.message ||
-        "An error occurred while sending employee data.";
-      return { success: false, message: errorMsg };
-    }
-  };
-
-  // const handleSendAllEmployees = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     if (!selectedMonth || !selectedYear) {
-  //       alert("Please select both month and year.");
-  //       return;
-  //     }
-
-  //     const results = await Promise.all(
-  //       employee.map((emp) => sendEmployeeData(emp))
-  //     );
-
-  //     const failed = results.filter((result) => !result.success);
-
-  //     if (failed.length > 0) {
-  //       console.warn(
-  //         `Failed to send data for ${failed.length} employee(s):`,
-  //         failed.map((result) => result.message)
-  //       );
-  //       alert(`Failed to send data for ${failed.length} employee(s).`);
-  //     } else {
-  //       alert("Data successfully sent to all employees!");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error sending employee data:", error);
-  //     alert(
-  //       "An unexpected error occurred while sending employee data. Please try again."
-  //     );
-  //   }
-  // };
-  const handleSendAllEmployees = async (e) => {
-    e.preventDefault();
-
-    try {
-      if (!selectedMonth || !selectedYear) {
-        alert("Please select both month and year.");
-        return;
-      }
-
-      const employeeIds = employee.map((emp) => emp.employeeId);
-      const payload = {
-        employeeIds,
-        salaryMonth: selectedMonth.toString().padStart(2, "0"),
+        salaryMonth: String(selectedMonth).padStart(2, "0"),
         salaryYear: selectedYear.toString(),
       };
-
-      const response = await axios.post(
-        `${url}/v1/api/payroll/send-bulk-payslip-emails`,
+      const response = await axios.put(
+        `${url}/v1/api/payroll/send-payslip-email/${employeeId}`,
         payload,
         {
           headers: { "Content-Type": "application/json" },
@@ -553,7 +451,87 @@ export default function PayrollPage() {
       );
 
       if (response.data.success) {
+        setEmailStatus((prev) => ({
+          ...prev,
+          [employeeId]: {
+            status: "success",
+            message: `Payslip sent successfully to ${response.data.data.email}`,
+          },
+        }));
+      } else {
+        setEmailStatus((prev) => ({
+          ...prev,
+          [employeeId]: {
+            status: "failed",
+            message: response.data.message || "Failed to send payslip",
+          },
+        }));
+      }
+    } catch (error) {
+      console.error("Error sending payslip:", error);
+      setEmailStatus((prev) => ({
+        ...prev,
+        [employeeId]: {
+          status: "failed",
+          message:
+            error.response?.data?.message ||
+            "An error occurred while sending payslip.",
+        },
+      }));
+    }
+  };
+
+  const handleSendAllEmployees = async (e) => {
+    e.preventDefault();
+    try {
+      if (!selectedMonth || !selectedYear) {
+        alert("Please select both month and year.");
+        return;
+      }
+      setIsSendingPayslips(true);
+
+      // Initialize all statuses to pending
+      const initialStatuses = {};
+      employee.forEach((emp) => {
+        initialStatuses[emp.employeeId] = { status: "pending" };
+      });
+      setEmailStatus(initialStatuses);
+
+      const employeeIds = employee.map((emp) => emp.employeeId);
+      const payload = {
+        employeeIds,
+        salaryMonth: selectedMonth.toString().padStart(2, "0"),
+        salaryYear: selectedYear.toString(),
+      };
+      const response = await axios.post(
+        `${url}/v1/api/payroll/send-bulk-payslip-emails`,
+        payload,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (response.data.success) {
         const { successful, failed } = response.data.data;
+        const newEmailStatus = {};
+
+        // Set status for successful emails
+        successful.forEach((emp) => {
+          newEmailStatus[emp.employeeId] = {
+            status: "success",
+            message: `Sent to ${emp.email}`,
+          };
+        });
+
+        // Set status for failed emails
+        failed.forEach((emp) => {
+          newEmailStatus[emp.employeeId] = {
+            status: "failed",
+            message: emp.error || "Email address not found",
+          };
+        });
+
+        setEmailStatus((prev) => ({ ...prev, ...newEmailStatus }));
+
         if (failed.length > 0) {
           alert(
             `Bulk payslip sending completed. Sent: ${successful.length}, Failed: ${failed.length}`
@@ -572,8 +550,11 @@ export default function PayrollPage() {
         error.response?.data?.message ||
         "An error occurred while sending bulk payslips.";
       alert(errorMsg);
+    } finally {
+      setIsSendingPayslips(false);
     }
   };
+
   const fields = [
     { label: "Present", field: "employeePresentDays" },
     { label: "Absent", field: "employeeAbsentDays" },
@@ -596,6 +577,45 @@ export default function PayrollPage() {
     { label: "Salary", field: "empSalary" },
     { label: "Balance", field: "empBalance" },
   ];
+
+  const getStatusBadge = (employeeId) => {
+    const statusInfo = emailStatus[employeeId];
+
+    if (!statusInfo) {
+      return null;
+    }
+
+    switch (statusInfo.status) {
+      case "pending":
+        return (
+          <div className="status-badge status-pending">Payslip: Pending</div>
+        );
+      case "sending":
+        return (
+          <div className="status-badge status-sending">Sending payslip...</div>
+        );
+      case "success":
+        return (
+          <div
+            className="status-badge status-success"
+            title={statusInfo.message}
+          >
+            Payslip: Sent
+          </div>
+        );
+      case "failed":
+        return (
+          <div
+            className="status-badge status-failed"
+            title={statusInfo.message}
+          >
+            Payslip: Failed
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <div>
@@ -819,17 +839,12 @@ export default function PayrollPage() {
                 </div>
               </div>
               <div className="lsoi34545545">
-                {/* <button
-                  className="sharetoexportbutton"
-                  onClick={handleSendAllEmployees}
-                >
-                  PayRun
-                </button> */}
                 <button
                   className="sharetoexportbutton"
                   onClick={handleSendAllEmployees}
+                  disabled={isSendingPayslips}
                 >
-                  PayRun
+                  {isSendingPayslips ? "Sending..." : "PayRun"}
                 </button>
                 <div className="shareiicontorxpoort"></div>
               </div>
@@ -858,13 +873,19 @@ export default function PayrollPage() {
                 <div className="nameofthejkd">
                   Salary/Hr - ₹ {emp.employeePerHrSalary || 0}
                 </div>
+                {/* Status badge */}
+                {getStatusBadge(emp.employeeId)}
                 <div className="nameofthejkd">
                   <button
                     className="pay-slip"
-                    onClick={() => sendEmployeeData(emp)}
+                    onClick={() => sendEmployeePayslip(emp.employeeId)}
+                    disabled={emailStatus[emp.employeeId]?.status === "sending"}
                   >
-                    Pay Slip
+                    {emailStatus[emp.employeeId]?.status === "sending"
+                      ? "Sending..."
+                      : "Pay Slip"}
                   </button>
+
                   {modifiedEmployees[emp.employeeId] && (
                     <button
                       className="update-button"
