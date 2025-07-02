@@ -8,11 +8,12 @@ import EmployeeData from "./4.EmployeeData";
 
 export default function DraftEmployee() {
   const [employee, setEmployee] = useState({});
+  const [password, setPassword] = useState(""); // Added password state
   const Navigate = useNavigate();
   const { id: empID } = useParams();
   const [error, setError] = useState("");
   const [errorMessage, setErrorMessage] = useState(false);
-  //console.log(empID);
+
   const fetchEmployees = async () => {
     try {
       const response = await axios.get(`${url}/v1/api/tempEmployee/${empID}`);
@@ -27,6 +28,7 @@ export default function DraftEmployee() {
   useEffect(() => {
     fetchEmployees();
   }, []);
+
   const handleImageUpload = async (e, additionalText) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -42,7 +44,6 @@ export default function DraftEmployee() {
       });
 
       if (response.data.url) {
-        // Update employee state with the uploaded image URL
         setEmployee((prev) => ({
           ...prev,
           [additionalText]: response.data.url,
@@ -55,12 +56,10 @@ export default function DraftEmployee() {
       console.error("Image upload failed:", error);
     }
 
-    // Reset the input file value after upload
     e.target.value = null;
   };
 
   const isEmployeeComplete = () => {
-    // Check if all required fields are filled
     const requiredFields = [
       "employeePicture",
       "employeeName",
@@ -81,49 +80,53 @@ export default function DraftEmployee() {
       "educationCertificate",
       "PANCardProof",
       "salary",
-      "epf",
+      "hra",
+      "allowance",
       "esicId",
       "esic",
       "epfId",
       "UANNo",
+      "PANNumber",
+      "aadhaarNo",
+      "bankName",
+      "bankBranch",
+      "dateofJoining",
     ];
 
-    // Ensure all required fields are present and not empty
     return requiredFields.every(
       (field) => employee[field] && employee[field].trim() !== ""
     );
   };
+
   const checkEmployeeId = async (employeeId) => {
     try {
       if (!employeeId) {
         setErrorMessage(false);
       }
-      //setLoading(true);
       const response = await axios.post(`${url}/v1/api/employees/check`, {
         employeeId: employeeId,
       });
       if (response.data.exists) {
         setErrorMessage(true);
       } else {
-        setErrorMessage(false); // No error if employeeId is unique
+        setErrorMessage(false);
       }
     } catch (error) {
       console.error("Error checking employeeId:", error);
       setErrorMessage("Failed to check employee ID");
-    } finally {
-      //setLoading(false);
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Fix: Invoke `isEmployeeComplete` function
     if (isEmployeeComplete()) {
       try {
-        // Send updated employee data to the backend
-        const response = await axios.post(`${url}/v1/api/employees`, employee);
-        //console.log(response.data);
-        setEmployee(response.data); // Update the state with the updated employee data
+        const response = await axios.post(`${url}/v1/api/employees`, {
+          ...employee,
+          password: password,
+        });
+        setEmployee(response.data);
         alert("Employee data submitted successfully");
         Navigate("/");
       } catch (error) {
@@ -137,19 +140,17 @@ export default function DraftEmployee() {
       if (confirmSave) {
         const response = await axios.post(`${url}/v1/api/tempEmployee`, {
           employeeId: empID,
-          EmployeeData: employee, // Changed to match the function
+          EmployeeData: {
+            ...employee,
+            password: password,
+          },
         });
-
-        //console.log(response.data);
-        // Logic to save the employee as a draft
-        //console.log("Employee saved as draft:", employee);
         alert("Employee saved as draft.");
         Navigate("/");
       }
     }
   };
 
-  //console.log(employee);
   return (
     <div className="maigdfffff">
       <div>
@@ -179,6 +180,7 @@ export default function DraftEmployee() {
                         id="file-upload1"
                         type="file"
                         value={employee.employeePicture}
+                        onClick={(e) => (e.target.value = null)}
                         onChange={(e) =>
                           handleImageUpload(e, "employeePicture")
                         }
@@ -265,7 +267,6 @@ export default function DraftEmployee() {
 
                         <div className="Mainogthencolciwejre">
                           <div className="eimplosusu3344h4">Department</div>
-
                           <div>
                             <input
                               className="inputddidjdj"
@@ -297,6 +298,18 @@ export default function DraftEmployee() {
                             />
                           </div>
                         </div>
+
+                        <div className="Mainogthencolciwejre">
+                          <div className="eimplosusu3344h4">Password</div>
+                          <div>
+                            <input
+                              className="inputddidjdj"
+                              type="password"
+                              value={password || ""}
+                              onChange={(e) => setPassword(e.target.value)}
+                            />
+                          </div>
+                        </div>
                       </div>
                       <div>
                         <div>
@@ -314,12 +327,15 @@ export default function DraftEmployee() {
                                 value={employee.employeeId || ""}
                                 required
                                 onChange={(e) => {
+                                  const trimmedValue = e.target.value.replace(
+                                    /\s+/g,
+                                    ""
+                                  );
                                   setEmployee((prev) => ({
                                     ...prev,
-                                    employeeId: e.target.value,
+                                    employeeId: trimmedValue,
                                   }));
-
-                                  checkEmployeeId(e.target.value);
+                                  checkEmployeeId(trimmedValue);
                                 }}
                               />
                             </div>
@@ -394,6 +410,25 @@ export default function DraftEmployee() {
                               />
                             </div>
                           </div>
+
+                          <div className="Mainogthencolciwejre">
+                            <div className="eimplosusu3344h4">
+                              Date of Joining
+                            </div>
+                            <div>
+                              <input
+                                className="inputddidjdj"
+                                type="date"
+                                value={employee.dateofJoining || ""}
+                                onChange={(e) =>
+                                  setEmployee((prev) => ({
+                                    ...prev,
+                                    dateofJoining: e.target.value,
+                                  }))
+                                }
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -455,6 +490,23 @@ export default function DraftEmployee() {
                             />
                           </div>
                         </div>
+
+                        <div className="Mainogthencolciwejre">
+                          <div className="eimplosusu3344h4">Aadhaar No.</div>
+                          <div>
+                            <input
+                              className="inputddidjdj"
+                              type="text"
+                              value={employee.aadhaarNo || ""}
+                              onChange={(e) =>
+                                setEmployee((prev) => ({
+                                  ...prev,
+                                  aadhaarNo: e.target.value,
+                                }))
+                              }
+                            />
+                          </div>
+                        </div>
                       </div>
                       <div>
                         <div>
@@ -491,6 +543,23 @@ export default function DraftEmployee() {
                               />
                             </div>
                           </div>
+
+                          <div className="Mainogthencolciwejre">
+                            <div className="eimplosusu3344h4">PAN Number</div>
+                            <div>
+                              <input
+                                className="inputddidjdj"
+                                type="text"
+                                value={employee.PANNumber || ""}
+                                onChange={(e) =>
+                                  setEmployee((prev) => ({
+                                    ...prev,
+                                    PANNumber: e.target.value,
+                                  }))
+                                }
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -507,7 +576,7 @@ export default function DraftEmployee() {
                                 <img
                                   src={`http://localhost:4000${employee.addressProof}`}
                                   alt="Address Proof"
-                                  class="document-image"
+                                  className="document-image"
                                 />
                               ) : (
                                 <>
@@ -524,6 +593,7 @@ export default function DraftEmployee() {
                                     <input
                                       id="file-upload-address"
                                       type="file"
+                                      onClick={(e) => (e.target.value = null)}
                                       onChange={(e) =>
                                         handleImageUpload(e, "addressProof")
                                       }
@@ -557,7 +627,7 @@ export default function DraftEmployee() {
                                 <img
                                   src={`http://localhost:4000${employee.passbookProof}`}
                                   alt="Bank Passbook"
-                                  class="document-image"
+                                  className="document-image"
                                 />
                               ) : (
                                 <>
@@ -574,6 +644,7 @@ export default function DraftEmployee() {
                                     <input
                                       id="file-upload-passbook"
                                       type="file"
+                                      onClick={(e) => (e.target.value = null)}
                                       onChange={(e) =>
                                         handleImageUpload(e, "passbookProof")
                                       }
@@ -607,9 +678,9 @@ export default function DraftEmployee() {
                             <div className="msaissbdfvdvdvdv">
                               {employee && employee.educationCertificate ? (
                                 <img
-                                  src={`http://localhost:4000${employee.educationCertificate}`}
+                                  src={`${url}${employee.educationCertificate}`}
                                   alt="Education Certificate"
-                                  class="document-image"
+                                  className="document-image"
                                 />
                               ) : (
                                 <>
@@ -626,6 +697,7 @@ export default function DraftEmployee() {
                                     <input
                                       id="file-upload-education"
                                       type="file"
+                                      onClick={(e) => (e.target.value = null)}
                                       onChange={(e) =>
                                         handleImageUpload(
                                           e,
@@ -660,7 +732,7 @@ export default function DraftEmployee() {
                                 <img
                                   src={`http://localhost:4000${employee.PANCardProof}`}
                                   alt="PAN Card"
-                                  class="document-image"
+                                  className="document-image"
                                 />
                               ) : (
                                 <>
@@ -677,6 +749,7 @@ export default function DraftEmployee() {
                                     <input
                                       id="file-upload-pan"
                                       type="file"
+                                      onClick={(e) => (e.target.value = null)}
                                       onChange={(e) =>
                                         handleImageUpload(e, "PANCardProof")
                                       }
@@ -724,16 +797,16 @@ export default function DraftEmployee() {
                         </div>
 
                         <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">EPF</div>
+                          <div className="eimplosusu3344h4">HRA</div>
                           <div>
                             <input
                               className="inputddidjdj"
                               type="text"
-                              value={employee.epf || ""}
+                              value={employee.hra || ""}
                               onChange={(e) =>
                                 setEmployee((prev) => ({
                                   ...prev,
-                                  epf: e.target.value,
+                                  hra: e.target.value,
                                 }))
                               }
                             />
@@ -750,6 +823,22 @@ export default function DraftEmployee() {
                                 setEmployee((prev) => ({
                                   ...prev,
                                   esicId: e.target.value,
+                                }))
+                              }
+                            />
+                          </div>
+                        </div>
+                        <div className="Mainogthencolciwejre">
+                          <div className="eimplosusu3344h4">ALLOWANCE</div>
+                          <div>
+                            <input
+                              className="inputddidjdj"
+                              type="text"
+                              value={employee.allowance || ""}
+                              onChange={(e) =>
+                                setEmployee((prev) => ({
+                                  ...prev,
+                                  allowance: e.target.value,
                                 }))
                               }
                             />
@@ -813,14 +902,13 @@ export default function DraftEmployee() {
                     <div className="buauuauauaghs">
                       <button
                         className="butsssonsubmitdivv"
-                        //onClick={handleSubmit}
                         disabled={errorMessage ? true : false}
                         style={
                           errorMessage
                             ? {
-                                backgroundColor: "#ccc", // Grey background
-                                color: "#666", // Grey text color
-                                cursor: "not-allowed", // Not-allowed cursor
+                                backgroundColor: "#ccc",
+                                color: "#666",
+                                cursor: "not-allowed",
                               }
                             : {}
                         }

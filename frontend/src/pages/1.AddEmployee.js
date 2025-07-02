@@ -9,7 +9,9 @@ export default function AddEmployee() {
   const [employee, setEmployee] = useState({});
   const [error, setError] = useState("");
   const [errorMessage, setErrorMessage] = useState(false);
+  const [password, setPassword] = useState(""); // Added password state
   const Navigate = useNavigate();
+
   const handleImageUpload = async (e, additionalText) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -25,7 +27,6 @@ export default function AddEmployee() {
       });
 
       if (response.data.url) {
-        // Update employee state with the uploaded image URL
         setEmployee((prev) => ({
           ...prev,
           [additionalText]: response.data.url,
@@ -39,12 +40,10 @@ export default function AddEmployee() {
       console.error("Image upload failed:", error);
     }
 
-    // Reset the input file value after upload
     e.target.value = null;
   };
 
   const isEmployeeComplete = () => {
-    // Check if all required fields are filled
     const requiredFields = [
       "employeePicture",
       "employeeName",
@@ -71,46 +70,50 @@ export default function AddEmployee() {
       "esic",
       "epfId",
       "UANNo",
+      "PANNumber",
+      "aadhaarNo",
+      "bankName",
+      "bankBranch",
+      "dateofJoining",
     ];
 
-    // Ensure all required fields are present and not empty
     return requiredFields.every(
       (field) => employee[field] && employee[field].trim() !== ""
     );
   };
+
   const checkEmployeeId = async (employeeId) => {
     try {
       if (!employeeId) {
         setErrorMessage(false);
       }
-      //setLoading(true);
       const response = await axios.post(`${url}/v1/api/employees/check`, {
         employeeId: employeeId,
       });
       if (response.data.exists) {
         setErrorMessage(true);
       } else {
-        setErrorMessage(false); // No error if employeeId is unique
+        setErrorMessage(false);
       }
     } catch (error) {
       console.error("Error checking employeeId:", error);
       setErrorMessage("Failed to check employee ID");
-    } finally {
-      //setLoading(false);
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Fix: Invoke `isEmployeeComplete` function
     if (isEmployeeComplete()) {
       try {
-        // Send updated employee data to the backend
-        const response = await axios.post(`${url}/v1/api/employees`, employee);
+        const response = await axios.post(`${url}/v1/api/employees`, {
+          ...employee,
+          password: password,
+        });
         console.log(response.data);
-        setEmployee(response.data); // Update the state with the updated employee data
+        setEmployee(response.data);
         alert("Employee data submitted successfully");
-        Navigate("/"); // use ths"/employees-list"
+        Navigate("/");
       } catch (error) {
         console.error("Failed to update employee:", error);
         setError("Failed to update employee data. Please try again.");
@@ -120,13 +123,11 @@ export default function AddEmployee() {
         "Some fields are not filled. Do you want to save as draft?"
       );
       if (confirmSave) {
-        const response = await axios.post(
-          `${url}/v1/api/tempEmployee`,
-          employee
-        );
+        const response = await axios.post(`${url}/v1/api/tempEmployee`, {
+          ...employee,
+          password: password,
+        });
         console.log(response.data);
-        // Logic to save the employee as a draft
-        console.log("Employee saved as draft:", employee);
         alert("Employee saved as draft.");
         Navigate("/");
       }
@@ -163,7 +164,7 @@ export default function AddEmployee() {
                         id="file-upload1"
                         type="file"
                         value={employee.employeePicture}
-                        onClick={(e) => (e.target.value = null)} // Clear the value on click to trigger change event
+                        onClick={(e) => (e.target.value = null)}
                         onChange={(e) =>
                           handleImageUpload(e, "employeePicture")
                         }
@@ -281,6 +282,18 @@ export default function AddEmployee() {
                             />
                           </div>
                         </div>
+
+                        <div className="Mainogthencolciwejre">
+                          <div className="eimplosusu3344h4">Password</div>
+                          <div>
+                            <input
+                              className="inputddidjdj"
+                              type="password"
+                              value={password || ""}
+                              onChange={(e) => setPassword(e.target.value)}
+                            />
+                          </div>
+                        </div>
                       </div>
                       <div>
                         <div>
@@ -301,13 +314,12 @@ export default function AddEmployee() {
                                   const trimmedValue = e.target.value.replace(
                                     /\s+/g,
                                     ""
-                                  ); // Remove all spaces
+                                  );
                                   setEmployee((prev) => ({
                                     ...prev,
                                     employeeId: trimmedValue,
                                   }));
-
-                                  checkEmployeeId(trimmedValue); // Pass the trimmed value for validation
+                                  checkEmployeeId(trimmedValue);
                                 }}
                               />
                             </div>
@@ -382,6 +394,25 @@ export default function AddEmployee() {
                               />
                             </div>
                           </div>
+
+                          <div className="Mainogthencolciwejre">
+                            <div className="eimplosusu3344h4">
+                              Date of Joining
+                            </div>
+                            <div>
+                              <input
+                                className="inputddidjdj"
+                                type="date"
+                                value={employee.dateofJoining || ""}
+                                onChange={(e) =>
+                                  setEmployee((prev) => ({
+                                    ...prev,
+                                    dateofJoining: e.target.value,
+                                  }))
+                                }
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -443,6 +474,23 @@ export default function AddEmployee() {
                             />
                           </div>
                         </div>
+
+                        <div className="Mainogthencolciwejre">
+                          <div className="eimplosusu3344h4">Aadhaar No.</div>
+                          <div>
+                            <input
+                              className="inputddidjdj"
+                              type="text"
+                              value={employee.aadhaarNo || ""}
+                              onChange={(e) =>
+                                setEmployee((prev) => ({
+                                  ...prev,
+                                  aadhaarNo: e.target.value,
+                                }))
+                              }
+                            />
+                          </div>
+                        </div>
                       </div>
                       <div>
                         <div>
@@ -474,6 +522,23 @@ export default function AddEmployee() {
                                   setEmployee((prev) => ({
                                     ...prev,
                                     bankIFSCCode: e.target.value,
+                                  }))
+                                }
+                              />
+                            </div>
+                          </div>
+
+                          <div className="Mainogthencolciwejre">
+                            <div className="eimplosusu3344h4">PAN Number</div>
+                            <div>
+                              <input
+                                className="inputddidjdj"
+                                type="text"
+                                value={employee.PANNumber || ""}
+                                onChange={(e) =>
+                                  setEmployee((prev) => ({
+                                    ...prev,
+                                    PANNumber: e.target.value,
                                   }))
                                 }
                               />
@@ -746,7 +811,9 @@ export default function AddEmployee() {
                               }
                             />
                           </div>
-                            <div className="eimplosusu3344h4">ALLOWANCE</div>
+                        </div>
+                        <div className="Mainogthencolciwejre">
+                          <div className="eimplosusu3344h4">ALLOWANCE</div>
                           <div>
                             <input
                               className="inputddidjdj"
@@ -819,14 +886,13 @@ export default function AddEmployee() {
                     <div className="buauuauauaghs">
                       <button
                         className="butsssonsubmitdivv"
-                        //onClick={handleSubmit}
                         disabled={errorMessage ? true : false}
                         style={
                           errorMessage
                             ? {
-                                backgroundColor: "#ccc", // Grey background
-                                color: "#666", // Grey text color
-                                cursor: "not-allowed", // Not-allowed cursor
+                                backgroundColor: "#ccc",
+                                color: "#666",
+                                cursor: "not-allowed",
                               }
                             : {}
                         }
@@ -844,437 +910,3 @@ export default function AddEmployee() {
     </div>
   );
 }
-
-// import react, { useEffect, useState } from "react";
-// import AddEmployeeCss from "../CSS/AddEmployeeCss.css";
-
-// export default function AddEmployee() {
-//   const [addemployeDetails, setAddemployeeDetails] = useState({});
-
-//   const handleChange = (e) => {
-//     setAddemployeeDetails((previousState) => {
-//       return { ...previousState, [e.target.name]: e.target.value };
-//     });
-//   };
-
-//   var res = true;
-
-//   function handleSubmit(e) {
-//     e.preventDefault();
-
-//     alert("Hiii");
-//     // console.log("AddemployeDetails", addemployeDetails);
-//     if (res === true) {
-//       localStorage.setItem("Sucess", res);
-//       setTimeout(() => {
-//         localStorage.removeItem("Sucess");
-//       }, 12000);
-//     }
-//   }
-
-//   return (
-//     <div className="maigdfffff">
-//       <div>
-//         <div className="formksjkskskskksksksk">
-//           <form onSubmit={handleSubmit}>
-//             <div className="doemrerjerer">
-//               <div>
-//                 <div className="addpinpuaeehehdiv">
-//                   <div>
-//                     <label
-//                       htmlFor="file-upload1"
-//                       className="custom-file-upload"
-//                     >
-//                       <img src="/images/InputPhotoAdd.png" alt="" />
-//                     </label>
-//                     <input
-//                       onChange={handleChange}
-//                       id="file-upload1"
-//                       type="file"
-//                       name="Employee_Photo"
-//                     />
-//                   </div>
-//                   <div className="ADDPHOTOTOT">Add Photo</div>
-//                 </div>
-//                 <div className="maxsixwee23444">Max size 2 Mb</div>
-//                 <div>
-//                   <button className="deleteimagebuttdodnd">Delete Image</button>
-//                 </div>
-//               </div>
-//               <div className="scrolldididdidi">
-//                 <div className="Azcxcffcgfgf">Personal Details</div>
-//                 <div className="sgsgsgsggs">
-//                   <div className="fsiwjejjewe">
-//                     <div className="mainduidhdb3b434">
-//                       <div>
-//                         <div className="zzMainogthencolciwejre">
-//                           <div className="eimplosusu3344h4">Employee Name</div>
-//                           <div>
-//                             <input
-//                               onChange={handleChange}
-//                               className="inputddidjdj"
-//                               type="text"
-//                               name="name"
-//                             />
-//                           </div>
-//                         </div>
-
-//                         <div className="Mainogthencolciwejre">
-//                           <div className="eimplosusu3344h4">Date of Birth</div>
-//                           <div>
-//                             <input
-//                               onChange={handleChange}
-//                               className="inputddidjdj"
-//                               type="date"
-//                               name="DOB"
-//                             />
-//                           </div>
-//                         </div>
-
-//                         <div className="Mainogthencolciwejre">
-//                           <div className="eimplosusu3344h4">Qualification</div>
-//                           <div>
-//                             <input
-//                               onChange={handleChange}
-//                               className="inputddidjdj"
-//                               type="text"
-//                               name="Qualification"
-//                             />
-//                           </div>
-//                         </div>
-
-//                         <div className="Mainogthencolciwejre">
-//                           <div className="eimplosusu3344h4">Department</div>
-//                           <div>
-//                             <input
-//                               onChange={handleChange}
-//                               className="inputddidjdj"
-//                               name="Department"
-//                               type="text"
-//                             />
-//                           </div>
-//                         </div>
-
-//                         <div className="Mainogthencolciwejre">
-//                           <div className="eimplosusu3344h4">Mobile Number</div>
-//                           <div>
-//                             <input
-//                               onChange={handleChange}
-//                               name="Mobile_Number"
-//                               className="inputddidjdj"
-//                               type="tel"
-//                             />
-//                           </div>
-//                         </div>
-//                       </div>
-//                       <div>
-//                         <div>
-//                           <div className="zzMainogthencolciwejre">
-//                             <div className="eimplosusu3344h4">Employee ID</div>
-//                             <div>
-//                               <input
-//                                 onChange={handleChange}
-//                                 name="Employee_ID"
-//                                 className="inputddidjdj"
-//                                 type="number"
-//                               />
-//                             </div>
-//                           </div>
-
-//                           <div className="Mainogthencolciwejre">
-//                             <div className="eimplosusu3344h4">Blood Group</div>
-//                             <div>
-//                               <input
-//                                 onChange={handleChange}
-//                                 name="Blood_Group"
-//                                 className="inputddidjdj"
-//                                 type="text"
-//                               />
-//                             </div>
-//                           </div>
-
-//                           <div className="Mainogthencolciwejre">
-//                             <div className="eimplosusu3344h4">Designation</div>
-//                             <div>
-//                               <input
-//                                 onChange={handleChange}
-//                                 name="Designation"
-//                                 className="inputddidjdj"
-//                                 type="text"
-//                               />
-//                             </div>
-//                           </div>
-
-//                           <div className="Mainogthencolciwejre">
-//                             <div className="eimplosusu3344h4">
-//                               Department Code
-//                             </div>
-//                             <div>
-//                               <input
-//                                 onChange={handleChange}
-//                                 name="Department_Code"
-//                                 className="inputddidjdj"
-//                                 type="text"
-//                               />
-//                             </div>
-//                           </div>
-
-//                           <div className="Mainogthencolciwejre">
-//                             <div className="eimplosusu3344h4">Mail Id</div>
-//                             <div>
-//                               <input
-//                                 onChange={handleChange}
-//                                 name="Mail_Id"
-//                                 className="inputddidjdj"
-//                                 type="email"
-//                               />
-//                             </div>
-//                           </div>
-//                         </div>
-//                       </div>
-//                     </div>
-
-//                     <div className="msisnsnjwj32434">
-//                       <div className="Mainogthencolciwejre">
-//                         <div className="eimplosusu3344h4">Address</div>
-//                         <div>
-//                           <textarea
-//                             onChange={handleChange}
-//                             name="Address"
-//                             className="sssinputddssidjdj"
-//                             id=""
-//                           ></textarea>
-//                         </div>
-//                       </div>
-//                     </div>
-//                     <div className="docuenejhjwj343">Account Details</div>
-//                     <div className="mainduidhdb3b434">
-//                       <div>
-//                         <div className="Mainogthencolciwejre">
-//                           <div className="eimplosusu3344h4">
-//                             Bank Account Name
-//                           </div>
-//                           <div>
-//                             <input
-//                               onChange={handleChange}
-//                               name="Bank_Account_Name"
-//                               className="inputddidjdj"
-//                               type="text"
-//                             />
-//                           </div>
-//                         </div>
-
-//                         <div className="Mainogthencolciwejre">
-//                           <div className="eimplosusu3344h4">Bank Branch</div>
-//                           <div>
-//                             <input
-//                               onChange={handleChange}
-//                               name="Bank_Branch"
-//                               className="inputddidjdj"
-//                               type="text"
-//                             />
-//                           </div>
-//                         </div>
-//                       </div>
-//                       <div>
-//                         <div>
-//                           <div className="Mainogthencolciwejre">
-//                             <div className="eimplosusu3344h4">Bank Name</div>
-//                             <div>
-//                               <input
-//                                 onChange={handleChange}
-//                                 name="Bank_Name"
-//                                 className="inputddidjdj"
-//                                 type="text"
-//                               />
-//                             </div>
-//                           </div>
-
-//                           <div className="Mainogthencolciwejre">
-//                             <div className="eimplosusu3344h4">IFSC Code</div>
-//                             <div>
-//                               <input
-//                                 onChange={handleChange}
-//                                 name="IFSC_Code"
-//                                 className="inputddidjdj"
-//                                 type="text"
-//                               />
-//                             </div>
-//                           </div>
-//                         </div>
-//                       </div>
-//                     </div>
-
-//                     <div>
-//                       <div className="docuenejhjwj343">Documents</div>
-
-//                       <div className="docyuwejj3jjflexsss">
-//                         <div>
-//                           <div className="nsnsbssbbsvss">
-//                             <div className="adressshjssjj">Address Proof</div>
-//                             <div className="msaissbdfvdvdvdv">
-//                               <div>
-//                                 <label
-//                                   htmlFor="file-upload2"
-//                                   className="custom-file-upload"
-//                                 >
-//                                   <img
-//                                     src="./images/DocumenstIMAGE.png"
-//                                     alt=""
-//                                   />
-//                                 </label>
-//                                 <input
-//                                   onChange={handleChange}
-//                                   name="Address_Proof"
-//                                   id="file-upload2"
-//                                   type="file"
-//                                 />
-//                               </div>
-//                               <div className="addphotototo">Add Photo</div>
-//                             </div>
-//                           </div>
-
-//                           <div className="nsnsbssbbsvss">
-//                             <div className="adressshjssjj">
-//                               Bank Passbook / Check book
-//                             </div>
-//                             <div className="msaissbdfvdvdvdv">
-//                               <div>
-//                                 <label
-//                                   htmlFor="file-upload3"
-//                                   className="custom-file-upload"
-//                                 >
-//                                   <img
-//                                     src="./images/DocumenstIMAGE.png"
-//                                     alt=""
-//                                   />
-//                                 </label>
-//                                 <input
-//                                   onChange={handleChange}
-//                                   name="Bank_Passbook"
-//                                   id="file-upload3"
-//                                   type="file"
-//                                 />
-//                               </div>
-//                               <div className="addphotototo">Add Photo</div>
-//                             </div>
-//                           </div>
-//                         </div>
-//                         <div>
-//                           <div className="nsnsbssbbsvss">
-//                             <div className="adressshjssjj">
-//                               Degree Certificate / Education Certificate
-//                             </div>
-//                             <div className="msaissbdfvdvdvdv">
-//                               <div>
-//                                 <label
-//                                   htmlFor="file-upload4"
-//                                   className="custom-file-upload"
-//                                 >
-//                                   <img
-//                                     src="./images/DocumenstIMAGE.png"
-//                                     alt=""
-//                                   />
-//                                 </label>
-//                                 <input
-//                                   onChange={handleChange}
-//                                   name="Degree_Certificate"
-//                                   id="file-upload4"
-//                                   type="file"
-//                                 />
-//                               </div>
-//                               <div className="addphotototo">Add Photo</div>
-//                             </div>
-//                           </div>
-//                           <div className="nsnsbssbbsvss">
-//                             <div className="adressshjssjj">Pan Card</div>
-//                             <div className="msaissbdfvdvdvdv">
-//                               <div>
-//                                 <label
-//                                   htmlFor="file-upload5"
-//                                   className="custom-file-upload"
-//                                 >
-//                                   <img
-//                                     src="./images/DocumenstIMAGE.png"
-//                                     alt=""
-//                                   />
-//                                 </label>
-//                                 <input
-//                                   onChange={handleChange}
-//                                   name="Degree_Certificate"
-//                                   id="file-upload5"
-//                                   type="file"
-//                                 />
-//                               </div>
-//                               <div className="addphotototo">Add Photo</div>
-//                             </div>
-//                           </div>
-//                         </div>
-//                       </div>
-//                     </div>
-//                     <div className="docuenejhjwj343">Salary Details</div>
-//                     <div className="mainduidhdb3b434">
-//                       <div>
-//                         <div className="Mainogthencolciwejre">
-//                           <div className="eimplosusu3344h4">Salary</div>
-//                           <div>
-//                             <input
-//                               onChange={handleChange}
-//                               name="Salary"
-//                               className="inputddidjdj"
-//                               type="text"
-//                             />
-//                           </div>
-//                         </div>
-
-//                         <div className="Mainogthencolciwejre">
-//                           <div className="eimplosusu3344h4">Bank Branch</div>
-//                           <div>
-//                             <input className="inputddidjdj" type="text" />
-//                           </div>
-//                         </div>
-//                       </div>
-//                       <div>
-//                         <div>
-//                           <div className="Mainogthencolciwejre">
-//                             <div className="eimplosusu3344h4">Bank Name</div>
-//                             <div>
-//                               <input
-//                                 onChange={handleChange}
-//                                 name="Bank_Name"
-//                                 className="inputddidjdj"
-//                                 type="text"
-//                               />
-//                             </div>
-//                           </div>
-
-//                           <div className="Mainogthencolciwejre">
-//                             <div className="eimplosusu3344h4">IFSC Code</div>
-//                             <div>
-//                               <input
-//                                 onChange={handleChange}
-//                                 name="IFSC_Code"
-//                                 className="inputddidjdj"
-//                                 type="text"
-//                               />
-//                             </div>
-//                           </div>
-//                         </div>
-//                       </div>
-//                     </div>
-
-//                     <div className="buauuauauaghs">
-//                       <button className="butsssonsubmitdivv">
-//                         Upload Details
-//                       </button>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-//           </form>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
