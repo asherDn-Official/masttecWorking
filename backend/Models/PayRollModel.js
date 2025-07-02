@@ -26,10 +26,11 @@ const payrollSchema = new mongoose.Schema(
         OT1Amount: { type: String, default: "0" }, // Admin update
         OT2Hours: { type: String, default: "0" }, // Admin update
         OT2Amount: { type: String, default: "0" }, // Admin update
+        totalLateHours: { type: String, default: "0" }, // Calculated from daily attendance
         holdOT: { type: String, default: "0" }, // Admin update
         totalBasicPayment: { type: String, default: "0" }, // Admin update
         totalOTPayment: { type: String, default: "0" }, // Admin update
-        payableSalary: { type: String, default: "0" }, // Admin update
+        salary: { type: String, default: "0" }, // Admin update
         balance: { type: String, default: "0" }, // Admin update
       },
     ],

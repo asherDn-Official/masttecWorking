@@ -65,7 +65,8 @@ export default function AddEmployee() {
       "educationCertificate",
       "PANCardProof",
       "salary",
-      "epf",
+      "hra",
+      "allowance",
       "esicId",
       "esic",
       "epfId",
@@ -715,16 +716,16 @@ export default function AddEmployee() {
                         </div>
 
                         <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">EPF</div>
+                          <div className="eimplosusu3344h4">HRA</div>
                           <div>
                             <input
                               className="inputddidjdj"
                               type="text"
-                              value={employee.epf || ""}
+                              value={employee.hra || ""}
                               onChange={(e) =>
                                 setEmployee((prev) => ({
                                   ...prev,
-                                  epf: e.target.value,
+                                  hra: e.target.value,
                                 }))
                               }
                             />
@@ -741,6 +742,20 @@ export default function AddEmployee() {
                                 setEmployee((prev) => ({
                                   ...prev,
                                   esicId: e.target.value,
+                                }))
+                              }
+                            />
+                          </div>
+                            <div className="eimplosusu3344h4">ALLOWANCE</div>
+                          <div>
+                            <input
+                              className="inputddidjdj"
+                              type="text"
+                              value={employee.allowance || ""}
+                              onChange={(e) =>
+                                setEmployee((prev) => ({
+                                  ...prev,
+                                  allowance: e.target.value,
                                 }))
                               }
                             />

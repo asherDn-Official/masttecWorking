@@ -54,6 +54,7 @@ exports.createEmployee = async (req, res) => {
       employeeId: employee.employeeId,
       designation: employee.designation,
       dateOfBirth: employee.dateOfBirth,
+      allowance: employee.allowance,
       password: password, // Update the password as well
       qualification: employee.qualification,
       bloodGroup: employee.bloodGroup,
@@ -72,7 +73,7 @@ exports.createEmployee = async (req, res) => {
       bankName: employee.bankName,
       bankBranch: employee.bankBranch,
       salary: employee.salary,
-      epf: employee.epf,
+      hra: employee.hra,
       esic: employee.esic,
       esicId: employee.esicId,
       epfId: employee.epfId,
@@ -159,6 +160,7 @@ exports.updateEmployee = async (req, res) => {
         employeePicture: employee.employeePicture,
         employeeId: employee.employeeId,
         designation: employee.designation,
+        allowance: employee.allowance,
         dateOfBirth: employee.dateOfBirth,
         password: password, // Update the password as well
         qualification: employee.qualification,
@@ -178,7 +180,7 @@ exports.updateEmployee = async (req, res) => {
         bankName: employee.bankName,
         bankBranch: employee.bankBranch,
         salary: employee.salary,
-        epf: employee.epf,
+        hra: employee.hra,
         esic: employee.esic,
         esicId: employee.esicId,
         epfId: employee.epfId,
