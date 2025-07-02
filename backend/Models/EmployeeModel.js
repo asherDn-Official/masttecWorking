@@ -27,6 +27,7 @@ const employeeSchema = new mongoose.Schema(
     PANCardProof: { type: String },
     salary: { type: String },
     aadhaarNo: { type: String },
+    dateofJoining:{type:String},
     hra: { type: String },
     esic: { type: String },
     esicId: { type: String },
