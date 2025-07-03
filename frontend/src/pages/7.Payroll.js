@@ -65,17 +65,17 @@ export default function PayrollPage() {
       .filter(({ records }) => records.length > 0);
   }, []);
 
-  const fetchAttendance = async () => {
-    setIsLoading(true);
-    try {
-      const response = await axios.get(`${url}/v1/api/attendance`);
-      setAttendanceData(response.data);
-    } catch (error) {
-      handleError("Error fetching attendance data.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const fetchAttendance = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await axios.get(`${url}/v1/api/attendance`);
+  //     setAttendanceData(response.data);
+  //   } catch (error) {
+  //     handleError("Error fetching attendance data.");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const fetchHolidays = async () => {
     setIsLoading(true);
@@ -287,7 +287,7 @@ export default function PayrollPage() {
       try {
         await Promise.all([
           fetchPayrollData(selectedYear, selectedMonth),
-          fetchAttendance(),
+          // fetchAttendance(),
           fetchHolidays(),
         ]);
       } catch (err) {

@@ -1,15 +1,48 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import url from "../Components/global";
 import ErrorPopup from "../Components/errorPopup";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../CSS/AddEmployeeCss.css";
 
 export default function AddEmployee() {
-  const [employee, setEmployee] = useState({});
+  const [employee, setEmployee] = useState({
+    employeeName: "",
+    employeePicture: "",
+    employeeId: "",
+    department: "",
+    allowance: "",
+    departmentCode: "",
+    bankName: "",
+    bankBranch: "",
+    designation: "",
+    dateOfBirth: "",
+    qualification: "",
+    bloodGroup: "",
+    mobileNumber: "",
+    mailId: "",
+    address: "",
+    bankAccountNumber: "",
+    bankIFSCCode: "",
+    PANNumber: "",
+    addressProof: "",
+    educationCertificate: "",
+    passbookProof: "",
+    PANCardProof: "",
+    salary: "",
+    aadhaarNo: "",
+    dateofJoining: "",
+    hra: "",
+    esic: "",
+    esicId: "",
+    epfId: "",
+    UANNo: "",
+    status: true,
+  });
+
   const [error, setError] = useState("");
   const [errorMessage, setErrorMessage] = useState(false);
-  const [password, setPassword] = useState(""); // Added password state
+  const [password, setPassword] = useState("");
   const Navigate = useNavigate();
 
   const handleImageUpload = async (e, additionalText) => {
