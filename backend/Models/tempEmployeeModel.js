@@ -2,10 +2,11 @@ const mongoose = require("mongoose");
 
 const tempEmployeeSchema = new mongoose.Schema(
   {
-    employeeName: { type: String },
+     employeeName: { type: String },
     employeePicture: { type: String },
     employeeId: { type: String },
     department: { type: String },
+    allowance: { type: String },
     departmentCode: { type: String },
     bankName: { type: String },
     bankBranch: { type: String },
@@ -25,7 +26,9 @@ const tempEmployeeSchema = new mongoose.Schema(
     passbookProof: { type: String },
     PANCardProof: { type: String },
     salary: { type: String },
-    epf: { type: String },
+    aadhaarNo: { type: String },
+    dateofJoining:{type:String},
+    hra: { type: String },
     esic: { type: String },
     esicId: { type: String },
     epfId: { type: String },

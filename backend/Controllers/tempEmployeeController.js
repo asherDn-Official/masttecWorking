@@ -1,17 +1,57 @@
 const TempEmployee = require("../Models/tempEmployeeModel");
 
 // Controller to check and update or create a new record
-exports.upsertTempEmployee = async (req, res) => {
-  const { employeeId, EmployeeData } = req.body; // Match the key from the API call
+// exports.upsertTempEmployee = async (req, res) => {
+//   const { employeeId, EmployeeData } = req.body; // Match the key from the API call
 
+//   try {
+//     // Check if the employee already exists using employeeId
+//     const existingEmployee = await TempEmployee.findOne({ employeeId });
+//     console.log("req",req);
+//     console.log("employeeId",employeeId,"EmployeeData",EmployeeData,"existingEmployee",existingEmployee);
+//     if (existingEmployee) {
+//       const updatedEmployee = await TempEmployee.findOneAndUpdate(
+//         { employeeId },
+//         { $set: EmployeeData }, // Use EmployeeData here
+//         { new: true }
+//       );
+//       return res.status(200).json({
+//         message: "Employee record updated successfully",
+//         data: updatedEmployee,
+//       });
+//     } else {
+//       const newEmployee = new TempEmployee({ employeeId, ...EmployeeData }); // Use EmployeeData here
+//       console.log("creating new employee",newEmployee);
+
+//       await newEmployee.save();
+//       return res.status(201).json({
+//         message: "New employee record created successfully",
+//         data: newEmployee,
+//       });
+//     }
+//   } catch (error) {
+//     return res.status(500).json({ message: "Internal Server Error", error });
+//   }
+// };
+
+exports.upsertTempEmployee = async (req, res) => {
   try {
-    // Check if the employee already exists using employeeId
+    const { employeeId, ...EmployeeData } = req.body;
+
+    if (!employeeId) {
+      return res.status(400).json({ message: "employeeId is required" });
+    }
+
+    console.log("Upsert request for employeeId:", employeeId);
+    console.log("EmployeeData:", EmployeeData);
+
+    // Check if the employee already exists
     const existingEmployee = await TempEmployee.findOne({ employeeId });
 
     if (existingEmployee) {
       const updatedEmployee = await TempEmployee.findOneAndUpdate(
         { employeeId },
-        { $set: EmployeeData }, // Use EmployeeData here
+        { $set: EmployeeData },
         { new: true }
       );
       return res.status(200).json({
@@ -19,7 +59,8 @@ exports.upsertTempEmployee = async (req, res) => {
         data: updatedEmployee,
       });
     } else {
-      const newEmployee = new TempEmployee({ employeeId, ...EmployeeData }); // Use EmployeeData here
+      const newEmployee = new TempEmployee({ employeeId, ...EmployeeData });
+
       await newEmployee.save();
       return res.status(201).json({
         message: "New employee record created successfully",
@@ -27,9 +68,13 @@ exports.upsertTempEmployee = async (req, res) => {
       });
     }
   } catch (error) {
+    console.error("Error in upsertTempEmployee:", error);
     return res.status(500).json({ message: "Internal Server Error", error });
   }
 };
+
+
+
 
 // Controller to delete a record by employeeId
 exports.deleteTempEmployee = async (req, res) => {
