@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const tempEmployeeController = require("../controllers/tempEmployeeController");
+const tempEmployeeController = require("../Controllers/tempEmployeeController");
 
 // Route to check and update if employee exists, else create a new record
 router.post("/", tempEmployeeController.upsertTempEmployee);
