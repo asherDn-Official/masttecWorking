@@ -12,24 +12,29 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Setup SSH
+    - name: Setup SSH Agent
       uses: webfactory/ssh-agent@v0.8.0
       with:
         ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-    - name: Deploy and restart
+    - name: Install frontend dependencies and build
+      run: |
+        cd frontend
+        npm install
+        npm run build
+
+    - name: Copy frontend build to EC2
+      run: |
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./frontend/build/ ubuntu@13.61.35.233:/var/www/masttec/frontend/build/
+
+    - name: Deploy backend on EC2
       run: |
         ssh -o StrictHostKeyChecking=no ubuntu@13.61.35.233 'bash -s' <<'ENDSSH'
           cd /var/www/masttec
           git pull origin main
 
-          # Build frontend
-          cd frontend
-          npm install
-          npm run build
-
           # Start or restart backend
-          cd ../backend
+          cd backend
           npm install
           pm2 restart masttec-backend || pm2 start index.js --name masttec-backend
         ENDSSH
