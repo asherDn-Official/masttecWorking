@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const Employee = require("../Models/EmployeeModel");
 const TempEmployee = require("../Models/tempEmployeeModel");
+
 const Role = require("../Models/RolesModel");
 // Helper function to generate password from DOB
 const generatePasswordFromDOB = (dob) => {
