@@ -1074,4 +1074,4 @@ class PayrollService {
   }
 }
 
-module.exports = new PayrollService();
+  module.exports = new PayrollService();
