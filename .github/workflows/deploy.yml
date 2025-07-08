@@ -19,7 +19,7 @@ jobs:
 
     - name: Deploy and restart
       run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@13.61.35.233 << 'EOF'
+        ssh -o StrictHostKeyChecking=no ubuntu@13.61.35.233 'bash -s' <<'ENDSSH'
           cd /var/www/masttec
           git pull origin main
 
