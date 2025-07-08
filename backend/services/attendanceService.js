@@ -1,4 +1,4 @@
-const AttendanceRecord = require('../models/AttendanceRecord');
+const AttendanceRecord = require('../Models/AttendanceRecord');
 const pdfExtractor = require('./pdfExtractor');
 const csvExcelExtractor = require('./csvExcelExtractor');
 const payrollService = require('./payrollService');
