@@ -1,4 +1,4 @@
-const AttendanceRecord = require('../models/AttendanceRecord');
+const AttendanceRecord = require('../Models/AttendanceRecord');
 
 
 const YYYYMM_PATTERN = /^\d{4}-\d{2}$/; // For YYYY-MM
