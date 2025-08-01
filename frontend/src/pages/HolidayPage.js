@@ -201,7 +201,6 @@ export default function ResponsiveDatePickers() {
           <StaticDatePicker
             value={currentSelectedDate}
             onChange={handleDateChange}
-            disablePast
             slots={{
               actionBar: () => null,
             }}
