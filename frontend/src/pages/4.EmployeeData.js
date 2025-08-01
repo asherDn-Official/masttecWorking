@@ -97,7 +97,7 @@ export default function EmployeeData() {
             <div className="yrt454564565">
               <img
                 className="j46436646363"
-                src={`http://localhost:4000${profile.employeePicture}`}
+                src={`https://attendance.masttecmoulds.com/api${profile.employeePicture}`}
                 alt="accountsectionimage"
               />
 

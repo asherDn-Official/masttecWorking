@@ -24,7 +24,7 @@ const EmployeeAttendance = () => {
     setError(null);
     try {
       const response = await fetch(
-        `http://localhost:4000/v1/api/attendance-records/by-date?specificDate=${date}`
+        `https://attendance.masttecmoulds.com/api/v1/api/attendance-records/by-date?specificDate=${date}`
       );
       if (!response.ok) {
         throw new Error("No Response Found");

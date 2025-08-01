@@ -178,7 +178,7 @@ export default function EditEmployee() {
                   {employee.employeePicture ? (
                     <img
                       className="addpinpuaeehehdiv"
-                      src={`http://localhost:4000${employee.employeePicture}`}
+                      src={`https://attendance.masttecmoulds.com/api${employee.employeePicture}`}
                       alt="Employee's Profile"
                     />
                   ) : (
@@ -550,7 +550,7 @@ export default function EditEmployee() {
                             <div className="msaissbdfvdvdvdv">
                               {employee.addressProof ? (
                                 <img
-                                  src={`http://localhost:4000${employee.addressProof}`}
+                                  src={`https://attendance.masttecmoulds.com/api${employee.addressProof}`}
                                   alt="Address Proof"
                                   className="document-image"
                                 />
@@ -598,7 +598,7 @@ export default function EditEmployee() {
                             <div className="msaissbdfvdvdvdv">
                               {employee.passbookProof ? (
                                 <img
-                                  src={`http://localhost:4000${employee.passbookProof}`}
+                                  src={`https://attendance.masttecmoulds.com/api${employee.passbookProof}`}
                                   alt="Bank Passbook"
                                   className="document-image"
                                 />
@@ -698,7 +698,7 @@ export default function EditEmployee() {
                             <div className="msaissbdfvdvdvdv">
                               {employee.PANCardProof ? (
                                 <img
-                                  src={`http://localhost:4000${employee.PANCardProof}`}
+                                  src={`https://attendance.masttecmoulds.com/api${employee.PANCardProof}`}
                                   alt="PAN Card"
                                   className="document-image"
                                 />

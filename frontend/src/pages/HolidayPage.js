@@ -38,7 +38,7 @@ export default function ResponsiveDatePickers() {
     const year = new Date().getFullYear();
     try {
       const response = await axios.get(
-        `http://localhost:4000/v1/api/holiday/${year}`
+        `https://attendance.masttecmoulds.com/api/v1/api/holiday/${year}`
       );
       if (response.data.holidays) {
         setRecentUpdates(response.data.holidays);
@@ -120,7 +120,7 @@ export default function ResponsiveDatePickers() {
       }));
       try {
         await axios.post(
-          `http://localhost:4000/v1/api/holiday`,
+          `https://attendance.masttecmoulds.com/api/v1/api/holiday`,
           {
             holidayList: holidayListForApi,
           }
@@ -146,7 +146,7 @@ export default function ResponsiveDatePickers() {
   const handleProvedDelete = async (dateToDelete) => {
     try {
       await axios.delete(
-        "http://localhost:4000/v1/api/holiday",
+        "https://attendance.masttecmoulds.com/api/v1/api/holiday",
         {
           headers: {
             "Content-Type": "application/json",

@@ -104,7 +104,7 @@ export default function EmployeeList() {
                   <div>
                     <img
                       className="empliyetegehpiccbd"
-                      src={`http://localhost:4000${emp.empImg}`}
+                      src={`https://attendance.masttecmoulds.com/api${emp.empImg}`}
                       alt={emp.empName || "Employee"}
                       onError={(e) => {
                         e.target.onerror = null;
@@ -131,7 +131,7 @@ export default function EmployeeList() {
                       className="empliyetegehpiccbd"
                       src={
                         emp.empImg
-                          ? `http://localhost:4000${emp.empImg}`
+                          ? `https://attendance.masttecmoulds.com/api${emp.empImg}`
                           : profileImage
                       }
                       alt={emp.empName || "Employee"}
@@ -270,7 +270,7 @@ export default function EmployeeList() {
 //                     <div>
 //                       <img
 //                         className="empliyetegehpiccbd"
-//                         src={`http://localhost:4000${emp.empImg}`}
+//                         src={`https://attendance.masttecmoulds.com/api${emp.empImg}`}
 //                         alt={emp.empName || "Employee"}
 //                         onError={(e) => {
 //                           e.target.onerror = null;
@@ -299,7 +299,7 @@ export default function EmployeeList() {
 //                         className="empliyetegehpiccbd"
 //                         src={
 //                           emp.empImg
-//                             ? `http://localhost:4000${emp.empImg}`
+//                             ? `https://attendance.masttecmoulds.com/api${emp.empImg}`
 //                             : profileImage
 //                         }
 //                         alt={emp.empName || "Employee"}

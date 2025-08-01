@@ -162,7 +162,7 @@ export default function DraftEmployee() {
                   {employee && employee.employeePicture ? (
                     <img
                       className="addpinpuaeehehdiv"
-                      src={`http://localhost:4000${employee.employeePicture}`}
+                      src={`https://attendance.masttecmoulds.com/api${employee.employeePicture}`}
                       alt="Employee's Profile Photo"
                     />
                   ) : (
@@ -574,7 +574,7 @@ export default function DraftEmployee() {
                             <div className="msaissbdfvdvdvdv">
                               {employee && employee.addressProof ? (
                                 <img
-                                  src={`http://localhost:4000${employee.addressProof}`}
+                                  src={`https://attendance.masttecmoulds.com/api${employee.addressProof}`}
                                   alt="Address Proof"
                                   className="document-image"
                                 />
@@ -625,7 +625,7 @@ export default function DraftEmployee() {
                             <div className="msaissbdfvdvdvdv">
                               {employee && employee.passbookProof ? (
                                 <img
-                                  src={`http://localhost:4000${employee.passbookProof}`}
+                                  src={`https://attendance.masttecmoulds.com/api${employee.passbookProof}`}
                                   alt="Bank Passbook"
                                   className="document-image"
                                 />
@@ -730,7 +730,7 @@ export default function DraftEmployee() {
                             <div className="msaissbdfvdvdvdv">
                               {employee && employee.PANCardProof ? (
                                 <img
-                                  src={`http://localhost:4000${employee.PANCardProof}`}
+                                  src={`https://attendance.masttecmoulds.com/api${employee.PANCardProof}`}
                                   alt="PAN Card"
                                   className="document-image"
                                 />
