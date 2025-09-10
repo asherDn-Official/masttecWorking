@@ -8,6 +8,7 @@ import "../CSS/AddEmployeeCss.css";
 export default function EditEmployee() {
   const { id: empID } = useParams();
   const Navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [employee, setEmployee] = useState({
     employeePicture: "",
     employeeName: "",
@@ -41,17 +42,23 @@ export default function EditEmployee() {
     UANNo: "",
     password: "",
   });
-  const [error, setError] = useState("");
-  const [errorMessage, setErrorMessage] = useState(false);
+  
+  const [errors, setErrors] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
+  const [touched, setTouched] = useState({});
 
   const fetchEmployees = async () => {
     try {
+      setLoading(true);
       const response = await axios.get(`${url}/v1/api/employees/${empID}`);
       setEmployee(response.data);
     } catch (error) {
       console.error("Error fetching employee data:", error);
-      setError("Error fetching employee data.");
-      setTimeout(() => setError(""), 5000);
+      setErrorMessage("Error fetching employee data.");
+      setShowErrorPopup(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -59,827 +66,774 @@ export default function EditEmployee() {
     fetchEmployees();
   }, []);
 
-  const handleImageUpload = async (e, additionalText) => {
+  const handleImageUpload = async (e, fieldName) => {
     const file = e.target.files[0];
     if (!file) return;
-    if (!employee.employeeId) return alert("Enter Employee Id");
+    
+    // Validate file size (2MB max)
+    if (file.size > 2 * 1024 * 1024) {
+      setErrorMessage("File size exceeds 2MB limit");
+      setShowErrorPopup(true);
+      return;
+    }
+    
+    // Validate file type
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (!validImageTypes.includes(file.type)) {
+      setErrorMessage("Only JPEG, JPG and PNG files are allowed");
+      setShowErrorPopup(true);
+      return;
+    }
+
+    if (!employee.employeeId) {
+      setErrorMessage("Please enter Employee ID first");
+      setShowErrorPopup(true);
+      return;
+    }
 
     const formData = new FormData();
     formData.append("employeeId", employee.employeeId);
-    formData.append("additionalText", additionalText);
+    formData.append("additionalText", fieldName);
     formData.append("file", file);
 
     try {
+      setLoading(true);
       const response = await axios.post(`${url}/v1/api/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
+      
       if (response.data.url) {
-        setEmployee((prev) => ({
-          ...prev,
-          [additionalText]: response.data.url,
-        }));
-        alert("File uploaded successfully");
+        setEmployee((prev) => ({ ...prev, [fieldName]: response.data.url }));
       } else {
-        console.error("No URL returned from backend.");
+        setErrorMessage("No URL returned from backend.");
+        setShowErrorPopup(true);
       }
     } catch (error) {
       console.error("Image upload failed:", error);
-      setError("Image upload failed. Please try again.");
+      setErrorMessage("Image upload failed. Please try again.");
+      setShowErrorPopup(true);
+    } finally {
+      setLoading(false);
+      e.target.value = null;
     }
-
-    e.target.value = null;
   };
 
-  const isEmployeeComplete = () => {
-    const requiredFields = [
-      "employeePicture",
-      "employeeName",
-      "dateOfBirth",
-      "qualification",
-      "department",
-      "mobileNumber",
-      "employeeId",
-      "bloodGroup",
-      "designation",
-      "departmentCode",
-      "mailId",
-      "address",
-      "bankAccountNumber",
-      "bankIFSCCode",
-      "addressProof",
-      "passbookProof",
-      "educationCertificate",
-      "PANCardProof",
-      "salary",
-      "hra",
-      "allowance",
-      "esicId",
-      "esic",
-      "epfId",
-      "UANNo",
-      "PANNumber",
-      "aadhaarNo",
-      "bankName",
-      "bankBranch",
-      "dateofJoining",
-    ];
+  const validateField = (name, value) => {
+    let error = "";
+    
+    switch (name) {
+      case "employeeName":
+        if (!value?.trim()) error = "Employee name is required";
+        else if (!/^[a-zA-Z\s]+$/.test(value)) error = "Name can only contain letters and spaces";
+        break;
+      case "employeeId":
+        if (!value?.trim()) error = "Employee ID is required";
+        else if (errorMessage) error = "Employee ID is already taken";
+        break;
+      case "mailId":
+        if (!value?.trim()) error = "Email is required";
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) error = "Invalid email format";
+        break;
+      case "mobileNumber":
+        if (!value?.trim()) error = "Mobile number is required";
+        else if (!/^\d{10}$/.test(value)) error = "Mobile number must be 10 digits";
+        break;
+      case "dateOfBirth":
+        if (!value) error = "Date of birth is required";
+        else if (new Date(value) >= new Date()) error = "Date of birth must be in the past";
+        break;
+      case "dateofJoining":
+        if (!value) error = "Date of joining is required";
+        break;
+      case "bankAccountNumber":
+        if (!value?.trim()) error = "Bank account number is required";
+        else if (!/^\d{9,18}$/.test(value)) error = "Invalid bank account number";
+        break;
+      case "bankIFSCCode":
+        if (!value?.trim()) error = "IFSC code is required";
+        else if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(value)) error = "Invalid IFSC code format";
+        break;
+      case "aadhaarNo":
+        if (!value?.trim()) error = "Aadhaar number is required";
+        else if (!/^\d{12}$/.test(value)) error = "Aadhaar must be 12 digits";
+        break;
+      case "PANNumber":
+        if (!value?.trim()) error = "PAN number is required";
+        else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value)) error = "Invalid PAN format";
+        break;
+      case "salary":
+      case "hra":
+      case "allowance":
+        if (!value?.trim()) error = "This field is required";
+        else if (!/^\d+$/.test(value)) error = "Must be a valid number";
+        break;
+      default:
+        if (!value?.trim()) error = "This field is required";
+    }
+    
+    return error;
+  };
 
-    return requiredFields.every(
-      (field) => employee[field] && employee[field].toString().trim() !== ""
-    );
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setTouched({ ...touched, [name]: true });
+    
+    const error = validateField(name, value);
+    setErrors({ ...errors, [name]: error });
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEmployee({ ...employee, [name]: value });
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: "" });
+    }
+    
+    // Special handling for employeeId to check uniqueness
+    if (name === "employeeId") {
+      const formattedValue = value.replace(/\s+/g, "");
+      setEmployee((prev) => ({ ...prev, employeeId: formattedValue }));
+      checkEmployeeId(formattedValue);
+    }
   };
 
   const checkEmployeeId = async (employeeId) => {
     try {
       if (!employeeId) {
-        setErrorMessage(false);
+        setErrorMessage("");
         return;
       }
-
+      
       const response = await axios.post(`${url}/v1/api/employees/check`, {
         employeeId: employeeId,
       });
-
-      setErrorMessage(response.data.exists);
+      
+      setErrorMessage(response.data.exists ? "Employee ID already exists" : "");
+      
+      if (response.data.exists) {
+        setErrors({ ...errors, employeeId: "Employee ID already exists" });
+      }
     } catch (error) {
       console.error("Error checking employeeId:", error);
       setErrorMessage("Failed to check employee ID");
+      setShowErrorPopup(true);
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.put(`${url}/v1/api/employees/${empID}`, {
-        ...employee,
-        password: employee.password,
-      });
+  const validateForm = () => {
+    const newErrors = {};
+    const requiredFields = [
+      "employeeName", "employeeId", "designation", "dateOfBirth", 
+      "qualification", "bloodGroup", "mobileNumber", "mailId", "address",
+      "bankAccountNumber", "bankIFSCCode", "PANNumber", "department", 
+      "departmentCode", "aadhaarNo", "bankName", "bankBranch", "dateofJoining",
+      "salary", "hra", "allowance", "esicId", "esic", "epfId", "UANNo"
+    ];
 
-      alert("Employee data updated successfully");
-      Navigate("/employee-list");
-    } catch (error) {
-      console.error("Failed to update employee:", error);
-      setError("Failed to update employee data. Please try again.");
-    }
+    requiredFields.forEach(field => {
+      const error = validateField(field, employee[field]);
+      if (error) newErrors[field] = error;
+    });
+
+    setErrors(newErrors);
+    setTouched(
+      requiredFields.reduce((acc, field) => {
+        acc[field] = true;
+        return acc;
+      }, {})
+    );
+
+    return Object.keys(newErrors).length === 0;
   };
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  if (!validateForm()) {
+    setErrorMessage("Please fix the errors in the form");
+    setShowErrorPopup(true);
+    return;
+  }
+
+  try {
+    setLoading(true);
+    // Remove password from the data since backend generates it from DOB
+    const { password, ...employeeData } = employee;
+    await axios.put(`${url}/v1/api/employees/${empID}`, {
+      employee: employeeData  // Nest data under "employee" key
+    });
+    
+    alert("Employee data updated successfully");
+    Navigate("/employeeDatails");
+  } catch (error) {
+    console.error("Failed to update employee:", error);
+    setErrorMessage("Failed to update employee data. Please try again.");
+    setShowErrorPopup(true);
+  } finally {
+    setLoading(false);
+  }
+};
+
+  const handleDeleteImage = (fieldName) => {
+    setEmployee((prev) => ({ ...prev, [fieldName]: "" }));
+  };
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading employee data...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="maigdfffff">
-      {error && <ErrorPopup error={error} setError={setError} />}
+    <div className="employee-edit-container">
+      {showErrorPopup && (
+        <ErrorPopup 
+          error={errorMessage} 
+          onClose={() => setShowErrorPopup(false)} 
+        />
+      )}
+      
+      <div className="form-header">
+        <h1>Edit Employee</h1>
+        <p>Update employee information below</p>
+      </div>
 
-      <div>
-        <div className="formksjkskskskksksksk">
-          <form onSubmit={handleSubmit}>
-            <div className="doemrerjerer">
-              {/* Profile Picture Section */}
-              <div>
-                <div className="addpinpuaeehehdiv">
-                  {employee.employeePicture ? (
-                    <img
-                      className="addpinpuaeehehdiv"
-                      src={`https://attendance.masttecmoulds.com/api${employee.employeePicture}`}
-                      alt="Employee's Profile"
-                    />
-                  ) : (
-                    <div>
-                      <label
-                        htmlFor="file-upload1"
-                        className="custom-file-upload"
-                      >
-                        <img
-                          src="/images/InputPhotoAdd.png"
-                          alt="Add Profile Photo Icon"
-                        />
-                      </label>
-                      <input
-                        id="file-upload1"
-                        type="file"
-                        onClick={(e) => (e.target.value = null)}
-                        onChange={(e) =>
-                          handleImageUpload(e, "employeePicture")
-                        }
-                      />
-                      <div className="ADDPHOTOTOT">Add Photo</div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="maxsixwee23444">Max size 2 Mb</div>
-                <div>
-                  <button
-                    className="deleteimagebuttdodnd"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setEmployee((prev) => ({ ...prev, employeePicture: "" }));
-                    }}
+      <form onSubmit={handleSubmit} className="employee-form">
+        {/* Profile Picture Section */}
+        <div className="form-section">
+          <h2 className="section-title">Profile Picture</h2>
+          <div className="profile-picture-container">
+            <div className="image-upload-container">
+              {employee.employeePicture ? (
+                <div className="image-preview">
+                  <img 
+                    src={`https://attendance.masttecmoulds.com/api${employee.employeePicture}`} 
+                    alt="Employee's Profile" 
+                    className="profile-image"
+                  />
+                  <button 
+                    type="button"
+                    className="delete-image-btn"
+                    onClick={() => handleDeleteImage("employeePicture")}
                   >
-                    Delete Image
+                    ×
                   </button>
                 </div>
-              </div>
-
-              {/* Form Fields Section */}
-              <div className="scrolldididdidi">
-                <div className="Azcxcffcgfgf">Personal Details</div>
-
-                <div className="sgsgsgsggs">
-                  <div className="fsiwjejjewe">
-                    {/* Personal Details Columns */}
-                    <div className="mainduidhdb3b434">
-                      {/* Left Column */}
-                      <div>
-                        <div className="zzMainogthencolciwejre">
-                          <div className="eimplosusu3344h4">Employee Name</div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.employeeName}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                employeeName: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">Date of Birth</div>
-                          <input
-                            className="inputddidjdj"
-                            type="date"
-                            value={employee.dateOfBirth}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                dateOfBirth: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">Qualification</div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.qualification}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                qualification: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">Department</div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.department}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                department: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">Mobile Number</div>
-                          <input
-                            className="inputddidjdj"
-                            type="tel"
-                            value={employee.mobileNumber}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                mobileNumber: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">Password</div>
-                          <input
-                            className="inputddidjdj"
-                            type="password"
-                            value={employee.password}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                password: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-                      </div>
-
-                      {/* Right Column */}
-                      <div>
-                        <div className="zzMainogthencolciwejre">
-                          <div className="eimplosusu3344h4">
-                            Employee ID {errorMessage && "(Already taken)"}
-                          </div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.employeeId}
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/\s+/g, "");
-                              setEmployee((prev) => ({
-                                ...prev,
-                                employeeId: value,
-                              }));
-                              checkEmployeeId(value);
-                            }}
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">Blood Group</div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.bloodGroup}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                bloodGroup: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">Designation</div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.designation}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                designation: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">
-                            Department Code
-                          </div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.departmentCode}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                departmentCode: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">Mail Id</div>
-                          <input
-                            className="inputddidjdj"
-                            type="email"
-                            value={employee.mailId}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                mailId: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">
-                            Date of Joining
-                          </div>
-                          <input
-                            className="inputddidjdj"
-                            type="date"
-                            value={employee.dateofJoining}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                dateofJoining: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-                      </div>
+              ) : (
+                <div className="upload-placeholder">
+                  <label htmlFor="file-upload1" className="file-upload-label">
+                    <div className="upload-icon">
+                      <img src="/images/InputPhotoAdd.png" alt="Add Profile" />
                     </div>
-
-                    {/* Address Section */}
-                    <div className="msisnsnjwj32434">
-                      <div className="Mainogthencolciwejre">
-                        <div className="eimplosusu3344h4">Address</div>
-                        <textarea
-                          className="sssinputddssidjdj"
-                          value={employee.address}
-                          onChange={(e) =>
-                            setEmployee((prev) => ({
-                              ...prev,
-                              address: e.target.value,
-                            }))
-                          }
-                        />
-                      </div>
-                    </div>
-
-                    {/* Account Details Section */}
-                    <div className="docuenejhjwj343">Account Details</div>
-                    <div className="mainduidhdb3b434">
-                      <div>
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">
-                            Bank Account Number
-                          </div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.bankAccountNumber}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                bankAccountNumber: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">Bank Branch</div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.bankBranch}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                bankBranch: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">Aadhaar No.</div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.aadhaarNo}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                aadhaarNo: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">Bank Name</div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.bankName}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                bankName: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">IFSC Code</div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.bankIFSCCode}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                bankIFSCCode: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">PAN Number</div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.PANNumber}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                PANNumber: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Documents Section */}
-                    <div>
-                      <div className="docuenejhjwj343">Documents</div>
-                      <div className="docyuwejj3jjflexsss">
-                        {/* Left Documents Column */}
-                        <div>
-                          <div className="nsnsbssbbsvss">
-                            <div className="adressshjssjj">Address Proof</div>
-                            <div className="msaissbdfvdvdvdv">
-                              {employee.addressProof ? (
-                                <img
-                                  src={`https://attendance.masttecmoulds.com/api${employee.addressProof}`}
-                                  alt="Address Proof"
-                                  className="document-image"
-                                />
-                              ) : (
-                                <>
-                                  <label
-                                    htmlFor="file-upload-address"
-                                    className="custom-file-upload"
-                                  >
-                                    <img
-                                      src="/images/DocumenstIMAGE.png"
-                                      alt="Upload Address Proof"
-                                    />
-                                  </label>
-                                  <input
-                                    id="file-upload-address"
-                                    type="file"
-                                    onClick={(e) => (e.target.value = null)}
-                                    onChange={(e) =>
-                                      handleImageUpload(e, "addressProof")
-                                    }
-                                  />
-                                  <div className="addphotototo">Add Photo</div>
-                                </>
-                              )}
-                            </div>
-                            <button
-                              className="deleteimagebuttdodnd"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setEmployee((prev) => ({
-                                  ...prev,
-                                  addressProof: "",
-                                }));
-                              }}
-                            >
-                              Delete Image
-                            </button>
-                          </div>
-
-                          <div className="nsnsbssbbsvss">
-                            <div className="adressshjssjj">
-                              Bank Passbook / Checkbook
-                            </div>
-                            <div className="msaissbdfvdvdvdv">
-                              {employee.passbookProof ? (
-                                <img
-                                  src={`https://attendance.masttecmoulds.com/api${employee.passbookProof}`}
-                                  alt="Bank Passbook"
-                                  className="document-image"
-                                />
-                              ) : (
-                                <>
-                                  <label
-                                    htmlFor="file-upload-passbook"
-                                    className="custom-file-upload"
-                                  >
-                                    <img
-                                      src="/images/DocumenstIMAGE.png"
-                                      alt="Upload Bank Passbook"
-                                    />
-                                  </label>
-                                  <input
-                                    id="file-upload-passbook"
-                                    type="file"
-                                    onClick={(e) => (e.target.value = null)}
-                                    onChange={(e) =>
-                                      handleImageUpload(e, "passbookProof")
-                                    }
-                                  />
-                                  <div className="addphotototo">Add Photo</div>
-                                </>
-                              )}
-                            </div>
-                            <button
-                              className="deleteimagebuttdodnd"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setEmployee((prev) => ({
-                                  ...prev,
-                                  passbookProof: "",
-                                }));
-                              }}
-                            >
-                              Delete Image
-                            </button>
-                          </div>
-                        </div>
-
-                        {/* Right Documents Column */}
-                        <div>
-                          <div className="nsnsbssbbsvss">
-                            <div className="adressshjssjj">
-                              Degree Certificate / Education Certificate
-                            </div>
-                            <div className="msaissbdfvdvdvdv">
-                              {employee.educationCertificate ? (
-                                <img
-                                  src={`${url}${employee.educationCertificate}`}
-                                  alt="Education Certificate"
-                                  className="document-image"
-                                />
-                              ) : (
-                                <>
-                                  <label
-                                    htmlFor="file-upload-education"
-                                    className="custom-file-upload"
-                                  >
-                                    <img
-                                      src="/images/DocumenstIMAGE.png"
-                                      alt="Upload Education Certificate"
-                                    />
-                                  </label>
-                                  <input
-                                    id="file-upload-education"
-                                    type="file"
-                                    onClick={(e) => (e.target.value = null)}
-                                    onChange={(e) =>
-                                      handleImageUpload(
-                                        e,
-                                        "educationCertificate"
-                                      )
-                                    }
-                                  />
-                                  <div className="addphotototo">Add Photo</div>
-                                </>
-                              )}
-                            </div>
-                            <button
-                              className="deleteimagebuttdodnd"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setEmployee((prev) => ({
-                                  ...prev,
-                                  educationCertificate: "",
-                                }));
-                              }}
-                            >
-                              Delete Image
-                            </button>
-                          </div>
-
-                          <div className="nsnsbssbbsvss">
-                            <div className="adressshjssjj">Pan Card</div>
-                            <div className="msaissbdfvdvdvdv">
-                              {employee.PANCardProof ? (
-                                <img
-                                  src={`https://attendance.masttecmoulds.com/api${employee.PANCardProof}`}
-                                  alt="PAN Card"
-                                  className="document-image"
-                                />
-                              ) : (
-                                <>
-                                  <label
-                                    htmlFor="file-upload-pan"
-                                    className="custom-file-upload"
-                                  >
-                                    <img
-                                      src="/images/DocumenstIMAGE.png"
-                                      alt="Upload PAN Card"
-                                    />
-                                  </label>
-                                  <input
-                                    id="file-upload-pan"
-                                    type="file"
-                                    onClick={(e) => (e.target.value = null)}
-                                    onChange={(e) =>
-                                      handleImageUpload(e, "PANCardProof")
-                                    }
-                                  />
-                                  <div className="addphotototo">Add Photo</div>
-                                </>
-                              )}
-                            </div>
-                            <button
-                              className="deleteimagebuttdodnd"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setEmployee((prev) => ({
-                                  ...prev,
-                                  PANCardProof: "",
-                                }));
-                              }}
-                            >
-                              Delete Image
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Salary Details Section */}
-                    <div className="docuenejhjwj343">Salary Details</div>
-                    <div className="mainduidhdb3b434">
-                      <div>
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">Salary</div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.salary}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                salary: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">HRA</div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.hra}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                hra: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">ESIC NO.</div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.esicId}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                esicId: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">ALLOWANCE</div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.allowance}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                allowance: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">ESIC</div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.esic}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                esic: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">EPF ID</div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.epfId}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                epfId: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-
-                        <div className="Mainogthencolciwejre">
-                          <div className="eimplosusu3344h4">UAN No.</div>
-                          <input
-                            className="inputddidjdj"
-                            type="text"
-                            value={employee.UANNo}
-                            onChange={(e) =>
-                              setEmployee((prev) => ({
-                                ...prev,
-                                UANNo: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Submit Button */}
-                    <div className="buauuauauaghs">
-                      <button
-                        className="butsssonsubmitdivv"
-                        type="submit"
-                        disabled={errorMessage}
-                        style={
-                          errorMessage
-                            ? {
-                                backgroundColor: "#ccc",
-                                color: "#666",
-                                cursor: "not-allowed",
-                              }
-                            : {}
-                        }
-                      >
-                        Update Details
-                      </button>
-                    </div>
-                  </div>
+                    <span className="upload-text">Add Photo</span>
+                    <span className="upload-subtext">Max size 2MB</span>
+                  </label>
+                  <input 
+                    id="file-upload1" 
+                    type="file" 
+                    accept="image/jpeg, image/png, image/jpg"
+                    onChange={(e) => handleImageUpload(e, "employeePicture")} 
+                    className="file-input"
+                  />
                 </div>
-              </div>
+              )}
             </div>
-          </form>
+          </div>
         </div>
+
+        {/* Personal Details Section */}
+        <div className="form-section">
+          <h2 className="section-title">Personal Details</h2>
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="employeeName">Employee Name *</label>
+              <input
+                id="employeeName"
+                name="employeeName"
+                type="text"
+                value={employee.employeeName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.employeeName ? "error" : ""}
+              />
+              {errors.employeeName && <span className="error-text">{errors.employeeName}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="employeeId">Employee ID *</label>
+              <input
+                id="employeeId"
+                name="employeeId"
+                type="text"
+                value={employee.employeeId}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.employeeId ? "error" : ""}
+              />
+              {errors.employeeId && <span className="error-text">{errors.employeeId}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="dateOfBirth">Date of Birth *</label>
+              <input
+                id="dateOfBirth"
+                name="dateOfBirth"
+                type="date"
+                value={employee.dateOfBirth}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.dateOfBirth ? "error" : ""}
+              />
+              {errors.dateOfBirth && <span className="error-text">{errors.dateOfBirth}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="bloodGroup">Blood Group</label>
+              <select
+                id="bloodGroup"
+                name="bloodGroup"
+                value={employee.bloodGroup}
+                onChange={handleChange}
+                className={errors.bloodGroup ? "error" : ""}
+              >
+                <option value="">Select Blood Group</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+              {errors.bloodGroup && <span className="error-text">{errors.bloodGroup}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="qualification">Qualification *</label>
+              <input
+                id="qualification"
+                name="qualification"
+                type="text"
+                value={employee.qualification}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.qualification ? "error" : ""}
+              />
+              {errors.qualification && <span className="error-text">{errors.qualification}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="designation">Designation *</label>
+              <input
+                id="designation"
+                name="designation"
+                type="text"
+                value={employee.designation}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.designation ? "error" : ""}
+              />
+              {errors.designation && <span className="error-text">{errors.designation}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="department">Department *</label>
+              <input
+                id="department"
+                name="department"
+                type="text"
+                value={employee.department}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.department ? "error" : ""}
+              />
+              {errors.department && <span className="error-text">{errors.department}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="departmentCode">Department Code *</label>
+              <input
+                id="departmentCode"
+                name="departmentCode"
+                type="text"
+                value={employee.departmentCode}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.departmentCode ? "error" : ""}
+              />
+              {errors.departmentCode && <span className="error-text">{errors.departmentCode}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="mobileNumber">Mobile Number *</label>
+              <input
+                id="mobileNumber"
+                name="mobileNumber"
+                type="tel"
+                value={employee.mobileNumber}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.mobileNumber ? "error" : ""}
+              />
+              {errors.mobileNumber && <span className="error-text">{errors.mobileNumber}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="mailId">Email ID *</label>
+              <input
+                id="mailId"
+                name="mailId"
+                type="email"
+                value={employee.mailId}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.mailId ? "error" : ""}
+              />
+              {errors.mailId && <span className="error-text">{errors.mailId}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="dateofJoining">Date of Joining *</label>
+              <input
+                id="dateofJoining"
+                name="dateofJoining"
+                type="date"
+                value={employee.dateofJoining}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.dateofJoining ? "error" : ""}
+              />
+              {errors.dateofJoining && <span className="error-text">{errors.dateofJoining}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                value={employee.password}
+                onChange={handleChange}
+                placeholder="Leave blank to keep current password"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Address Section */}
+        <div className="form-section">
+          <h2 className="section-title">Address</h2>
+          <div className="form-group full-width">
+            <label htmlFor="address">Address *</label>
+            <textarea
+              id="address"
+              name="address"
+              value={employee.address}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              rows="3"
+              className={errors.address ? "error" : ""}
+            />
+            {errors.address && <span className="error-text">{errors.address}</span>}
+          </div>
+        </div>
+
+        {/* Account Details Section */}
+        <div className="form-section">
+          <h2 className="section-title">Account Details</h2>
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="bankAccountNumber">Bank Account Number *</label>
+              <input
+                id="bankAccountNumber"
+                name="bankAccountNumber"
+                type="text"
+                value={employee.bankAccountNumber}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.bankAccountNumber ? "error" : ""}
+              />
+              {errors.bankAccountNumber && <span className="error-text">{errors.bankAccountNumber}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="bankName">Bank Name *</label>
+              <input
+                id="bankName"
+                name="bankName"
+                type="text"
+                value={employee.bankName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.bankName ? "error" : ""}
+              />
+              {errors.bankName && <span className="error-text">{errors.bankName}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="bankIFSCCode">IFSC Code *</label>
+              <input
+                id="bankIFSCCode"
+                name="bankIFSCCode"
+                type="text"
+                value={employee.bankIFSCCode}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.bankIFSCCode ? "error" : ""}
+              />
+              {errors.bankIFSCCode && <span className="error-text">{errors.bankIFSCCode}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="bankBranch">Bank Branch *</label>
+              <input
+                id="bankBranch"
+                name="bankBranch"
+                type="text"
+                value={employee.bankBranch}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.bankBranch ? "error" : ""}
+              />
+              {errors.bankBranch && <span className="error-text">{errors.bankBranch}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="aadhaarNo">Aadhaar Number *</label>
+              <input
+                id="aadhaarNo"
+                name="aadhaarNo"
+                type="text"
+                value={employee.aadhaarNo}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.aadhaarNo ? "error" : ""}
+              />
+              {errors.aadhaarNo && <span className="error-text">{errors.aadhaarNo}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="PANNumber">PAN Number *</label>
+              <input
+                id="PANNumber"
+                name="PANNumber"
+                type="text"
+                value={employee.PANNumber}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.PANNumber ? "error" : ""}
+              />
+              {errors.PANNumber && <span className="error-text">{errors.PANNumber}</span>}
+            </div>
+          </div>
+        </div>
+
+        {/* Documents Section */}
+        <div className="form-section">
+          <h2 className="section-title">Documents</h2>
+          <div className="documents-grid">
+            <DocumentUpload 
+              title="Address Proof"
+              fieldName="addressProof"
+              documentUrl={employee.addressProof}
+              onUpload={handleImageUpload}
+              onDelete={handleDeleteImage}
+            />
+            
+            <DocumentUpload 
+              title="Bank Passbook/Checkbook"
+              fieldName="passbookProof"
+              documentUrl={employee.passbookProof}
+              onUpload={handleImageUpload}
+              onDelete={handleDeleteImage}
+            />
+            
+            <DocumentUpload 
+              title="Education Certificate"
+              fieldName="educationCertificate"
+              documentUrl={employee.educationCertificate}
+              onUpload={handleImageUpload}
+              onDelete={handleDeleteImage}
+            />
+            
+            <DocumentUpload 
+              title="PAN Card"
+              fieldName="PANCardProof"
+              documentUrl={employee.PANCardProof}
+              onUpload={handleImageUpload}
+              onDelete={handleDeleteImage}
+            />
+          </div>
+        </div>
+
+        {/* Salary Details Section */}
+        <div className="form-section">
+          <h2 className="section-title">Salary Details</h2>
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="salary">Salary *</label>
+              <input
+                id="salary"
+                name="salary"
+                type="text"
+                value={employee.salary}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.salary ? "error" : ""}
+              />
+              {errors.salary && <span className="error-text">{errors.salary}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="hra">HRA *</label>
+              <input
+                id="hra"
+                name="hra"
+                type="text"
+                value={employee.hra}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.hra ? "error" : ""}
+              />
+              {errors.hra && <span className="error-text">{errors.hra}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="allowance">Allowance *</label>
+              <input
+                id="allowance"
+                name="allowance"
+                type="text"
+                value={employee.allowance}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.allowance ? "error" : ""}
+              />
+              {errors.allowance && <span className="error-text">{errors.allowance}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="esic">ESIC *</label>
+              <input
+                id="esic"
+                name="esic"
+                type="text"
+                value={employee.esic}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.esic ? "error" : ""}
+              />
+              {errors.esic && <span className="error-text">{errors.esic}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="esicId">ESIC ID *</label>
+              <input
+                id="esicId"
+                name="esicId"
+                type="text"
+                value={employee.esicId}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.esicId ? "error" : ""}
+              />
+              {errors.esicId && <span className="error-text">{errors.esicId}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="epfId">EPF ID *</label>
+              <input
+                id="epfId"
+                name="epfId"
+                type="text"
+                value={employee.epfId}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.epfId ? "error" : ""}
+              />
+              {errors.epfId && <span className="error-text">{errors.epfId}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="UANNo">UAN Number *</label>
+              <input
+                id="UANNo"
+                name="UANNo"
+                type="text"
+                value={employee.UANNo}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.UANNo ? "error" : ""}
+              />
+              {errors.UANNo && <span className="error-text">{errors.UANNo}</span>}
+            </div>
+          </div>
+        </div>
+
+        <div className="form-actions">
+          <button 
+            type="button" 
+            className="cancel-btn"
+            onClick={() => Navigate("/employee-list")}
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            className="submit-btn"
+            disabled={loading || Object.keys(errors).some(key => errors[key])}
+          >
+            {loading ? "Updating..." : "Update Employee"}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+// Document Upload Component
+function DocumentUpload({ title, fieldName, documentUrl, onUpload, onDelete }) {
+  return (
+    <div className="document-upload">
+      <h3>{title}</h3>
+      <div className="document-preview">
+        {documentUrl ? (
+          <>
+            <img 
+              src={`https://attendance.masttecmoulds.com/api${documentUrl}`} 
+              alt={title}
+              className="document-image"
+            />
+            <button 
+              type="button"
+              className="delete-document-btn"
+              onClick={() => onDelete(fieldName)}
+            >
+              ×
+            </button>
+          </>
+        ) : (
+          <label htmlFor={`file-upload-${fieldName}`} className="document-upload-label">
+            <div className="document-upload-icon">
+              <img src="/images/DocumenstIMAGE.png" alt="Upload document" />
+            </div>
+            <span className="document-upload-text">Upload Document</span>
+            <span className="document-upload-subtext">Max size 2MB</span>
+          </label>
+        )}
+        <input
+          id={`file-upload-${fieldName}`}
+          type="file"
+          accept="image/jpeg, image/png, image/jpg"
+          onChange={(e) => onUpload(e, fieldName)}
+          className="document-file-input"
+        />
       </div>
     </div>
   );

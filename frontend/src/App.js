@@ -20,6 +20,7 @@ import axios from "axios";
 import API_URL from "./global";
 import { createContext, useEffect, useState } from "react";
 import { ContentProvieder } from "./global";
+import EmployeePayroll from "./pages/EmployeePayrun";
 axios.defaults.withCredentials = true; //store cookie
 
 function App() {
@@ -71,6 +72,7 @@ function App() {
               />
               <Route path="/employeeDatails" element={<EmployeeList />} />
               <Route path="/payRun" element={<PayrollPage />} />
+              <Route path="/employeePayroll" element={<EmployeePayroll />} />
               <Route path="/accountsDashboard" element={<EmployeeData />} />
                         <Route path="/upload-attendance" element={<UploadAttendancePage />} />
 

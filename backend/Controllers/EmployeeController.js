@@ -152,8 +152,9 @@ exports.updateEmployee = async (req, res) => {
     //   UANNo,
     // } = req.body;
     const { employee } = req.body;
-    console.log(employee.employeeName);
+    console.log(employee+"dflaksjdlfkajsd");
     // Automatically generate the password from DOB
+    console.log("DOB", employee.dateOfBirth)
     const password = generatePasswordFromDOB(employee.dateOfBirth);
 
     const updatedEmployee = await Employee.findOneAndUpdate(
