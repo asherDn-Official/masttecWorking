@@ -13,7 +13,7 @@ import MasttecNav from "./Components/Navbar";
 import HolidayPage from "./pages/HolidayPage";
 import { ToastContainer } from "react-toastify";
 import RoleMangement from "./pages/RoleMangement";
-import UploadAttendancePage from './pages/UploadAttendancePage'; // Adjust path if needed
+import UploadAttendancePage from "./pages/UploadAttendancePage"; // Adjust path if needed
 
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -54,7 +54,7 @@ function App() {
           {profile.role === "Accountant" ? (
             <>
               <Route path="/" element={<EmployeeData />} />
-              <Route path="/payRun" element={<PayrollPage />} />
+              <Route path="/payRun" element={<EmployeePayroll />} />
               <Route path="/employeeDatails" element={<EmployeeList />} />
             </>
           ) : profile.role === "Supervisor" ? (
@@ -71,11 +71,13 @@ function App() {
                 element={<EmployeeAttendanceList />}
               />
               <Route path="/employeeDatails" element={<EmployeeList />} />
-              <Route path="/payRun" element={<PayrollPage />} />
-              <Route path="/employeePayroll" element={<EmployeePayroll />} />
+              {/* <Route path="/payRun" element={<PayrollPage />} /> */}
+              <Route path="/payRun" element={<EmployeePayroll />} />
               <Route path="/accountsDashboard" element={<EmployeeData />} />
-                        <Route path="/upload-attendance" element={<UploadAttendancePage />} />
-
+              <Route
+                path="/upload-attendance"
+                element={<UploadAttendancePage />}
+              />
             </>
           ) : (
             <></>
